@@ -1,0 +1,117 @@
+<% content_for :head do %>
+	<script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>
+	<script type="text/javascript">
+	var g_mapHelper = null;
+
+	$(document).ready(
+		function initPage() {
+			// initialize the set location dialog
+			$('#setLocationDialog').dialog(
+			{
+				autoOpen: false,
+				modal: true,
+				resizable: false,
+				autoResize: true,
+				height: 'auto',
+				width: 800,
+				buttons: [
+					{ text: "Ok", click: function() { saveLocation(); $(this).dialog("close"); } },
+					{ text: "Cancel", click: function() { $(this).dialog("close"); } }
+				],
+				dialogClass: "no-close"
+			});
+
+			// hook the click event to show the dialog
+			$('#showLocationPopup').click(
+				function() {
+					if (g_mapHelper == null) initializeMapHelper();
+					$('#setLocationDialog').dialog('open');
+					return false;
+				}
+			);
+		}
+	);
+
+	function initializeMapHelper() {
+
+		var mapOptions = {
+				zoom: 10,
+				markerTitle: '<%=@hunting_plot.name%>'
+		};
+
+		var currentLocationCoordinates = /POINT\s*\((-?\d+\.\d*)\s+(-?\d+\.\d*)\)/g.exec($('#plot_location').val());
+
+		var location = null;
+		if (currentLocationCoordinates != null) {
+			mapOptions.center = { lat: parseFloat(currentLocationCoordinates[2]), lng: parseFloat(currentLocationCoordinates[1]) };
+		}
+		createMapHelper(mapOptions);
+
+		// if this is a new plot by virtue of the fact we don't have coordinates, attempt to center the map on the user's current location
+		if ((currentLocationCoordinates == null) && (navigator.geolocation))
+		{
+			navigator.geolocation.getCurrentPosition(
+				function(position) {
+					g_mapHelper.setCenter(position.coords.latitude, position.coords.longitude);
+				}
+			);
+		}
+	}
+
+	function createMapHelper(mapOptions) {
+		g_mapHelper = new MapsHelper(document.getElementById("map-canvas"), mapOptions);
+	}
+
+	function saveLocation() {
+		$('#plot_location').val("POINT(" + roundNumber(g_marker.getPosition().lng(), 4) + " " + roundNumber(g_marker.getPosition().lat(), 4) + ")");
+	}
+
+	function showAddress(address) {
+		g_mapHelper.setLocationByAddress(address);
+	}
+	</script>
+<% end %>
+
+<%= form_for @hunting_plot, builder: HuntingPlotsHelper::MyFormBuilder do |f| %>
+<% if @hunting_plot.errors.any? %>
+<div id="error_explanation">
+	<h2><%= pluralize(@hunting_plot.errors.count, "error") %> prohibited this hunting_plot from being saved:</h2>
+
+	<ul>
+		<% @hunting_plot.errors.full_messages.each do |msg| %>
+		<li><%= msg %></li>
+		<% end %>
+	</ul>
+</div>
+<% end %>
+
+<div class="field">
+	<%= f.label :name %><br>
+	<%= f.text_field :name %>
+</div>
+<div class="field">
+	<%= f.label :location_coordinates %><br>
+	<%= f.text_field :location_coordinates, :id => "plot_location", :readonly => "readonly", :value => @hunting_plot.location_coordinates.to_s %>
+	<a id="showLocationPopup" href="#"><%= image_tag 'pin.png' %></a>
+</div>
+	<!--
+	<div class="field">
+		<%= f.label :boundary %><br>
+		<%= f.text_field :boundary %>
+	</div>
+-->
+<div class="actions">
+	<%= f.submit %>
+</div>
+<% end %>
+<div id="setLocationDialog" title="Set Plot Location" style="background-color:white;">
+	<div style="padding:5px;">
+		<form action="#" onsubmit="showAddress($('#locationDialog_address').val()); return false;">
+			<input type="text" size="40" id="locationDialog_address" name="locationDialog_address" value="" />
+			<input type="submit" value="Search"/>
+		</form>
+	</div>
+	<div id="map-canvas" style="width:800px;height:500px;text-align:center;padding-top:100px;">
+		Initializing map...
+	</div>
+</div>

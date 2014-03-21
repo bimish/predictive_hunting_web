@@ -1,0 +1,2 @@
+module HuntingLocationsHelper
+end

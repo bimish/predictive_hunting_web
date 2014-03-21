@@ -1,0 +1,46 @@
+<% content_for :head do %>
+	<script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>
+	<script type="text/javascript">
+	$(document).ready(
+		function() {
+			MapsHelper.getLocationAddress(
+				<%=@hunting_plot.location_coordinates.y()%>,
+				<%=@hunting_plot.location_coordinates.x()%>,
+				$('#locationAddress').get(0)
+			);
+		}
+	);
+	</script>
+<% end %>
+
+<p id="notice"><%= notice %></p>
+
+<div style="float:left;">
+	<p>
+		<strong>Name:</strong>
+		<%= @hunting_plot.name %>
+	</p>
+
+	<p>
+		<strong>Location:</strong>
+		<span id="locationAddress">resolving...</span>
+	</p>
+
+	<p>
+		<strong>Coordinates:</strong>
+		<%= @hunting_plot.location_coordinates %>
+	</p>
+
+	<p>
+		<strong>Boundary:</strong>
+		<%= @hunting_plot.boundary %>
+	</p>
+
+	<%= link_to 'Edit', edit_hunting_plot_path(@hunting_plot) %> |
+	<%= link_to 'Back', hunting_plots_path %>
+</div>
+
+<div style="float:left;height:400px;width:400px;margin-left:10px;">
+	<iframe src="<%= plot_map_url(id: @hunting_plot.id)%>" style="width:100%;height:100%;border:none;"></iframe>
+</div>
+

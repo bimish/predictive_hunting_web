@@ -1,0 +1,33 @@
+<h1>Listing hunting_locations</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Coordinates</th>
+      <th>Hunting plot</th>
+      <th>Type</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @hunting_locations.each do |hunting_location| %>
+      <tr>
+        <td><%= hunting_location.name %></td>
+        <td><%= hunting_location.coordinates %></td>
+        <td><%= hunting_location.hunting_plot %></td>
+        <td><%= hunting_location.type %></td>
+        <td><%= link_to 'Show', hunting_location %></td>
+        <td><%= link_to 'Edit', edit_hunting_location_path(hunting_location) %></td>
+        <td><%= link_to 'Destroy', hunting_location, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Hunting location', new_hunting_location_path %>

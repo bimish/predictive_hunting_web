@@ -1,0 +1,17 @@
+<% content_for :head do %>
+<style>
+p {
+color: red;
+}
+</style>
+<script>
+$(document).ready(function() {
+	$("p").text("The DOM is now loaded and can be manipulated.");
+});
+$(window).bind('page:change', function() {
+  alert('hello');
+});
+</script>
+<% end %>
+<p>Not loaded yet.</p>
+<a href="/test">Test</a>

@@ -1,0 +1,25 @@
+.ui-dialog {
+	border: 1px solid black;
+}
+.ui-dialog-titlebar {
+	background-color: grey;
+	color: white;
+}
+.ui-dialog-title {
+
+}
+.ui-dialog-titlebar-close	{
+
+}
+.ui-dialog-content {
+
+}
+.ui-dialog-buttonpane {
+	padding: 5px;
+}
+.ui-dialog-buttonset {
+
+}
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
