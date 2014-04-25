@@ -62,10 +62,10 @@ test:
 production:
   adapter: postgis #postgresql
   encoding: unicode
-  database: hunting_app
+  database: d9804ed6v66rm7
+  host: ec2-54-83-43-242.compute-1.amazonaws.com
+  port: 5742
   pool: 5
-  username: hunting_app
-  password: P@$$word
-  su_username: hunting_app_creator
-  su_password: P@$$word
+  username: u5fjmvh04tpjka
+  password: pa0ka4goiv8s529u2icph8rfjf
   schema_search_path: public,postgis
