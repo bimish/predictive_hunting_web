@@ -1,0 +1,2 @@
+module AnimalActivityTypesHelper
+end

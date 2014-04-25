@@ -1,0 +1,34 @@
+<% content_for :head do %>
+  <script type="text/javascript">
+  function cancelInlineForm() {
+    $('#inline-form').empty();
+    $('#add-button').show();
+  }
+  </script>
+<% end %>
+
+<div class="row">
+
+  <h3>Animal Activity Observations for <%= @hunting_plot.name%></h3>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Location</th>
+        <th>Animal category</th>
+        <th>Animal count</th>
+        <th>Activity</th>
+        <th>Named animal</th>
+        <th>Date/time</th>
+        <th colspan="3">
+      </tr>
+    </thead>
+    <tbody id="observation-index">
+      <%= render "index" %>
+    </tbody>
+  </table>
+
+  <div id="inline-form"></div>
+
+  <%= link_to "New Observation", new_animal_activity_observation_path(hunting_plot_id: params[:hunting_plot_id]), { remote: true, class: "btn btn-default", id:'add-button' } %>
+</div>

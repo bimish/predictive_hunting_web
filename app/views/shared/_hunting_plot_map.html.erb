@@ -1,0 +1,51 @@
+<% content_for :head do %>
+	<style type="text/css">
+		#map-canvas {
+			width:100%;
+			height:100%;
+		}
+	</style>
+	<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnowDHg-PA5lxfTdQnwZMOht-iUjIjaIg&sensor=false"/></script>-->
+	<script src="https://maps.googleapis.com/maps/api/js?sensor=false"/></script>
+	<script type="text/javascript">
+	var g_map = null;
+	var g_marker = null;
+
+	function initialize() {
+		var location = { lat: <%=hunting_plot.location_coordinates.y()%>, lng: <%=hunting_plot.location_coordinates.x()%> };
+		var mapOptions = {
+			center: location,
+<%
+if !hunting_plot.boundary.nil?
+	view_window = rgeo_get_bounds(hunting_plot.boundary)
+%>
+			view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+			boundary: parseWKTPolygon('<%=hunting_plot.boundary.to_s%>'),
+<%
+end
+if hunting_plot.locations.size > 0
+%>
+			additional_markers: [
+<%
+	hunting_plot.locations.each_with_index  do |hunting_location, index|
+		if index > 0 %>,<% end %>{ name: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>} }
+<%
+	end
+%>
+			],
+<%
+end
+%>
+			zoom: 12
+		};
+		try {
+			g_map = new MapsHelper("map-canvas", mapOptions);
+		}
+		catch (e) {
+			alert("The following error occurred: " + e);
+		}
+	}
+	$(document).ready(function() { initialize(); });
+	</script>
+<% end %>
+<div id="map-canvas"></div>

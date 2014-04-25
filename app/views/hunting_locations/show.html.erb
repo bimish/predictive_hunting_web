@@ -1,5 +1,3 @@
-<p id="notice"><%= notice %></p>
-
 <p>
   <strong>Name:</strong>
   <%= @hunting_location.name %>
@@ -12,12 +10,12 @@
 
 <p>
   <strong>Hunting plot:</strong>
-  <%= @hunting_location.hunting_plot %>
+  <%= link_to @hunting_location.hunting_plot.name, hunting_plot_url(@hunting_location.hunting_plot) %>
 </p>
 
 <p>
-  <strong>Type:</strong>
-  <%= @hunting_location.type %>
+  <strong>Location type:</strong>
+  <%= @hunting_location.location_type %>
 </p>
 
 <%= link_to 'Edit', edit_hunting_location_path(@hunting_location) %> |

@@ -1,0 +1,27 @@
+<p>
+  <strong>Animal species:</strong>
+  <%= @animal_category.animal_species %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @animal_category.name %>
+</p>
+
+<p>
+  <strong>Gender:</strong>
+  <%= @animal_category.gender %>
+</p>
+
+<p>
+  <strong>Maturity:</strong>
+  <%= @animal_category.maturity %>
+</p>
+
+<p>
+  <strong>Trophy rating:</strong>
+  <%= @animal_category.trophy_rating %>
+</p>
+
+<%= link_to 'Edit', edit_animal_category_path(@animal_category) %> |
+<%= link_to 'Back', animal_categories_path %>

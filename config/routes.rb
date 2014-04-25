@@ -1,9 +1,27 @@
 Web::Application.routes.draw do
 
-  resources :hunting_locations
+  resources :user_hunting_plot_accesses
 
-	resources :users
+  resources :animal_activity_observations do
+    member do
+      get :delete
+    end
+  end
+  resources :animal_activity_types
+  resources :animal_categories
+  resources :animal_species
+  resources :hunting_locations
 	resources :hunting_plots
+  resources :hunting_plot_named_animals
+  resources :sessions, only: [:new, :create, :destroy]
+	resources :users
+
+  get '/signup', to: 'users#new'
+  get '/signin', to: 'sessions#new'
+  delete '/signout', to: 'sessions#destroy'
+  get '/help', to: 'static_pages#help'
+
+  root to: 'static_pages#home'
 
   get 'map/hunting_plot/:id' => 'map#hunting_plot', as: :plot_map
 	get 'test' => 'static_pages#test', as: :test

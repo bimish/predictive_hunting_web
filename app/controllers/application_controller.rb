@@ -4,6 +4,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
 
+  # custom helper modules
+	helper :rgeo
+
 #disable caching
 def set_as_private
   expires_now

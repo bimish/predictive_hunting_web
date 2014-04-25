@@ -1,0 +1,2 @@
+module UserHuntingPlotAccessesHelper
+end

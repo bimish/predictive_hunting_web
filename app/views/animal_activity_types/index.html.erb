@@ -1,0 +1,27 @@
+<h1>Listing animal_activity_types</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @animal_activity_types.each do |animal_activity_type| %>
+      <tr>
+        <td><%= animal_activity_type.name %></td>
+        <td><%= link_to 'Show', animal_activity_type %></td>
+        <td><%= link_to 'Edit', edit_animal_activity_type_path(animal_activity_type) %></td>
+        <td><%= link_to 'Destroy', animal_activity_type, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Animal activity type', new_animal_activity_type_path %>

@@ -1,0 +1,12 @@
+<p>
+  <strong>Common name:</strong>
+  <%= @animal_species.common_name %>
+</p>
+
+<p>
+  <strong>Species:</strong>
+  <%= @animal_species.species %>
+</p>
+
+<%= link_to 'Edit', edit_animal_species_path(@animal_species) %> |
+<%= link_to 'Back', animal_species_index_path %>

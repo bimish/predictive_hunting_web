@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Users:</strong>
+  <%= @user_hunting_plot_access.users %>
+</p>
+
+<p>
+  <strong>Hunting plots:</strong>
+  <%= @user_hunting_plot_access.hunting_plots %>
+</p>
+
+<p>
+  <strong>Alias:</strong>
+  <%= @user_hunting_plot_access.alias %>
+</p>
+
+<p>
+  <strong>Permissions:</strong>
+  <%= @user_hunting_plot_access.permissions %>
+</p>
+
+<%= link_to 'Edit', edit_user_hunting_plot_access_path(@user_hunting_plot_access) %> |
+<%= link_to 'Back', user_hunting_plot_accesses_path %>

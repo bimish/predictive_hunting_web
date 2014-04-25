@@ -1,0 +1,2 @@
+module AnimalActivityObservationsHelper
+end

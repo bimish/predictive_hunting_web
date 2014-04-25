@@ -1,0 +1,18 @@
+<%
+	if !defined?(include_plot) then include_plot = true	end
+	if !defined?(editable) then editable = true	end
+	#include_plot ||= true
+	#editable ||= true
+%>
+<tr>
+  <td><%= hunting_location.name %></td>
+  <% if include_plot %>
+  <td><%= hunting_location.hunting_plot.name %></td>
+  <% end %>
+  <td><%= DataDomains::HuntingLocationTypes.key(hunting_location.location_type) %></td>
+  <td><%= link_to 'Show', hunting_location %></td>
+  <% if editable %>
+  <td><%= link_to 'Edit', edit_hunting_location_path(hunting_location) %></td>
+  <td><%= link_to 'Destroy', hunting_location, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  <% end %>
+</tr>

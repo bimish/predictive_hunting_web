@@ -1,0 +1,35 @@
+<h1>Listing animal_categories</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Animal species</th>
+      <th>Name</th>
+      <th>Gender</th>
+      <th>Maturity</th>
+      <th>Trophy rating</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @animal_categories.each do |animal_category| %>
+      <tr>
+        <td><%= animal_category.animal_species %></td>
+        <td><%= animal_category.name %></td>
+        <td><%= animal_category.gender %></td>
+        <td><%= animal_category.maturity %></td>
+        <td><%= animal_category.trophy_rating %></td>
+        <td><%= link_to 'Show', animal_category %></td>
+        <td><%= link_to 'Edit', edit_animal_category_path(animal_category) %></td>
+        <td><%= link_to 'Destroy', animal_category, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Animal category', new_animal_category_path %>

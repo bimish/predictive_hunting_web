@@ -1,9 +1,12 @@
 .ui-dialog {
 	border: 1px solid black;
+  background-color: white;
 }
 .ui-dialog-titlebar {
 	background-color: grey;
 	color: white;
+	font-size: large;
+	padding: 5px;
 }
 .ui-dialog-title {
 

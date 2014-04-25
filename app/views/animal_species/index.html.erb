@@ -1,0 +1,29 @@
+<h1>Listing animal_species</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Common name</th>
+      <th>Species</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @animal_species.each do |animal_species| %>
+      <tr>
+        <td><%= animal_species.common_name %></td>
+        <td><%= animal_species.species %></td>
+        <td><%= link_to 'Show', animal_species %></td>
+        <td><%= link_to 'Edit', edit_animal_species_path(animal_species) %></td>
+        <td><%= link_to 'Destroy', animal_species, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Animal species', new_animal_species_path %>

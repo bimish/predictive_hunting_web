@@ -1,0 +1,31 @@
+<h1>Listing hunting_plot_named_animals</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Animal species</th>
+      <th>Animal category</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @hunting_plot_named_animals.each do |hunting_plot_named_animal| %>
+      <tr>
+        <td><%= hunting_plot_named_animal.name %></td>
+        <td><%= hunting_plot_named_animal.animal_species %></td>
+        <td><%= hunting_plot_named_animal.animal_category %></td>
+        <td><%= link_to 'Show', hunting_plot_named_animal %></td>
+        <td><%= link_to 'Edit', edit_hunting_plot_named_animal_path(hunting_plot_named_animal) %></td>
+        <td><%= link_to 'Destroy', hunting_plot_named_animal, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Hunting plot named animal', new_hunting_plot_named_animal_path %>

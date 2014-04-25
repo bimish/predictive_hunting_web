@@ -5,7 +5,8 @@ class HuntingPlotsController < ApplicationController
   # GET /hunting_plots
   # GET /hunting_plots.json
   def index
-    @hunting_plots = HuntingPlot.all
+    #@hunting_plots = HuntingPlot.all
+    @hunting_plots = current_user.hunting_plots
   end
 
   # GET /hunting_plots/1

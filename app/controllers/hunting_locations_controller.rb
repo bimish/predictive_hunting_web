@@ -15,6 +15,9 @@ class HuntingLocationsController < ApplicationController
   # GET /hunting_locations/new
   def new
     @hunting_location = HuntingLocation.new
+    if (params.has_key?(:hunting_plot_id))
+    	@hunting_location.hunting_plot_id = params[:hunting_plot_id]
+    end
   end
 
   # GET /hunting_locations/1/edit
@@ -69,6 +72,6 @@ class HuntingLocationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def hunting_location_params
-      params.require(:hunting_location).permit(:name, :coordinates, :hunting_plot, :type)
+      params.require(:hunting_location).permit(:name, :coordinates, :hunting_plot_id, :location_type)
     end
 end

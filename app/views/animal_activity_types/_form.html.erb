@@ -1,0 +1,21 @@
+<%= form_for(@animal_activity_type) do |f| %>
+  <% if @animal_activity_type.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@animal_activity_type.errors.count, "error") %> prohibited this animal_activity_type from being saved:</h2>
+
+      <ul>
+      <% @animal_activity_type.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

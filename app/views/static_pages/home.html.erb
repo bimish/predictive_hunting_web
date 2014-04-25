@@ -1,0 +1,23 @@
+<div class="container">
+<% if signed_in? %>
+  <%= link_to 'Manage Hunting Plot(s)', hunting_plots_url%>
+<% else %>
+  <div class="row">
+    <h1>Welcome to Predictive Hunting</h1>
+  </div>
+  <div class="row">
+    <div class="col-md-6"><h3>Already have an account?</h3></div>
+    <div class="col-md-6 h3">
+      <span class="glyphicon glyphicon-circle-arrow-right"></span>
+      <%= link_to "Sign in", signin_path %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6"><h3>Don't have an account yet?</h3></div>
+    <div class="col-md-6 h3">
+      <span class="glyphicon glyphicon-user"></span>
+      <%= link_to "Sign up now!", signup_path %>
+    </div>
+  </div>
+<% end %>
+</div>

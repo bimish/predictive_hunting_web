@@ -1,0 +1,47 @@
+<% coordinates = { :lat => -84.4731, :lng => 34.0328} %>
+<% content_for :head do %>
+	<style type="text/css">
+		#boundary-canvas {
+			width:500px;
+			height:500px;
+		}
+	</style>
+	<script src="https://maps.googleapis.com/maps/api/js?libraries=drawing&amp;sensor=false"/></script>
+	<script type="text/javascript">
+	var g_boundaryMap = null;
+	var g_drawingManager = null;
+
+	function initTest() {
+		var location = { lat: <%=coordinates[:lng]%>, lng: <%=coordinates[:lat]%> };
+		var mapOptions = {
+			center: location,
+			<% if defined?(view_window) %>
+			view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+			<% end %>
+			zoom: 12
+		};
+		g_boundaryMap = new MapsHelper("boundary-canvas", mapOptions);
+		g_boundaryMap.drawPolygon(null, null);
+ 		/*
+		var drawMgrOptions = {
+		  drawingMode: google.maps.drawing.OverlayType.MARKER,
+		  drawingControl: false,
+		  drawingControlOptions: {
+		    position: google.maps.ControlPosition.TOP_CENTER,
+		    drawingModes: [
+		      google.maps.drawing.OverlayType.MARKER,
+		      google.maps.drawing.OverlayType.CIRCLE,
+		      google.maps.drawing.OverlayType.POLYGON,
+		      google.maps.drawing.OverlayType.POLYLINE,
+		      google.maps.drawing.OverlayType.RECTANGLE
+		    ]
+		  }
+		};
+		var g_drawingManager = g_boundaryMap.getDrawingManager(drawMgrOptions);
+		g_drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+	  */
+	}
+	</script>
+<% end %>
+<input type="submit" onclick="javascript: initTest();" value="Test" />
+<div id="boundary-canvas">Initializing map...</div>

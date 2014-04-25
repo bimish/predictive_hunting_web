@@ -8,39 +8,74 @@
 				<%=@hunting_plot.location_coordinates.x()%>,
 				$('#locationAddress').get(0)
 			);
+
+			$('#hunting-locations > tbody > tr').hover(
+				function(e) { $(this).addClass('bg-info'); },
+				function(e) { $(this).removeClass('bg-info'); }
+			);
 		}
 	);
 	</script>
 <% end %>
 
-<p id="notice"><%= notice %></p>
+	<div class="row">
 
-<div style="float:left;">
-	<p>
-		<strong>Name:</strong>
-		<%= @hunting_plot.name %>
-	</p>
+		<div class="col-md-4">
+			<p>
+				<strong>Name:</strong>
+				<%= @hunting_plot.name %>
+			</p>
 
-	<p>
-		<strong>Location:</strong>
-		<span id="locationAddress">resolving...</span>
-	</p>
+			<p>
+				<strong>Location:</strong>
+				<span id="locationAddress">resolving...</span>
+			</p>
 
-	<p>
-		<strong>Coordinates:</strong>
-		<%= @hunting_plot.location_coordinates %>
-	</p>
+			<!--
+			<p>
+				<strong>Coordinates:</strong>
+				<%= @hunting_plot.location_coordinates %>
+			</p>
 
-	<p>
-		<strong>Boundary:</strong>
-		<%= @hunting_plot.boundary %>
-	</p>
+			<p>
+				<strong>Boundary:</strong>
+				<%= @hunting_plot.boundary %>
+			</p>
+			-->
 
-	<%= link_to 'Edit', edit_hunting_plot_path(@hunting_plot) %> |
-	<%= link_to 'Back', hunting_plots_path %>
+			<%= link_to 'Edit', edit_hunting_plot_path(@hunting_plot), { class:'btn btn-default btn-sm' } %>
+			<%= link_to 'Back', hunting_plots_path, { class:'btn btn-default btn-sm' } %>
+			<%= link_to 'Activity Log', animal_activity_observations_path( hunting_plot_id: @hunting_plot.id), { class:'btn btn-default btn-sm' } %>
+
+			<br>
+			<br>
+			<strong>Locations</strong>
+
+			<%= render partial:'/hunting_locations/items_list', :locals => { :hunting_locations => @hunting_plot.locations, :include_plot => false, :editable => false } %>
+
+
+		</div>
+
+
+		<div style="height:600px;" class="col-md-8">
+			<%=
+				renderLocals = {
+					:hunting_plot => @hunting_plot,
+					:location_name => @hunting_plot.name,
+					:coordinates =>
+					{
+						:lng => @hunting_plot.location_coordinates.x(),
+						:lat => @hunting_plot.location_coordinates.y()
+					}
+				}
+				if !@hunting_plot.boundary.nil?
+					renderLocals[:boundary] = @hunting_plot.boundary.to_s
+					renderLocals[:view_window] = rgeo_get_bounds(@hunting_plot.boundary)
+				end
+				render partial:'/shared/hunting_plot_map', :locals => renderLocals
+			%>
+		</div>
+
+	</div>
+
 </div>
-
-<div style="float:left;height:400px;width:400px;margin-left:10px;">
-	<iframe src="<%= plot_map_url(id: @hunting_plot.id)%>" style="width:100%;height:100%;border:none;"></iframe>
-</div>
-

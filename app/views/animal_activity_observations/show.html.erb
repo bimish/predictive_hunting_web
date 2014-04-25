@@ -1,0 +1,33 @@
+
+<p>
+  <strong>Hunting location:</strong>
+  <%= @animal_activity_observation.hunting_location %>
+</p>
+
+<p>
+  <strong>Animal category:</strong>
+  <%= @animal_activity_observation.animal_category %>
+</p>
+
+<p>
+  <strong>Animal count:</strong>
+  <%= @animal_activity_observation.animal_count %>
+</p>
+
+<p>
+  <strong>Animal activity type:</strong>
+  <%= @animal_activity_observation.animal_activity_type %>
+</p>
+
+<p>
+  <strong>Hunting plot named animal:</strong>
+  <%= @animal_activity_observation.hunting_plot_named_animal %>
+</p>
+
+<p>
+  <strong>Observation date time:</strong>
+  <%= @animal_activity_observation.observation_date_time %>
+</p>
+
+<%= link_to 'Edit', edit_animal_activity_observation_path(@animal_activity_observation) %> |
+<%= link_to 'Back', animal_activity_observations_path %>

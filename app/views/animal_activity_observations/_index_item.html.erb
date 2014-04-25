@@ -1,0 +1,11 @@
+<tr id="animal_activity_observation_<%=animal_activity_observation.id%>">
+    <td><%= animal_activity_observation.hunting_location.name %></td>
+    <td><%= animal_activity_observation.animal_category.name %></td>
+    <td><%= animal_activity_observation.animal_count %></td>
+    <td><%= animal_activity_observation.animal_activity_type.name %></td>
+    <td><%= animal_activity_observation.hunting_plot_named_animal.nil?? '' : animal_activity_observation.hunting_plot_named_animal.name %></td>
+    <td><%= animal_activity_observation.observation_date_time %></td>
+    <td><%= link_to 'Show', animal_activity_observation %></td>
+    <td><%= link_to 'Edit', edit_animal_activity_observation_path(animal_activity_observation), remote: true %></td>
+    <td><%= link_to 'Destroy', animal_activity_observation_path(animal_activity_observation), remote: true, method: :delete, data: { confirm: 'Delete this observation?' } %></td>
+</tr>

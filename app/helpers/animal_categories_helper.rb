@@ -1,0 +1,2 @@
+module AnimalCategoriesHelper
+end

@@ -1,0 +1,9 @@
+$("ul.errors").html("")
+<% if @animal_activity_observation.errors.any? %>
+  <% @animal_activity_observation.errors.full_messages.each do |message| %>
+    $("ul.errors").append($("<li />").html("<%= message.html_safe %>"))
+  <% end %>
+<% else %>
+  $(".observation-index").html("<%= escape_javascript(render 'index') %>")
+  $("#modal-form").modal("hide")
+<% end %>

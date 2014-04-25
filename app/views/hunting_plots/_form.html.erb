@@ -1,7 +1,11 @@
 <% content_for :head do %>
-	<script src='https://maps.googleapis.com/maps/api/js?sensor=false'></script>
+	<script src='https://maps.googleapis.com/maps/api/js?libraries=drawing&amp;sensor=false'></script>
 	<script type="text/javascript">
+	var DIALOG_MODE_LOCATION = 1;
+	var DIALOG_MODE_BOUNDARY = 2;
+
 	var g_mapHelper = null;
+	var g_dialogMode = DIALOG_MODE_LOCATION;
 
 	$(document).ready(
 		function initPage() {
@@ -15,36 +19,84 @@
 				height: 'auto',
 				width: 800,
 				buttons: [
-					{ text: "Ok", click: function() { saveLocation(); $(this).dialog("close"); } },
+					{ text: "Ok", click: function() { mapDialogSaveHandler(); $(this).dialog("close"); } },
 					{ text: "Cancel", click: function() { $(this).dialog("close"); } }
 				],
 				dialogClass: "no-close"
 			});
 
-			// hook the click event to show the dialog
+			// hookup the click events
 			$('#showLocationPopup').click(
 				function() {
 					if (g_mapHelper == null) initializeMapHelper();
+					//g_mapHelper.showMarker();
+					g_mapHelper.setMode(MapsHelper.Mode.SetLocation);
+					$('#addressSearch').show();
+					$('#setLocationDialog').dialog('option', 'title', 'Set Plot Location');
 					$('#setLocationDialog').dialog('open');
+					g_dialogMode = DIALOG_MODE_LOCATION;
+					return false;
+				}
+			);
+			$('#showBoundaryPopup').click(
+				function() {
+					try {
+						if (g_mapHelper == null) initializeMapHelper();
+						//g_mapHelper.hideMarker();
+						g_mapHelper.setMode(MapsHelper.Mode.SetBoundary);
+						g_mapHelper.editBoundary();
+						$('#addressSearch').hide();
+						$('#setLocationDialog').dialog('option', 'title', 'Set Plot Boundary');
+						$('#setLocationDialog').dialog('open');
+						g_dialogMode = DIALOG_MODE_BOUNDARY;
+					}
+					catch (e) {
+						alert('The following error occurred: ' + e);
+					}
 					return false;
 				}
 			);
 		}
 	);
 
+	function mapDialogSaveHandler() {
+		if (g_mapHelper.getMode() == MapsHelper.Mode.SetLocation) {
+			var markerLocation = g_mapHelper.getMarkerLocation();
+			$('#plot_location').val(formatWKTPoint( { lng: markerLocation.lng(), lat: markerLocation.lat() } ));
+		}
+		else {
+			var boundaryVertices = g_mapHelper.getBoundaryVertices();
+			$('#plot_boundary').val(formatWKTPolygon(boundaryVertices));
+		}
+	}
+
 	function initializeMapHelper() {
 
 		var mapOptions = {
-				zoom: 10,
+				<%
+				if !@hunting_plot.boundary.nil?
+					view_window = rgeo_get_bounds(@hunting_plot.boundary)
+				%>
+				view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+				<% else	%>
+				zoom: 12,
+				<% end %>
 				markerTitle: '<%=@hunting_plot.name%>'
 		};
 
-		var currentLocationCoordinates = /POINT\s*\((-?\d+\.\d*)\s+(-?\d+\.\d*)\)/g.exec($('#plot_location').val());
-
-		var location = null;
-		if (currentLocationCoordinates != null) {
-			mapOptions.center = { lat: parseFloat(currentLocationCoordinates[2]), lng: parseFloat(currentLocationCoordinates[1]) };
+		var currentLocationCoordinates = $('#plot_location').val();
+		if (!isNullOrEmpty(currentLocationCoordinates)) {
+			mapOptions.center = parseWKTPoint(currentLocationCoordinates);
 		}
+		else if (!isDefinedAndNonNull(mapOptions.view_window)) {
+			mapOptions.zoom = 5;
+		}
+
+		var currentBoundary = $('#plot_boundary').val();
+		if (!isNullOrEmpty(currentBoundary)) {
+			mapOptions.boundary = parseWKTPolygon(currentBoundary);
+		}
+
 		createMapHelper(mapOptions);
 
 		// if this is a new plot by virtue of the fact we don't have coordinates, attempt to center the map on the user's current location
@@ -62,21 +114,16 @@
 		g_mapHelper = new MapsHelper(document.getElementById("map-canvas"), mapOptions);
 	}
 
-	function saveLocation() {
-		$('#plot_location').val("POINT(" + roundNumber(g_marker.getPosition().lng(), 4) + " " + roundNumber(g_marker.getPosition().lat(), 4) + ")");
-	}
-
 	function showAddress(address) {
 		g_mapHelper.setLocationByAddress(address);
 	}
 	</script>
 <% end %>
 
-<%= form_for @hunting_plot, builder: HuntingPlotsHelper::MyFormBuilder do |f| %>
+<%= form_for @hunting_plot do |f| %>
 <% if @hunting_plot.errors.any? %>
 <div id="error_explanation">
-	<h2><%= pluralize(@hunting_plot.errors.count, "error") %> prohibited this hunting_plot from being saved:</h2>
-
+	<h2><%= pluralize(@hunting_plot.errors.count, "error") %> prohibited this hunting plot from being saved:</h2>
 	<ul>
 		<% @hunting_plot.errors.full_messages.each do |msg| %>
 		<li><%= msg %></li>
@@ -91,21 +138,20 @@
 </div>
 <div class="field">
 	<%= f.label :location_coordinates %><br>
-	<%= f.text_field :location_coordinates, :id => "plot_location", :readonly => "readonly", :value => @hunting_plot.location_coordinates.to_s %>
-	<a id="showLocationPopup" href="#"><%= image_tag 'pin.png' %></a>
+	<%= f.coordinates_field :location_coordinates, :id => "plot_location" %>
+	<a id="showLocationPopup" href="#">edit...</a>
 </div>
-	<!--
-	<div class="field">
-		<%= f.label :boundary %><br>
-		<%= f.text_field :boundary %>
-	</div>
--->
+<div class="field">
+	<%= f.label :boundary %><br>
+	<%= f.text_field :boundary, :id => "plot_boundary", :value => @hunting_plot.boundary.to_s %>
+	<a id="showBoundaryPopup" href="#">edit...</a>
+</div>
 <div class="actions">
 	<%= f.submit %>
 </div>
 <% end %>
 <div id="setLocationDialog" title="Set Plot Location" style="background-color:white;">
-	<div style="padding:5px;">
+	<div id="addressSearch" style="padding:5px;">
 		<form action="#" onsubmit="showAddress($('#locationDialog_address').val()); return false;">
 			<input type="text" size="40" id="locationDialog_address" name="locationDialog_address" value="" />
 			<input type="submit" value="Search"/>
