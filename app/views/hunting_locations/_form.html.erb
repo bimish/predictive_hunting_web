@@ -1,4 +1,4 @@
-<%= form_for @hunting_location do |f| %>
+<%= bootstrap_form_for @hunting_location do |f| %>
   <% if @hunting_location.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@hunting_location.errors.count, "error") %> prohibited this hunting location from being saved:</h2>

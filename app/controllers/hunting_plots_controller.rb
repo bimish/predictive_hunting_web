@@ -33,9 +33,11 @@ class HuntingPlotsController < ApplicationController
       if @hunting_plot.save
         format.html { redirect_to @hunting_plot, notice: 'Hunting plot was successfully created.' }
         format.json { render action: 'show', status: :created, location: @hunting_plot }
+        format.js
       else
         format.html { render action: 'new' }
         format.json { render json: @hunting_plot.errors, status: :unprocessable_entity }
+        format.js
       end
     end
   end
@@ -47,9 +49,11 @@ class HuntingPlotsController < ApplicationController
       if @hunting_plot.update(hunting_plot_params)
         format.html { redirect_to @hunting_plot, notice: 'Hunting plot was successfully updated.' }
         format.json { head :no_content }
+        format.js
       else
         format.html { render action: 'edit' }
         format.json { render json: @hunting_plot.errors, status: :unprocessable_entity }
+        format.js { render action: 'edit' }
       end
     end
   end

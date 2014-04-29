@@ -120,36 +120,29 @@
 	</script>
 <% end %>
 
-<%= form_for @hunting_plot do |f| %>
-<% if @hunting_plot.errors.any? %>
-<div id="error_explanation">
-	<h2><%= pluralize(@hunting_plot.errors.count, "error") %> prohibited this hunting plot from being saved:</h2>
-	<ul>
-		<% @hunting_plot.errors.full_messages.each do |msg| %>
-		<li><%= msg %></li>
-		<% end %>
-	</ul>
-</div>
+<%= bootstrap_form_for @hunting_plot do |f| %>
+
+	<% if @hunting_plot.errors.any? %>
+	<div id="error_explanation">
+		<h2><%= pluralize(@hunting_plot.errors.count, "error") %> prohibited this hunting plot from being saved:</h2>
+		<ul>
+			<% @hunting_plot.errors.full_messages.each do |msg| %>
+			<li><%= msg %></li>
+			<% end %>
+		</ul>
+	</div>
+	<% end %>
+
+	<%= f.text_field :name %>
+	<%= f.hidden_field :location_coordinates.to_s, :id => "plot_location" %>
+	<a id="showLocationPopup" href="#">change location...</a>
+	<%= f.hidden_field :boundary, :id => "plot_boundary", :value => @hunting_plot.boundary.to_s %>
+	<a id="showBoundaryPopup" href="#">edit boundaryt...</a>
+
+	<%= f.submit %>
+
 <% end %>
 
-<div class="field">
-	<%= f.label :name %><br>
-	<%= f.text_field :name %>
-</div>
-<div class="field">
-	<%= f.label :location_coordinates %><br>
-	<%= f.coordinates_field :location_coordinates, :id => "plot_location" %>
-	<a id="showLocationPopup" href="#">edit...</a>
-</div>
-<div class="field">
-	<%= f.label :boundary %><br>
-	<%= f.text_field :boundary, :id => "plot_boundary", :value => @hunting_plot.boundary.to_s %>
-	<a id="showBoundaryPopup" href="#">edit...</a>
-</div>
-<div class="actions">
-	<%= f.submit %>
-</div>
-<% end %>
 <div id="setLocationDialog" title="Set Plot Location" style="background-color:white;">
 	<div id="addressSearch" style="padding:5px;">
 		<form action="#" onsubmit="showAddress($('#locationDialog_address').val()); return false;">

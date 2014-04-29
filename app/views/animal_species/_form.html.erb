@@ -1,4 +1,4 @@
-<%= form_for(@animal_species) do |f| %>
+<%= bootstrap_form_for(@animal_species) do |f| %>
   <% if @animal_species.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@animal_species.errors.count, "error") %> prohibited this animal species from being saved:</h2>

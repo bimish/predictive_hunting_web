@@ -1,0 +1,8 @@
+<% if (params[:field_id] = :name) %>
+showAjaxForm('inline-form', "<%= escape_javascript(render :partial => 'inline_form') %>", ['change_name_button', 'hunting_plot_name'] );
+<% elsif (params[:location_id] = :location) %>
+//$("#inline-form").html("<%= escape_javascript(render 'edit') %>")
+//$("#add-button").hide();
+<% else %>
+
+<% end %>

@@ -1,4 +1,4 @@
-<%= form_for(@user_hunting_plot_access) do |f| %>
+<%= bootstrap_form_for(@user_hunting_plot_access) do |f| %>
   <% if @user_hunting_plot_access.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@user_hunting_plot_access.errors.count, "error") %> prohibited this user_hunting_plot_access from being saved:</h2>

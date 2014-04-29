@@ -21,38 +21,46 @@
 	<div class="row">
 
 		<div class="col-md-4">
-			<p>
-				<strong>Name:</strong>
-				<%= @hunting_plot.name %>
-			</p>
 
-			<p>
-				<strong>Location:</strong>
-				<span id="locationAddress">resolving...</span>
-			</p>
+			<div class="row">
+				<div class="col-md-12">
+					<strong>Name:</strong>
+					<span id="hunting_plot_name"><%= @hunting_plot.name %></span>
+					<div id="inline-form" style="display:none;"></div>
+					<%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :name), { remote: true, class:'btn btn-default btn-sm', id:'change_name_button', title:'Edit name' } do |link| %>
+						<span class="glyphicon glyphicon-edit"></span>
+					<% end %>
+				</div>
+			</div>
 
-			<!--
-			<p>
-				<strong>Coordinates:</strong>
-				<%= @hunting_plot.location_coordinates %>
-			</p>
+			<div class="row">
+				<div class="col-md-12">
+					<strong>Location:</strong>
+					<span id="locationAddress">resolving...</span>
+					<%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :name), { remote: true, class:'btn btn-default btn-sm', id:'set_location_button', title:'Set location' } do |link| %>
+						<span class="glyphicon glyphicon-edit"></span>
+					<% end %>
+				</div>
+			</div>
 
-			<p>
-				<strong>Boundary:</strong>
-				<%= @hunting_plot.boundary %>
-			</p>
-			-->
+			<div class="row">
+				<div class="col-md-12">
+					<hr>
+				</div>
+			</div>
 
-			<%= link_to 'Edit', edit_hunting_plot_path(@hunting_plot), { class:'btn btn-default btn-sm' } %>
-			<%= link_to 'Back', hunting_plots_path, { class:'btn btn-default btn-sm' } %>
-			<%= link_to 'Activity Log', animal_activity_observations_path( hunting_plot_id: @hunting_plot.id), { class:'btn btn-default btn-sm' } %>
+			<div class="row">
+				<div class="col-md-12">
+					<strong>Locations</strong>
+					<%= render partial:'/hunting_locations/items_list', :locals => { :hunting_locations => @hunting_plot.locations, :include_plot => false, :editable => false } %>
+				</div>
+			</div>
 
-			<br>
-			<br>
-			<strong>Locations</strong>
-
-			<%= render partial:'/hunting_locations/items_list', :locals => { :hunting_locations => @hunting_plot.locations, :include_plot => false, :editable => false } %>
-
+			<div class="row">
+				<div class="col-md-12">
+					<%= link_to 'View Activity Log', animal_activity_observations_path( hunting_plot_id: @hunting_plot.id), { class:'btn btn-default btn-sm' } %>
+				</div>
+			</div>
 
 		</div>
 
