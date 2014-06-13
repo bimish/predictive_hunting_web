@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140423192230) do
+ActiveRecord::Schema.define(version: 20140501134732) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20140423192230) do
     t.integer  "animal_activity_type_id",                null: false
     t.integer  "hunting_plot_named_animal_id"
     t.datetime "observation_date_time",                  null: false
+    t.integer  "created_by_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -113,5 +114,25 @@ ActiveRecord::Schema.define(version: 20140423192230) do
   add_index "user_hunting_plot_access", ["hunting_plot_id"], :name => "index_user_hunting_plot_access_on_hunting_plot_id"
   add_index "user_hunting_plot_access", ["user_id", "hunting_plot_id"], :name => "index_user_hunting_plot_access_on_user_id_and_hunting_plot_id", :unique => true
   add_index "user_hunting_plot_access", ["user_id"], :name => "index_user_hunting_plot_access_on_user_id"
+
+  create_table "user_post", force: true do |t|
+    t.integer  "created_by_id",              null: false
+    t.string   "post_content",  limit: 1000, null: false
+    t.integer  "visibility",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_post", ["created_by_id"], :name => "index_user_post_on_created_by_id"
+
+  create_table "user_relationship", force: true do |t|
+    t.integer  "owning_user_id",              null: false
+    t.integer  "related_user_id",             null: false
+    t.integer  "relationship_type", limit: 2, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_relationship", ["owning_user_id", "related_user_id"], :name => "index_user_relationship_on_owning_user_id_and_related_user_id", :unique => true
 
 end

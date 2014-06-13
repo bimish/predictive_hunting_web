@@ -1,3 +1,2 @@
-$('#inline-form').empty();
+closeAjaxForm();
 $('#animal_activity_observation_<%=@animal_activity_observation.id%>').replaceWith('<%= j render(:partial => 'index_item', :locals => { :animal_activity_observation => @animal_activity_observation })%>');
-$("#add-button").show();

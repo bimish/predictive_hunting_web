@@ -1,0 +1,11 @@
+$font-size-small: 10pt;
+$font-size-base: 12pt;
+$font-size-large: 14pt;
+
+@import "bootstrap";
+@import "rails_bootstrap_forms";
+
+@import "bootstrap-custom";
+@import "jquery-dialog";
+@import "custom";
+@import "scaffolds";

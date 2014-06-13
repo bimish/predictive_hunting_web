@@ -1,8 +1,9 @@
-<% if (params[:field_id] = :name) %>
-showAjaxForm('inline-form', "<%= escape_javascript(render :partial => 'inline_form') %>", ['change_name_button', 'hunting_plot_name'] );
-<% elsif (params[:location_id] = :location) %>
-//$("#inline-form").html("<%= escape_javascript(render 'edit') %>")
-//$("#add-button").hide();
-<% else %>
-
+<% if (params[:field_id] == 'name') %>
+showAjaxForm('edit-name-form', "<%= escape_javascript(render :partial => 'inline_form') %>", ['change_name_button', 'hunting_plot_name'] );
+<% elsif (params[:field_id] == 'location_coordinates') %>
+showAjaxForm('edit-location-form', "<%= escape_javascript(render :partial => 'edit_location_form') %>", ['set_location_button', 'locationAddress', 'plotMap'] );
+showLocationPopup();
+<% elsif (params[:field_id] == 'boundary') %>
+showAjaxForm('edit-location-form', "<%= escape_javascript(render :partial => 'edit_location_form') %>", ['set_boundary_button', 'locationAddress', 'plotMap'] );
+showBoundaryPopup();
 <% end %>

@@ -43,5 +43,14 @@ module Web
     # config.i18n.default_locale = :de
     #config.action_view.default_form_builder = "ApplicationHelper::AppFormBuilder"
     config.active_record.pluralize_table_names = false
+
+    #config.generators do |g|
+    #  g.orm             :active_record
+    #  g.template_engine :erb
+    #  g.test_framework  :test_unit, fixture: false
+    #  g.stylesheets     false
+    #  g.javascripts     false
+    #end
+
   end
 end

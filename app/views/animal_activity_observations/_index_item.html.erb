@@ -3,8 +3,9 @@
     <td><%= animal_activity_observation.animal_category.name %></td>
     <td><%= animal_activity_observation.animal_count %></td>
     <td><%= animal_activity_observation.animal_activity_type.name %></td>
-    <td><%= animal_activity_observation.hunting_plot_named_animal.nil?? '' : animal_activity_observation.hunting_plot_named_animal.name %></td>
-    <td><%= animal_activity_observation.observation_date_time %></td>
+    <td><%= get_named_animal_description(animal_activity_observation) %></td>
+    <td><%= animal_activity_observation.created_by.alias %></td>
+    <td><%= animal_activity_observation.observation_date_time.utc.getlocal.strftime("%m/%d/%Y %I:%M %p") %></td>
     <td><%= link_to 'Show', animal_activity_observation %></td>
     <td><%= link_to 'Edit', edit_animal_activity_observation_path(animal_activity_observation), remote: true %></td>
     <td><%= link_to 'Destroy', animal_activity_observation_path(animal_activity_observation), remote: true, method: :delete, data: { confirm: 'Delete this observation?' } %></td>

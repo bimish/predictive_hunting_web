@@ -1,2 +1,6 @@
 closeAjaxForm();
 $('#hunting_plot_name').text('<%== j @hunting_plot.name %>');
+$('#locationAddress').text('<%== j @hunting_plot.location_address %>');
+g_map.setMarkerLocation(<%= @hunting_plot.location_coordinates.y()%>, <%= @hunting_plot.location_coordinates.x()%>);
+g_map.setCenter(<%= @hunting_plot.location_coordinates.y()%>, <%= @hunting_plot.location_coordinates.x()%>);
+g_map.setBoundary(parseWKTPolygon('<%= @hunting_plot.boundary.to_s %>'));

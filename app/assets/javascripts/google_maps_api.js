@@ -2,16 +2,28 @@ function MapsHelper(mapCanvas, options)
 {
 	if (!isDefinedAndNonNull(mapCanvas)) throw "mapCanvas is required";
 
+	var _mapOptions;
+	var _mode;
+	var _map;
+	var _marker;
+	var _boundary;
+	var _additionalMarkers;
+	var _drawingManager;
+	var _markerAddress;
+
 	initOptions(options);
+
 	createMap(mapCanvas);
 
 	this.setLocationByAddress = function(address) { findAddressImpl(address, true) };
 	this.setMarkerLocation = function(latitude, longitude) { setMarkerLocationImpl(new google.maps.LatLng(latitude, longitude)); };
 	this.getMarkerLocation = function() { return getMarkerLocationImpl(); };
+	this.getMarkerAddress = function() { return getMarkerAddressImpl(); };
 	this.setCenter = function(latitude, longitude) { setCenterImpl(new google.maps.LatLng(latitude, longitude)); };
 	this.getDrawingManager = function(options) { return createDrawingManagerImpl(options); };
 	this.createBoundary = function(options, resultsHandler) { return drawBoundaryImpl(true); };
 	this.editBoundary = function(options, resultsHandler) { return drawBoundaryImpl(false); };
+	this.setBoundary = function(options) { return setBoundary(options); };
 	this.hideMarker = function() { hideMarkerImpl(); };
 	this.showMarker = function() { showMarkerImpl(); };
 	this.setMode = function(mode) { setModeImpl(mode); };
@@ -20,7 +32,7 @@ function MapsHelper(mapCanvas, options)
 
 	function initOptions(options) {
 		// default to center of US
-		this.g_mapOptions = {
+		_mapOptions = {
 			center: {
 				lat: 37.09024,
 				lng: -95.712891
@@ -28,50 +40,50 @@ function MapsHelper(mapCanvas, options)
 			zoom: MapsHelper.DEFAULT_ZOOM,
 			markerTitle: 'US'
 		};
-		this.Mode = MapsHelper.Mode.View;
+		_mode = MapsHelper.Mode.View;
 
 		if (isDefinedAndNonNull(options)) {
 			if (isDefinedAndNonNull(options.mode))
-				this.Mode = options.mode;
+				_mode = options.mode;
 			if (isDefinedAndNonNull(options.center))
-				this.g_mapOptions.center = options.center;
+				_mapOptions.center = options.center;
 			if (isDefinedAndNonNull(options.zoom))
-				this.g_mapOptions.zoom = options.zoom;
+				_mapOptions.zoom = options.zoom;
 			if (isDefinedAndNonNull(options.markerTitle))
-				this.g_mapOptions.markerTitle = options.markerTitle;
+				_mapOptions.markerTitle = options.markerTitle;
 			if (isDefinedAndNonNull(options.boundary))
-				this.g_mapOptions.boundary = options.boundary;
+				_mapOptions.boundary = options.boundary;
 			if (isDefinedAndNonNull(options.view_window))
 			{
-				this.g_mapOptions.view_window = new google.maps.LatLngBounds(
+				_mapOptions.view_window = new google.maps.LatLngBounds(
 					new google.maps.LatLng(options.view_window.sw.lat, options.view_window.sw.lng),
 					new google.maps.LatLng(options.view_window.ne.lat, options.view_window.ne.lng)
 				);
 			}
 			if (isDefinedAndNonNull(options.additional_markers))
-				this.g_mapOptions.additional_markers = options.additional_markers;
+				_mapOptions.additional_markers = options.additional_markers;
 		}
 	}
 
 	function createMap(mapCanvas) {
 
-		this.g_map = new google.maps.Map(resolveElement(mapCanvas), this.g_mapOptions);
+		_map = new google.maps.Map(resolveElement(mapCanvas), _mapOptions);
 
-		if (isDefinedAndNonNull(this.g_mapOptions.view_window)) {
-			this.g_map.fitBounds(this.g_mapOptions.view_window);
+		if (isDefinedAndNonNull(_mapOptions.view_window)) {
+			_map.fitBounds(_mapOptions.view_window);
 		}
 
-		if ((this.Mode == MapsHelper.Mode.View) || (this.Mode == MapsHelper.Mode.SetLocation)) {
-			setMarkerLocationImpl(this.g_mapOptions.center);
+		if ((_mode == MapsHelper.Mode.View) || (_mode == MapsHelper.Mode.SetLocation)) {
+			setMarkerLocationImpl(_mapOptions.center);
 		}
-		if ((this.Mode == MapsHelper.Mode.View) || (this.Mode == MapsHelper.Mode.SetBoundary)) {
-			if (isDefinedAndNonNull(this.g_mapOptions.boundary)) {
-				this.g_boundary = addBoundary(this.g_mapOptions.boundary, (this.Mode == MapsHelper.Mode.SetBoundary));
+		if ((_mode == MapsHelper.Mode.View) || (_mode == MapsHelper.Mode.SetBoundary)) {
+			if (isDefinedAndNonNull(_mapOptions.boundary)) {
+				_boundary = addBoundary(_mapOptions.boundary, (_mode == MapsHelper.Mode.SetBoundary));
 			}
 		}
-		if ((this.Mode == MapsHelper.Mode.View) && (isDefinedAndNonNull(this.g_mapOptions.additional_markers))) {
-			for (var i = 0; i < this.g_mapOptions.additional_markers.length; i++) {
-				var marker = this.g_mapOptions.additional_markers[i];
+		if ((_mode == MapsHelper.Mode.View) && (isDefinedAndNonNull(_mapOptions.additional_markers))) {
+			for (var i = 0; i < _mapOptions.additional_markers.length; i++) {
+				var marker = _mapOptions.additional_markers[i];
 				addMarker(new google.maps.LatLng(marker.coordinates.lat, marker.coordinates.lng), marker.name);
 			}
 		}
@@ -83,8 +95,9 @@ function MapsHelper(mapCanvas, options)
 			{ 'address': address },
 			function(results, status) {
 				if (status == google.maps.GeocoderStatus.OK) {
-					this.g_map.panTo(results[0].geometry.location);
+					_map.panTo(results[0].geometry.location);
 					setMarkerLocationImpl(results[0].geometry.location);
+					_markerAddress = results[0].formatted_address;
 				}
 				else {
 					throw 'Geocode was not successful for the following reason: ' + status;
@@ -94,38 +107,43 @@ function MapsHelper(mapCanvas, options)
 	}
 
 	function setMarkerLocationImpl(location) {
-		if (isDefinedAndNonNull(this.g_marker)) {
-			this.g_marker.setMap(null);
+		if (isDefinedAndNonNull(_marker)) {
+			_marker.setMap(null);
 		}
-		this.g_marker = new google.maps.Marker(
+		_marker = new google.maps.Marker(
 			{
 				position: location,
-				map: this.g_map,
-				draggable: (this.Mode == MapsHelper.Mode.SetLocation),
-				title: isDefinedAndNonNull(this.g_mapOptions.markerTitle) ? this.g_mapOptions.markerTitle : 'location'
+				map: _map,
+				draggable: (_mode == MapsHelper.Mode.SetLocation),
+				title: isDefinedAndNonNull(_mapOptions.markerTitle) ? _mapOptions.markerTitle : 'location'
 			}
 		);
 	}
 
 	function getMarkerLocationImpl() {
-		if (!isDefinedAndNonNull(this.g_marker)) throw "The marker has not been created";
-		return this.g_marker.getPosition();
+		if (_marker == null) throw "The marker has not been created";
+		return _marker.getPosition();
+	}
+
+	function getMarkerAddressImpl() {
+		if (_markerAddress == null) throw "A new marker has not been created";
+		return _markerAddress;
 	}
 
 	function setCenterImpl(location) {
-		this.g_map.panTo(location);
+		_map.panTo(location);
 		setMarkerLocationImpl(location);
 	}
 
 	function addMarker(location, title) {
-		if (this.additionalMarkers == null) {
-			this.additionalMarkers = new Array();
+		if (_additionalMarkers == null) {
+			_additionalMarkers = new Array();
 		}
 		var marker =
 			new google.maps.Marker(
 				{
 					position: location,
-					map: this.g_map,
+					map: _map,
 					draggable: false,
 					title: title,
 					zIndex: 1000,
@@ -139,11 +157,11 @@ function MapsHelper(mapCanvas, options)
 					}
 				}
 			);
-		this.additionalMarkers.push(marker);
+		_additionalMarkers.push(marker);
 	}
 	function createDrawingManagerImpl(options) {
 		var drawingManager = new google.maps.drawing.DrawingManager(options);
-		drawingManager.setMap(this.g_map);
+		drawingManager.setMap(_map);
 		return drawingManager;
 	}
 	function drawBoundaryImpl(replaceExisting) {
@@ -151,18 +169,18 @@ function MapsHelper(mapCanvas, options)
 		var drawingManager = getDrawingManager();
 
 		if (replaceExisting) {
-			if (isDefinedAndNonNull(this.g_boundary)) {
-				this.g_boundary.setMap(null);
-				this.g_boundary = null;
+			if (_boundary != null) {
+				_boundary.setMap(null);
+				_boundary = null;
 			}
 		}
 
-		if (isDefinedAndNonNull(this.g_boundary)) {
-			this.g_boundary.setEditable(true);
+		if (isDefinedAndNonNull(_boundary)) {
+			_boundary.setEditable(true);
 			drawingManager.setDrawingMode(null);
 		}
-		else if (isDefinedAndNonNull(this.g_mapOptions.boundary)) {
-			this.g_boundary = addBoundary(this.g_mapOptions.boundary, true);
+		else if (isDefinedAndNonNull(_mapOptions.boundary)) {
+			_boundary = addBoundary(_mapOptions.boundary, true);
 			drawingManager.setDrawingMode(null);
 		}
 		else {
@@ -175,82 +193,89 @@ function MapsHelper(mapCanvas, options)
 		for (var i = 0; i < vertices.length; i++)
 			polygonPaths.push(new google.maps.LatLng(vertices[i].lat, vertices[i].lng));
 		var boundary = new google.maps.Polygon ( { paths: polygonPaths } );
-		boundary.setMap(this.g_map);
+		boundary.setMap(_map);
 		boundary.setEditable(editable);
 		return boundary;
 	}
+	function setBoundary(vertices) {
+		if (_boundary != null) {
+			_boundary.setMap(null);
+			_boundary = null;
+		}
+		_boundary = addBoundary(vertices, (_mode == MapsHelper.Mode.SetBoundary));
+	}
 	function polygonCompleteHandler(polygon) {
-		this.g_boundary = polygon;
-		this.g_boundary.setEditable(true);
+		_boundary = polygon;
+		_boundary.setEditable(true);
 		getDrawingManager().setDrawingMode(null);
 	}
 	function getDrawingManager() {
-		if (!isDefinedAndNonNull(this.g_drawingManager)) {
-			this.g_drawingManager = new google.maps.drawing.DrawingManager(
+		if (_drawingManager == null) {
+			_drawingManager = new google.maps.drawing.DrawingManager(
 				{
 					drawingMode: google.maps.drawing.OverlayType.MARKER,
 					drawingControl: false
 				}
 			);
-			this.g_drawingManager.setMap(this.g_map);
+			_drawingManager.setMap(_map);
 		}
-		return this.g_drawingManager;
+		return _drawingManager;
 	}
 	function hideMarkerImpl() {
-		if (isDefinedAndNonNull(this.g_marker)) {
-			this.g_marker.setVisible(false);
+		if (isDefinedAndNonNull(_marker)) {
+			_marker.setVisible(false);
 		}
 	}
 	function showMarkerImpl() {
-		if (isDefinedAndNonNull(this.g_marker)) {
-			this.g_marker.setVisible(true);
+		if (isDefinedAndNonNull(_marker)) {
+			_marker.setVisible(true);
 		}
 	}
 	function setModeImpl(mode) {
-		this.Mode = mode;
-		switch (this.Mode) {
+		_mode = mode;
+		switch (_mode) {
 			case MapsHelper.Mode.View: {
-				if (isDefinedAndNonNull(this.g_marker)) {
-					this.g_marker.setDraggable(false);
-					this.g_marker.setVisible(true);
+				if (isDefinedAndNonNull(_marker)) {
+					_marker.setDraggable(false);
+					_marker.setVisible(true);
 				}
-				if (isDefinedAndNonNull(this.g_boundary)) {
-					this.g_boundary.setEditable(false);
-					this.g_boundary.setVisible(true);
+				if (isDefinedAndNonNull(_boundary)) {
+					_boundary.setEditable(false);
+					_boundary.setVisible(true);
 				}
 				break;
 			}
 			case MapsHelper.Mode.SetLocation: {
-				if (isDefinedAndNonNull(this.g_marker)) {
-					this.g_marker.setDraggable(true);
-					this.g_marker.setVisible(true);
+				if (isDefinedAndNonNull(_marker)) {
+					_marker.setDraggable(true);
+					_marker.setVisible(true);
 				}
-				if (isDefinedAndNonNull(this.g_boundary)) {
-					this.g_boundary.setEditable(false);
-					this.g_boundary.setVisible(false);
+				if (isDefinedAndNonNull(_boundary)) {
+					_boundary.setEditable(false);
+					_boundary.setVisible(false);
 				}
 				break;
 			}
 			case MapsHelper.Mode.SetBoundary: {
-				if (isDefinedAndNonNull(this.g_marker)) {
-					this.g_marker.setDraggable(false);
-					this.g_marker.setVisible(false);
+				if (isDefinedAndNonNull(_marker)) {
+					_marker.setDraggable(false);
+					_marker.setVisible(false);
 				}
-				if (isDefinedAndNonNull(this.g_boundary)) {
-					this.g_boundary.setEditable(true);
-					this.g_boundary.setVisible(true);
+				if (isDefinedAndNonNull(_boundary)) {
+					_boundary.setEditable(true);
+					_boundary.setVisible(true);
 				}
 				break;
 			}
 		}
 	}
 	function getModeImpl() {
-		return this.Mode;
+		return _mode;
 	}
 	function getBoundaryVerticesImpl() {
-		if (!isDefinedAndNonNull(this.g_boundary)) return null;
+		if (_boundary == null) return null;
 		var boundaryVertices = new Array();
-		var pathVertices = this.g_boundary.getPath();
+		var pathVertices = _boundary.getPath();
 		for (var i = 0; i < pathVertices.getLength(); i++) {
 			var vertice = pathVertices.getAt(i);
 			boundaryVertices.push( { lat: vertice.lat(), lng: vertice.lng() } );

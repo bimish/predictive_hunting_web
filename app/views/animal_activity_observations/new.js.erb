@@ -1,2 +1,1 @@
-$("#inline-form").html("<%= escape_javascript(render 'new') %>");
-$("#add-button").hide();
+showAjaxForm('inline-form', "<%= escape_javascript(render 'new') %>", ['add-button'] );

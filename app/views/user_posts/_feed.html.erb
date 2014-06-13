@@ -1,0 +1,15 @@
+<% content_for :head do %>
+  <script type="text/javascript">
+  function addFeedItem(feedItem) {
+    $('#user-post-feed').prepend(feedItem);
+  }
+  function showError(error) {
+    alert(error);
+  }
+  </script>
+<% end %>
+
+
+<div id="user-post-feed" class="feed-panel">
+  <%= render :partial => '/user_posts/feed_item', :collection => @user_posts, :as => :user_post %>
+</div>

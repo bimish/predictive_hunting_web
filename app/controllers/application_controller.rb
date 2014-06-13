@@ -5,7 +5,8 @@ class ApplicationController < ActionController::Base
   include SessionsHelper
 
   # custom helper modules
-	helper :rgeo
+  helper :rgeo
+  helper :item_commands
 
 #disable caching
 def set_as_private

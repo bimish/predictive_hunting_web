@@ -1,0 +1,62 @@
+<div>
+  <ul class="nav nav-tabs">
+    <% current_user.hunting_plots.each_with_index do |plot, index| %>
+    <%= content_tag(:li, content_tag(:a, plot.name, href:'#'), class: (index == 0) ? 'active' : nil) %>
+    <% end %>
+  </ul>
+</div>
+
+<div class="tabbed-panel">
+
+    <%
+      weather_forecast = get_weather_forecast current_user.hunting_plots.first
+    %>
+  <h5 class="inline-heading">Weather Forecast <%=link_to content_tag(:span, 'details', class:'text-muted small'), weather_forecast[:details_url], target:'_weather_details' %></h5>
+  <div class="wf-panel">
+    <%
+      days_in_forecast = weather_forecast[:forecast]['simpleforecast']['forecastday'].size
+      day_width = 100 / days_in_forecast
+
+      weather_forecast[:forecast]['simpleforecast']['forecastday'].each_with_index do |day_forecast, index|
+        day_of_week = day_forecast['date']['weekday']
+        day_text_forecast = weather_forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == (index * 2) }
+        puts day_text_forecast['fcttext']
+    %>
+    <div class="wf-day-panel">
+      <p class="wf-day"><%=day_of_week%></p>
+      <%=image_tag(day_forecast['icon_url'], class:'wf-icon')%>
+      <div class="wf-temp">
+        <div class="wf-temp-high"><%=day_forecast['high']['fahrenheit']%></div>
+        <div class="wf-temp-low"><%=day_forecast['low']['fahrenheit']%></div>
+      </div>
+    </div>
+    <%
+      end
+    %>
+  </div>
+
+  <h5 class="inline-heading">Network Activity</h5>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <span class="badge">98</span>
+      Hunters active in the last 7 days
+    </li>
+    <li class="list-group-item">
+      <span class="badge">15</span>
+      Hunters reporting stupid buck behavior
+    </li>
+    <li class="list-group-item">
+      <span class="badge">5</span>
+      Hunters landing a trophy buck
+    </li>
+  </ul>
+
+  <h5 class="inline-heading">Hunting Forecast</h5>
+  <ul class="list-group">
+    <li class="list-group-item list-group-item-success">
+      <span class="badge">8</span>
+      Hunting Prediction Factor (out of 10)
+    </li>
+  </ul>
+
+</div>

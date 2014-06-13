@@ -1,0 +1,18 @@
+<%= bootstrap_form_for @hunting_plot, remote: true do |f| %>
+
+  <% if @hunting_plot.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@hunting_plot.errors.count, "error") %> prohibited this hunting plot from being saved:</h2>
+    <ul>
+      <% @hunting_plot.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <%= f.hidden_field :location_address, :id => "plot_address", :value => @hunting_plot.location_address %>
+  <%= f.hidden_field :location_coordinates.to_s, :id => "plot_location", :value => @hunting_plot.location_coordinates.to_s %>
+  <%= f.hidden_field :boundary, :id => "plot_boundary", :value => @hunting_plot.boundary.to_s %>
+
+<% end %>

@@ -1,0 +1,8 @@
+require 'net/http'
+
+url = URI.parse('http://api.wunderground.com/api/be50215583adc47b/forecast/q/CA/San_Francisco.json')
+req = Net::HTTP::Get.new(url.path)
+res = Net::HTTP.start(url.host, url.port) {|http|
+  http.request(req)
+}
+puts res.body

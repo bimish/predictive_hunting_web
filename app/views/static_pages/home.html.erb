@@ -1,6 +1,70 @@
+<% content_for :head do %>
+  <script src='https://maps.googleapis.com/maps/api/js?libraries=drawing&amp;sensor=false'></script>
+  <script type="text/javascript">
+  var g_tabsWereVisible = false;
+  $(document).ready(
+    function() {
+      $('#navigation-tabs a').click(
+        function (e) {
+          e.preventDefault();
+          selectTab($(this).data('tabcontent'));
+        }
+      );
+      g_tabsWereVisible = $('#navigation-tabs').is(':visible');
+      if (g_tabsWereVisible)
+        enableTabs();
+      else
+        disableTabs();
+    }
+  );
+  $(window).resize(
+    function() {
+      var tabsAreVisible = $('#navigation-tabs').is(':visible');
+      if (tabsAreVisible != g_tabsWereVisible) {
+        if (tabsAreVisible)
+          enableTabs();
+        else
+          disableTabs();
+        g_tabsWereVisible = tabsAreVisible;
+      }
+    }
+  );
+  function selectTab(selectedTab) {
+    $('#content-tabs > div').hide();
+    $(selectedTab).show();
+  }
+  function enableTabs() {
+    $('#content-tabs > div').hide();
+    var selectedTabContent = $('#navigation-tabs > ul').children('li.active').children().data('tabcontent');
+    $(selectedTabContent).show();
+  }
+  function disableTabs() {
+    $('#content-tabs > div').show();
+  }
+  </script>
+<% end %>
+
 <div class="container">
 <% if signed_in? %>
-  <%= link_to 'Manage Hunting Plot(s)', hunting_plots_url%>
+
+  <div id="navigation-tabs" class="well well-sm hidden-md hidden-lg">
+    <ul class="nav nav-pills">
+      <li class="active"><a href="#" data-tabcontent="#status-feed" data-toggle="pill">Status Feed</a></li>
+      <li><a href="#" data-tabcontent="#networks" data-toggle="pill">Networks</a></li>
+    </ul>
+  </div>
+
+  <div id="content-tabs" class="row">
+    <div id="status-feed" class="col-md-6 tab-pane active">
+      <%= render :partial => '/user_posts/status/form' %>
+      <div style="height:500px;overflow:auto;">
+        <%= render :partial => '/user_posts/feed' %>
+      </div>
+    </div>
+    <div id="networks" class="col-md-6 tab-pane -hidden-sm -hidden-xs">
+      <%= render :partial => '/shared/networks_panel' %>
+    </div>
+  </div>
 <% else %>
   <div class="row">
     <h1>Welcome to Predictive Hunting</h1>

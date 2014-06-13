@@ -1,0 +1,12 @@
+<tr data-id="<%=user_post.id%>">
+
+  <td><%= user_post.created_by_id %></td>
+
+  <td><%= user_post.post_content %></td>
+
+  <td><%= get_visibility_description(user_post) %></td>
+
+  <td><%= item_show_command(user_post_path(user_post)) %></td>
+  <td><%= item_edit_command(edit_user_post_path(user_post), { remote: true }) %></td>
+  <td><%= item_delete_command(user_post_path(user_post), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

@@ -10,3 +10,86 @@ a.no-hover {
 a.no-hover:hover {
 	color: inherit;
 }
+
+.dialog-btn {
+  margin-right:5px;
+}
+
+/* user post feed */
+.feed-item {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border: 1px solid black;
+  border-radius: $border-radius-large;
+}
+.fi-avatar {
+  float:left;
+  margin:5px;
+}
+.fi-header {
+  padding: 0.5em;
+  background-color: $gray-lighter;
+  border-top-left-radius: $border-radius-large;
+  border-top-right-radius: $border-radius-large;
+}
+.fi-name {
+  font-weight: bold;
+  display:block;
+}
+.fi-datetime {
+  color: gray;
+  font-size: 85%;
+  display:block;
+}
+.fi-body {
+  float: clear;
+  padding: 0.5em;
+  font-size: 85%;
+}
+
+/* weather forecast panel */
+.wf-panel {
+  width:100%;
+  height:150px;
+  border: 1px solid $nav-tabs-border-color;
+  border-radius: $border-radius-large;
+}
+.wf-day {
+  text-align: center;
+}
+.wf-day-panel {
+  width: 25%;
+  height: 100%;
+  float: right;
+  border-left: 1px solid $nav-tabs-border-color;
+}
+.wf-day-panel:first-child {
+  float: left;
+  border-left: none;
+}
+.wf-icon {
+  @include center-block();
+}
+.wf-temp {
+  font-size:80%;
+}
+.wf-temp-high {
+  float: left;
+  width:50%;
+  text-align:center;
+}
+.wf-temp-low {
+  float: right;
+  width:50%;
+  text-align:center;
+}
+.wf-temp-low:before {
+  content: 'L ';
+}
+.wf-temp-high:before {
+  content: 'H ';
+}
+.wf-temp-low:after, .wf-temp-high:after {
+  content: '\00B0';
+}
+

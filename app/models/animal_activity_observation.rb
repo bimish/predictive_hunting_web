@@ -10,5 +10,6 @@ class AnimalActivityObservation < ActiveRecord::Base
   belongs_to :hunting_location
   belongs_to :animal_category
   belongs_to :animal_activity_type
-  belongs_to :hunting_plot_named_animal
+  belongs_to :named_animal, class_name:'HuntingPlotNamedAnimal', foreign_key:'hunting_plot_named_animal_id'
+  belongs_to :created_by, class_name:'User'
 end

@@ -1,7 +1,11 @@
+#require 'active_support'
+#require 'active_support/core_ext/integer/time'
+
 namespace :db do
   desc 'Populate database with sample data'
   task populate: :environment do
     make_users
+    make_user_relationships
     make_animal_species
     make_animal_categories
     make_animal_activity_types
@@ -9,6 +13,7 @@ namespace :db do
     make_hunting_locations
     make_hunting_plot_named_animals
     make_user_plot_accesses
+    make_user_posts
   end
 end
 
@@ -17,6 +22,21 @@ def make_users
   @mike_user = User.create(first_name:'Mike', last_name:'Shutt', :alias=>'Mike', email:'mjshutt@gmail.com', password:'password', password_confirmation:'password', authentication_method:1, admin:false)
   @todd_user = User.create(first_name:'Todd', last_name:'Moncrief', :alias=>'Todd', email:'mtmoncrief@gmail.com', password:'password', password_confirmation:'password', authentication_method:1, admin:false)
   @don_user = User.create(first_name:'Don', last_name:'Blaylock', :alias=>'Don', email:'donblaylock@glaciercnc.com', password:'password', password_confirmation:'password', authentication_method:1, admin:false)
+  @other_users = Array.new
+  10.times do
+    first_name = Faker::Name.first_name
+    last_name = Faker::Name.last_name
+    @other_users.push User.create(first_name: first_name, last_name: last_name, :alias=> "#{first_name} #{last_name}", email:Faker::Internet.safe_email(first_name), password:'password', password_confirmation:'password', authentication_method:1, admin:false)
+  end
+end
+
+def make_user_relationships
+  @mike_user.relationships.create(related_user_id:@todd_user.id, relationship_type:DataDomains::UserRelationshipType['Friend'])
+  @mike_user.relationships.create(related_user_id:@don_user.id, relationship_type:DataDomains::UserRelationshipType['Friend'])
+  @todd_user.relationships.create(related_user_id:@mike_user.id, relationship_type:DataDomains::UserRelationshipType['Friend'])
+  @todd_user.relationships.create(related_user_id:@don_user.id, relationship_type:DataDomains::UserRelationshipType['Friend'])
+  @don_user.relationships.create(related_user_id:@todd_user.id, relationship_type:DataDomains::UserRelationshipType['Friend'])
+  @don_user.relationships.create(related_user_id:@mike_user.id, relationship_type:DataDomains::UserRelationshipType['Friend'])
 end
 
 def make_animal_species
@@ -77,4 +97,21 @@ def make_user_plot_accesses
   @todds_plot.user_accesses.create!(user_id: @don_user.id)
 
   @mikes_plot.user_accesses.create!(user_id: @mike_user.id)
+end
+
+def make_user_posts
+  create_user_posts @mike_user, 10
+  create_user_posts @todd_user, 10
+  create_user_posts @don_user, 10
+  @other_users.each do |u|
+    create_user_posts u, 20
+  end
+end
+
+def create_user_posts(user, count)
+  count.times do
+    post = user.posts.build(post_content: Faker::Lorem.sentence(10, false, 10), visibility:1)
+    post.created_at = rand(168).hours.ago
+    post.save
+  end
 end

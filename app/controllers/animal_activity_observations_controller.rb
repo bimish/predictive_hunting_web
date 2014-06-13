@@ -17,17 +17,18 @@ class AnimalActivityObservationsController < ApplicationController
   # GET /animal_activity_observations/new
   def new
     @animal_activity_observation = AnimalActivityObservation.new
+    @animal_activity_observation.created_by_id = current_user.id
   end
 
   # GET /animal_activity_observations/1/edit
   def edit
-    @hunting_plot = @animal_activity_observation.hunting_location.hunting_plot
   end
 
   # POST /animal_activity_observations
   # POST /animal_activity_observations.json
   def create
     @animal_activity_observation = AnimalActivityObservation.new(animal_activity_observation_params)
+    @animal_activity_observation.created_by_id = current_user.id
 
     respond_to do |format|
       if @animal_activity_observation.save
@@ -85,6 +86,10 @@ class AnimalActivityObservationsController < ApplicationController
     end
 
     def set_hunting_plot
-      @hunting_plot = HuntingPlot.find(params[:hunting_plot_id])
+      if (@animal_activity_observation.nil?)
+        @hunting_plot = HuntingPlot.find(params[:hunting_plot_id])
+      else
+        @hunting_plot = @animal_activity_observation.hunting_location.hunting_plot
+      end
     end
 end

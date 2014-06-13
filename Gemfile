@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 1.2'
 gem "bootstrap-sass", "~> 3.1.1.0"
 gem 'bootstrap_form'
 gem "will_paginate", "~> 3.0.5"
-gem "faker", "~> 1.2.0"
+gem "faker", "~> 1.3.0"
 
 # PostGIS support gems
 gem "rgeo", "~> 0.3.20"

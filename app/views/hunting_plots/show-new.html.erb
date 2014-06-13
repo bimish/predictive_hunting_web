@@ -1,0 +1,120 @@
+<% provide(:title, "View Hunting Plot (#{@hunting_plot.name})") %>
+<% content_for :head do %>
+<script src='https://maps.googleapis.com/maps/api/js?libraries=drawing&amp;sensor=false'></script>
+<script>
+
+var g_setLocationDialogMap = null;
+
+$(document).ready(function() {
+
+  MapsHelper.getLocationAddress(
+    <%=@hunting_plot.location_coordinates.y()%>,
+    <%=@hunting_plot.location_coordinates.x()%>,
+    $('#locationAddress').get(0)
+  );
+
+  //g_map1 = initializeMapHelper('map1', 'Map #1', { lat: 33.4458, lng: -82.6025 });
+
+  $('#setLocationDialog').dialog(
+    {
+      autoOpen: false,
+      modal: true,
+      resizable: false,
+      autoResize: true,
+      height: 'auto',
+      width: 800,
+      buttons: [
+        { text: "Ok", class:'btn btn-primary  btn-sm', click: function() { $(this).dialog("close"); } },
+        { text: "Cancel", class:'btn btn-default btn-sm',  click: function() { $(this).dialog("close"); } }
+      ],
+      dialogClass: "no-close"
+    }
+  );
+
+  //showLocationPopup();
+
+});
+
+function showLocationPopup() {
+  $('#setLocationDialog').dialog('open');
+  if (g_setLocationDialogMap == null) {
+    g_setLocationDialogMap = initializeMapHelper('set-location-map-canvas', 'Map #2', { lat: 34.0328, lng: -84.4731 });
+  }
+}
+
+function initializeMapHelper(canvasId, title, center) {
+  try {
+    var mapOptions = {
+      zoom: 5,
+      markerTitle: title,
+      center: center
+    };
+    return new MapsHelper(document.getElementById(canvasId), mapOptions);
+  }
+  catch (e) {
+    alert('The following error occurred: ' + e);
+  }
+}
+</script>
+<% end %>
+
+<div class="row">
+
+  <div class="col-md-4">
+
+    <div class="row">
+      <div class="col-md-12">
+        <strong>Name:</strong>
+        <span id="hunting_plot_name"><%= @hunting_plot.name %></span>
+        <div id="inline-form" style="display:none;"></div>
+        <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :name), { remote: true, class:'btn btn-default btn-sm', id:'change_name_button', title:'Edit name' } do |link| %>
+        <span class="glyphicon glyphicon-edit"></span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <strong>Location:</strong>
+        <span id="locationAddress">resolving...</span>
+        <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :location_coordinates), { remote: true, class:'btn btn-default btn-sm', id:'set_location_button', title:'Set location' } do |link| %>
+        <span class="glyphicon glyphicon-edit"></span>
+        <% end %>
+        <% #= content_tag(:a, content_tag(:span, '', class:'glyphicon glyphicon-edit'), { :onclick => 'showLocationPopup(); return false;', class:'btn btn-default btn-sm', id:'set_location_button', title:'Set location' }) %>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="height:600px;" class="col-md-8">
+    <%=
+    renderLocals = {
+      :hunting_plot => @hunting_plot,
+      :location_name => @hunting_plot.name,
+      :coordinates =>
+      {
+        :lng => @hunting_plot.location_coordinates.x(),
+        :lat => @hunting_plot.location_coordinates.y()
+      }
+    }
+    if !@hunting_plot.boundary.nil?
+      renderLocals[:boundary] = @hunting_plot.boundary.to_s
+      renderLocals[:view_window] = rgeo_get_bounds(@hunting_plot.boundary)
+    end
+    render partial:'/shared/hunting_plot_map', :locals => renderLocals
+    %>
+  </div>
+
+</div>
+
+<div id="setLocationDialog" title="Set Plot Location" style="background-color:white;display:none;">
+  <div id="addressSearch" style="padding:5px;">
+    <form action="#" onsubmit="showAddress($('#locationDialog_address').val()); return false;">
+      <input type="text" size="40" id="locationDialog_address" name="locationDialog_address" value="" />
+      <input type="submit" value="Search"/>
+    </form>
+  </div>
+  <div id="set-location-map-canvas" style="width:800px;height:500px;text-align:center;padding-top:100px;">
+    Initializing map...
+  </div>
+</div>

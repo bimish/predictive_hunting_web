@@ -1,33 +1,41 @@
+<%
+  page_title = "Listing Hunting Plots"
+  provide(:title, page_title)
+%>
 <div class="row">
 
-  <h1>Listing Hunting Plots</h1>
+  <div class="col-md-12">
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Location</th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
+    <h3><%= page_title%></h3>
 
-    <tbody>
-      <% @hunting_plots.each do |hunting_plot| %>
+    <table class="table table-striped">
+      <thead>
         <tr>
-          <td><%= hunting_plot.name %></td>
-          <td><%= hunting_plot.location_address %></td>
-          <td><%= link_to 'Show', hunting_plot %></td>
-          <td><%= link_to 'Edit', edit_hunting_plot_path(hunting_plot) %></td>
-          <td><%= link_to 'Destroy', hunting_plot, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <th>Name</th>
+          <th>Location</th>
+          <th></th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
 
-  <br>
+      <tbody>
+        <% @hunting_plots.each do |hunting_plot| %>
+          <tr>
+            <td><%= hunting_plot.name %></td>
+            <td><%= hunting_plot.location_address %></td>
+            <td>
+              <%= item_show_command hunting_plot %>
+              <%= item_edit_command edit_hunting_plot_path(hunting_plot) %>
+              <%= item_delete_command hunting_plot, { method: :delete , data: { confirm: 'Are you sure?' } } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
 
-  <%= link_to 'New Hunting plot', new_hunting_plot_path, class:'btn btn-primary' %>
+    <br>
+
+    <%= link_to 'New Hunting plot', new_hunting_plot_path, class:'btn btn-default' %>
+
+  </div>
 
 </div>

@@ -18,13 +18,13 @@
   <%= f.number_field :animal_count, { label:'Number of Animals', hide_label: hide_label, size:2, placeholder:'#', title:'Number of animals' } %>
   <%= f.select :animal_activity_type_id, AnimalActivityType.all.map { |m| [m.name, m.id] }, { label:'Activity', hide_label: hide_label, include_blank:'[Activity]' } %>
   <%= f.select :hunting_plot_named_animal_id, @hunting_plot.named_animals.map { |m| [m.name, m.id] }, { label:'Named Animal', hide_label: hide_label, include_blank:'[Named Animal]' } %>
-  <%= f.datetime_select :observation_date_time, { order: [:day,:month,:year], datetime_separator:':', ampm:true, hide_label: hide_label, label:'Date/Time' } %>
+  <%= f.datetime_select :observation_date_time, { order: [:day,:month,:year], datetime_separator:':', ampm:true, hide_label: hide_label, label:'Date/Time', default: Time.now.getlocal } %>
 
   <br>
 
   <div>
     <%= f.submit "OK", class: "btn btn-primary" %>
-    <%= link_to "Cancel", "#", onclick: 'javascript: cancelInlineForm(); return false;', class: "btn btn-default" %>
+    <%= link_to "Cancel", "#", onclick: 'javascript: closeAjaxForm(); return false;', class: "btn btn-default" %>
   </div>
 
 <% end %>

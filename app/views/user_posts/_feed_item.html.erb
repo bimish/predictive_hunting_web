@@ -1,0 +1,8 @@
+<div class="feed-item">
+  <div class="fi-avatar"><%=gravatar_for(user_post.user)%></div>
+  <div class="fi-header">
+    <span class="fi-name"><%= user_post.user.alias %></span>
+    <span class="fi-datetime"><%=date_time_to_feed(user_post.created_at)%> (<%= date_time_to_s(user_post.created_at)%>)</span>
+  </div>
+  <div class="fi-body"><%= user_post.post_content %></div>
+</div>

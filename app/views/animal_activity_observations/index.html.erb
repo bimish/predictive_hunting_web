@@ -1,3 +1,7 @@
+<%
+  page_title = "Animal Activity Observations for #{@hunting_plot.name}"
+  provide(:title, page_title)
+%>
 <% content_for :head do %>
   <script type="text/javascript">
   function cancelInlineForm() {
@@ -9,26 +13,32 @@
 
 <div class="row">
 
-  <h3>Animal Activity Observations for <%= @hunting_plot.name%></h3>
+  <div class="col-md-12">
 
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Location</th>
-        <th>Animal category</th>
-        <th>Animal count</th>
-        <th>Activity</th>
-        <th>Named animal</th>
-        <th>Date/time</th>
-        <th colspan="3">
-      </tr>
-    </thead>
-    <tbody id="observation-index">
-      <%= render "index" %>
-    </tbody>
-  </table>
+    <h3><%=page_title%></h3>
 
-  <div id="inline-form"></div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Location</th>
+          <th>Animal category</th>
+          <th>Animal count</th>
+          <th>Activity</th>
+          <th>Named animal</th>
+          <th>Recorded By</th>
+          <th>Date/time</th>
+          <th colspan="3">
+        </tr>
+      </thead>
+      <tbody id="observation-index">
+        <%= render "index" %>
+      </tbody>
+    </table>
 
-  <%= link_to "New Observation", new_animal_activity_observation_path(hunting_plot_id: params[:hunting_plot_id]), { remote: true, class: "btn btn-default", id:'add-button' } %>
+    <div id="inline-form"></div>
+
+    <%= link_to "New Observation", new_animal_activity_observation_path(hunting_plot_id: params[:hunting_plot_id]), { remote: true, class: "btn btn-default", id:'add-button' } %>
+
+  </div>
+
 </div>

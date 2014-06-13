@@ -1,0 +1,40 @@
+<%%= bootstrap_form_for @<%= singular_table_name %>, layout: :horizontal, remote: true do |f| %>
+  <%% if @<%= singular_table_name %>.errors.any? %>
+    <div id="error_explanation">
+      <h2><%%= pluralize(@<%= singular_table_name %>.errors.count, "error") %> prohibited this <%= singular_table_name %> from being saved:</h2>
+      <ul>
+      <%% @<%= singular_table_name %>.errors.full_messages.each do |message| %>
+        <li><%%= message %></li>
+      <%% end %>
+      </ul>
+    </div>
+  <%% end %>
+<%-
+model_attributes.each do |attribute|
+  if attribute.password_digest? -%>
+-%>
+  <%%= f.password_field :password %>
+  <%%= f.password_field :password_confirmation %>
+<%-
+  elsif !attribute.is_component_assigned?
+    if attribute.reference?
+-%>
+  <%%= f.select :<%= attribute.name %>, get_<%= attribute.reference.name %>_list_items, { label:'<%= attribute.human_name %>', include_blank:'[<%= attribute.human_name %>]' } %>
+<%-
+    elsif attribute.has_value_list?
+-%>
+  <%%= f.select :<%= attribute.name %>, get_<%= attribute.name %>_list_items, { label:'<%= attribute.human_name %>', include_blank:'[<%= attribute.human_name %>]' } %>
+<%-
+    else
+-%>
+  <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>
+<%-
+    end
+  end
+end
+-%>
+  <div class="actions">
+    <%%= f.submit "OK", class: "btn btn-primary" %>
+    <%%= link_to "Cancel", "#", onclick: 'javascript: closeAjaxForm(); return false;', class: "btn btn-default" %>
+  </div>
+<%% end %>

@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%= notice %></p>
+
+    <p>
+      <strong>Created by:</strong>
+      <%= @user_post.created_by_id %>
+    </p>
+
+    <p>
+      <strong>Post content:</strong>
+      <%= @user_post.post_content %>
+    </p>
+
+    <p>
+      <strong>Visibility:</strong>
+      <%= get_visibility_description(@user_post) %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_post_path(@user_post) %> |
+    <%= link_to 'Back', user_posts_path %>
+
+  </div>
+</div>

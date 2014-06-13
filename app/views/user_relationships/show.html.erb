@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%= notice %></p>
+
+    <p>
+      <strong>Owning user:</strong>
+      <%= get_owning_user_description(@user_relationship) %>
+    </p>
+
+    <p>
+      <strong>Related user:</strong>
+      <%= get_related_user_description(@user_relationship) %>
+    </p>
+
+    <p>
+      <strong>Relationship type:</strong>
+      <%= get_relationship_type_description(@user_relationship) %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_relationship_path(@user_relationship) %> |
+    <%= link_to 'Back', user_relationships_path %>
+
+  </div>
+</div>

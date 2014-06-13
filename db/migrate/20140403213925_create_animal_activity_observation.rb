@@ -7,6 +7,7 @@ class CreateAnimalActivityObservation < ActiveRecord::Migration
       t.references :animal_activity_type, index: true, null:false
       t.references :hunting_plot_named_animal
       t.datetime :observation_date_time, null:false
+      t.references :created_by, references: :user
       #add_index :hunting_plot_named_animal_id, name:'hunting_plot_named_animal'
 
       t.timestamps

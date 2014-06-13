@@ -68,6 +68,11 @@ class HuntingPlotsController < ApplicationController
     end
   end
 
+  def edit_location
+    set_hunting_plot
+    render 'hunting_plots/edit_location', layout: 'no-header'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_hunting_plot
@@ -76,6 +81,6 @@ class HuntingPlotsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def hunting_plot_params
-      params.require(:hunting_plot).permit(:name, :location_coordinates, :boundary)
+      params.require(:hunting_plot).permit(:name, :location_address, :location_coordinates, :boundary)
     end
 end

@@ -1,20 +1,26 @@
 Web::Application.routes.draw do
 
-  resources :user_hunting_plot_accesses
-
-  resources :animal_activity_observations do
-    member do
-      get :delete
-    end
-  end
+  resources :animal_activity_observations
   resources :animal_activity_types
   resources :animal_categories
   resources :animal_species
   resources :hunting_locations
-	resources :hunting_plots
+  resources :hunting_plots do
+    member do
+      get 'edit_location'
+    end
+  end
+
   resources :hunting_plot_named_animals
   resources :sessions, only: [:new, :create, :destroy]
-	resources :users
+  resources :users
+  resources :user_relationships
+  resources :user_hunting_plot_accesses
+  resources :user_posts do
+    collection do
+      post 'status'
+    end
+  end
 
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'
@@ -24,7 +30,7 @@ Web::Application.routes.draw do
   root to: 'static_pages#home'
 
   get 'map/hunting_plot/:id' => 'map#hunting_plot', as: :plot_map
-	get 'test' => 'static_pages#test', as: :test
+  get 'test' => 'static_pages#test', as: :test
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

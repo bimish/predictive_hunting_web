@@ -1,15 +1,28 @@
-@import "bootstrap";
-@import "rails_bootstrap_forms";
-
 .navbar-brand {
   margin-bottom: 50px;
 }
 
-/*
-.navbar-brand,
-.navbar-nav li a {
-    line-height: 70px;
-    height: 70px;
-    padding-top: 0;
+.glyphicon-none:before {
+  content: "\2122";
+  color: transparent !important;
 }
-*/
+
+.inline-heading {
+  @extend .bg-info;
+  padding: 0.5em;
+}
+
+.tabbed-panel {
+  border-color: #dddddd;
+  border-left-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-width: 1px;
+  border-bottom-left-radius: $border-radius-large;
+  border-bottom-right-radius: $border-radius-large;
+  padding: 10px;
+}
+
+.dropdown-menu-sm {
+  font-size: $font-size-small;
+}

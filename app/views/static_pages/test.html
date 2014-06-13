@@ -1,17 +1,5 @@
-<% content_for :head do %>
-<style>
-p {
-color: red;
-}
-</style>
-<script>
-$(document).ready(function() {
-	$("p").text("The DOM is now loaded and can be manipulated.");
-});
-$(window).bind('page:change', function() {
-  alert('hello');
-});
-</script>
-<% end %>
-<p>Not loaded yet.</p>
-<a href="/test">Test</a>
+<div class="row">
+  <div class="col-md-12" style="border:1px solid blue;height:400px;">
+    <%= render :partial => '/shared/networks_panel' %>
+  </div>
+</div>
