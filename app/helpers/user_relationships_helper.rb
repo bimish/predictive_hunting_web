@@ -1,5 +1,5 @@
 module UserRelationshipsHelper
-  include Generated::UserRelationshipsHelper
+  #include Generated::UserRelationshipsHelper
     def get_owning_user_list_items()
       User.all.map { |u| [u.alias, u.id] }
     end

@@ -1,0 +1,8 @@
+<%= _text_field(form, :first_name, 'First Name', 100) %>
+<%= _text_field(form, :last_name, 'Last Name', 100) %>
+<%= _text_field(form, :alias, 'Alias', 255) %>
+<%= _text_field(form, :email, 'Email', 254) %>
+<%= _text_field(form, :password_digest, 'Password Digest', 255) %>
+<%= _text_field(form, :remember_token, 'Remember Token', 255) %>
+<%= _select_field(form, :authentication_method, 'Authentication Method', @view_data.authentication_methods) %>
+<%= _check_box(form, :admin, 'Admin') %>

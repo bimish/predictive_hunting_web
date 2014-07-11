@@ -8,8 +8,8 @@
       <strong><%= attribute.human_name %>:</strong>
     <%- if (attribute.reference?) -%>
       <%%= get_<%= attribute.reference.name %>_description(@<%= singular_table_name %>) %>
-    <%- elsif (attribute.has_value_list?) -%>
-      <%%= get_<%= attribute.name %>_description(@<%= singular_table_name %>) %>
+    <%- elsif (attribute.has_value_list? || attribute.is_enum?) -%>
+      <%%= @view_data.get_<%= attribute.name %>_description(@<%= singular_table_name %>.<%=attribute.name%>) %>
     <%- else -%>
       <%%= @<%= singular_table_name %>.<%= attribute.name %> %>
     <%- end -%>

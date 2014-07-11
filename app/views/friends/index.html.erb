@@ -1,0 +1,22 @@
+<% provide(:title, 'Friends List') %>
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Friends List</h3>
+  </div>
+</div>
+
+<% @user_relationships.in_groups_of(4) do |group| %>
+<div class="row">
+  <% group.reject { |user_relationship| user_relationship.nil? }.each do |user_relationship| %>
+    <div class="col-md-3">
+    <%= render :partial => 'index_item', :locals => { :user_relationship => user_relationship } %>
+    </div>
+  <% end %>
+</div>
+<% end %>
+
+<%= link_to 'Add Friend(s)', new_friend_path, { class: 'btn btn-default', id:'add-item-button' } %>

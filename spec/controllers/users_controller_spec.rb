@@ -23,7 +23,7 @@ describe UsersController do
   # This should return the minimal set of attributes required to create a valid
   # User. As you add validations to User, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "first_name" => "MyString" } }
+  let(:valid_attributes) { {  } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -34,7 +34,7 @@ describe UsersController do
     it "assigns all users as @users" do
       user = User.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:users).should eq([user])
+      assigns(:user).should eq([user])
     end
   end
 
@@ -85,14 +85,14 @@ describe UsersController do
       it "assigns a newly created but unsaved user as @user" do
         # Trigger the behavior that occurs when invalid params are submitted
         User.any_instance.stub(:save).and_return(false)
-        post :create, {:user => { "first_name" => "invalid value" }}, valid_session
+        post :create, {:user => {  }}, valid_session
         assigns(:user).should be_a_new(User)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         User.any_instance.stub(:save).and_return(false)
-        post :create, {:user => { "first_name" => "invalid value" }}, valid_session
+        post :create, {:user => {  }}, valid_session
         response.should render_template("new")
       end
     end
@@ -102,12 +102,12 @@ describe UsersController do
     describe "with valid params" do
       it "updates the requested user" do
         user = User.create! valid_attributes
-        # Assuming there are no other users in the database, this
+        # Assuming there are no other user in the database, this
         # specifies that the User created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        User.any_instance.should_receive(:update).with({ "first_name" => "MyString" })
-        put :update, {:id => user.to_param, :user => { "first_name" => "MyString" }}, valid_session
+        User.any_instance.should_receive(:update).with({ "these" => "params" })
+        put :update, {:id => user.to_param, :user => { "these" => "params" }}, valid_session
       end
 
       it "assigns the requested user as @user" do
@@ -128,7 +128,7 @@ describe UsersController do
         user = User.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         User.any_instance.stub(:save).and_return(false)
-        put :update, {:id => user.to_param, :user => { "first_name" => "invalid value" }}, valid_session
+        put :update, {:id => user.to_param, :user => {  }}, valid_session
         assigns(:user).should eq(user)
       end
 
@@ -136,7 +136,7 @@ describe UsersController do
         user = User.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         User.any_instance.stub(:save).and_return(false)
-        put :update, {:id => user.to_param, :user => { "first_name" => "invalid value" }}, valid_session
+        put :update, {:id => user.to_param, :user => {  }}, valid_session
         response.should render_template("edit")
       end
     end
@@ -150,7 +150,7 @@ describe UsersController do
       }.to change(User, :count).by(-1)
     end
 
-    it "redirects to the users list" do
+    it "redirects to the user list" do
       user = User.create! valid_attributes
       delete :destroy, {:id => user.to_param}, valid_session
       response.should redirect_to(users_url)

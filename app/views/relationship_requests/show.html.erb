@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%= notice %></p>
+
+    <p>
+      <strong>Created by:</strong>
+      <%= @relationship_request.created_by_id %>
+    </p>
+
+    <p>
+      <strong>Related user:</strong>
+      <%= get_related_user_description(@relationship_request) %>
+    </p>
+
+    <p>
+      <strong>Status:</strong>
+      <%= @view_data.get_status_description(@relationship_request.status) %>
+    </p>
+
+    <%= link_to 'Edit', edit_relationship_request_path(@relationship_request) %> |
+    <%= link_to 'Back', relationship_requests_path %>
+
+  </div>
+</div>

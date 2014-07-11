@@ -16,4 +16,9 @@ module DataDomains
     'Aquaintence' => 2
   }
 
+  AnimalGender = {
+    'Male' => 1,
+    'Female' => 2
+  }
+
 end

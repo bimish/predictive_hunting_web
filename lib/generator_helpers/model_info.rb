@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/attribute_info'
+require File.dirname(__FILE__) + '/parent_association_info'
 
 module GeneratorHelpers
 
@@ -32,7 +33,6 @@ module GeneratorHelpers
 
     def attributes
       @attributes ||= active_record_columns.collect { |col| AttributeInfo.new self, col.name, col.type }
-      #@attributes ||= active_record_columns.collect { |col| Rails::Generators::GeneratedAttribute.new col.name, col.type }
     end
 
     def self.is_text_field_attrib_type?(type)
@@ -83,8 +83,8 @@ module GeneratorHelpers
         reflection_model_name = kvpair[0].to_s.singularize
         reflection = kvpair[1]
         model_info_from_reflection(reflection_model_name, reflection)
-      end.sort do |a, b|
-        a.name <=> b.name
+      # end.sort do |a, b|
+      #   a.name <=> b.name
       end
     end
 
@@ -94,6 +94,12 @@ module GeneratorHelpers
         false
       else
         true
+      end
+    end
+
+    def parent_associations
+      reflections_for_association(:belongs_to, ActiveRecord::Reflection::AssociationReflection).collect do |kvpair|
+        ParentAssociationInfo.new(kvpair[1])
       end
     end
 
@@ -172,12 +178,30 @@ module GeneratorHelpers
 
     def is_write_once?(col_name)
       if model.write_once_attributes.nil?
-        return false
+        false
       else
         model.write_once_attributes.detect do |attribute|
           attribute == col_name.to_sym
         end
       end
+    end
+
+    def is_controller_assigned?(col_name)
+      if model.controller_assigned_attributes.nil?
+        false
+      else
+        model.controller_assigned_attributes.detect do |attribute|
+          attribute == col_name.to_sym
+        end
+      end
+    end
+
+    def is_enum?(col_name)
+      !get_enum_for(col_name).nil?
+    end
+
+    def get_enum_for(col_name)
+      model.defined_enums.detect { |key, value| (key.to_s == col_name) }
     end
 
   private

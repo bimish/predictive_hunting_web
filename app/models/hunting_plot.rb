@@ -10,4 +10,8 @@ class HuntingPlot < ActiveRecord::Base
   has_many :user_accesses, :class_name => 'UserHuntingPlotAccess'
   has_many :users, through: :user_accesses, :class_name => 'User'
 
+  def get_display_name
+    self.name
+  end
+
 end

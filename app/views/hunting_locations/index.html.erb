@@ -1,9 +1,29 @@
-<h3>Listing Hunting Locations</h3>
-
-<% if @hunting_locations.any? %>
-<%= render partial:'items_list', :locals => { :hunting_locations => @hunting_locations } %>
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
 <% end %>
 
-<br>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing Hunting Locations</h3>
 
-<%= link_to 'New Hunting location', new_hunting_location_path %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Hunting plot</th>
+          <th>Name</th>
+          <th>Coordinates</th>
+          <th>Location type</th>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
+
+      <tbody id='items-tbody'>
+        <%= render :partial => 'index_item', :collection => @hunting_locations, :as => :hunting_location %>
+      </tbody>
+    </table>
+
+    <div id="inline-form"></div>
+
+    <%= link_to 'New Hunting Location', new_hunting_location_path, { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

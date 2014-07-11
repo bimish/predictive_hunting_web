@@ -1,0 +1,13 @@
+<tr data-id="<%=user.id%>">
+  <td><%= user.first_name %></td>
+  <td><%= user.last_name %></td>
+  <td><%= user.alias %></td>
+  <td><%= user.email %></td>
+  <td><%= user.password_digest %></td>
+  <td><%= user.remember_token %></td>
+  <td><%= @view_data.get_authentication_method_description(user.authentication_method) %></td>
+  <td><%= user.admin %></td>
+  <td><%= item_show_command(user_path(user)) %></td>
+  <td><%= item_edit_command(edit_user_path(user), { remote: true }) %></td>
+  <td><%= item_delete_command(user_path(user), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

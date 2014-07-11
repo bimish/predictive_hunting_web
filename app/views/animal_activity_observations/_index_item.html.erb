@@ -1,12 +1,12 @@
-<tr id="animal_activity_observation_<%=animal_activity_observation.id%>">
-    <td><%= animal_activity_observation.hunting_location.name %></td>
-    <td><%= animal_activity_observation.animal_category.name %></td>
-    <td><%= animal_activity_observation.animal_count %></td>
-    <td><%= animal_activity_observation.animal_activity_type.name %></td>
-    <td><%= get_named_animal_description(animal_activity_observation) %></td>
-    <td><%= animal_activity_observation.created_by.alias %></td>
-    <td><%= animal_activity_observation.observation_date_time.utc.getlocal.strftime("%m/%d/%Y %I:%M %p") %></td>
-    <td><%= link_to 'Show', animal_activity_observation %></td>
-    <td><%= link_to 'Edit', edit_animal_activity_observation_path(animal_activity_observation), remote: true %></td>
-    <td><%= link_to 'Destroy', animal_activity_observation_path(animal_activity_observation), remote: true, method: :delete, data: { confirm: 'Delete this observation?' } %></td>
+<tr data-id="<%=animal_activity_observation.id%>">
+  <td><%= (animal_activity_observation.hunting_location_id.nil?) ? nil : animal_activity_observation.hunting_location.get_display_name %></td>
+  <td><%= (animal_activity_observation.animal_category_id.nil?) ? nil : animal_activity_observation.animal_category.get_display_name %></td>
+  <td><%= animal_activity_observation.animal_count %></td>
+  <td><%= (animal_activity_observation.animal_activity_type_id.nil?) ? nil : animal_activity_observation.animal_activity_type.get_display_name %></td>
+  <td><%= (animal_activity_observation.hunting_plot_named_animal_id.nil?) ? nil : animal_activity_observation.named_animal.get_display_name %></td>
+  <td><%= animal_activity_observation.observation_date_time %></td>
+  <td><%= (animal_activity_observation.created_by_id.nil?) ? nil : animal_activity_observation.created_by.get_display_name %></td>
+  <td><%= item_show_command(animal_activity_observation_path(animal_activity_observation)) %></td>
+  <td><%= item_edit_command(edit_animal_activity_observation_path(animal_activity_observation), { remote: true }) %></td>
+  <td><%= item_delete_command(animal_activity_observation_path(animal_activity_observation), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
 </tr>

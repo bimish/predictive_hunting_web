@@ -17,6 +17,7 @@ module ActiveModel
 
       attr_reader :write_once_attributes
       attr_reader :component_assigned_attributes
+      attr_reader :controller_assigned_attributes
       attr_reader :new_record_initializer
 
       def write_once_attribute(*attribute_list)
@@ -26,11 +27,20 @@ module ActiveModel
           @write_once_attributes.push attribute_list
         end
       end
+
       def component_assigned_attribute(*attribute_list)
         if @component_assigned_attributes.nil?
           @component_assigned_attributes = attribute_list
         else
           @component_assigned_attributes.push attribute_list
+        end
+      end
+
+      def controller_assigned_attribute(*attribute_list)
+        if @controller_assigned_attributes.nil?
+          @controller_assigned_attributes = attribute_list
+        else
+          @controller_assigned_attributes.push attribute_list
         end
       end
 

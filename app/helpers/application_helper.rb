@@ -42,6 +42,14 @@ module ApplicationHelper
     image_tag(gravatar_url, alt:user.alias, class: "gravatar")
   end
 
+  def combine_tags(*tags)
+    capture do
+      tags.each do |tag|
+        concat tag
+      end
+    end
+  end
+
   class AppFormBuilder < ActionView::Helpers::FormBuilder
 
     def coordinates_field(method, options = {})

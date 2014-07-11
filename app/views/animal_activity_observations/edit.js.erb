@@ -1,1 +1,2 @@
-showAjaxForm('inline-form', "<%== escape_javascript(render 'edit') %>", ['add-button'] );
+$('#form-placeholder').html('<%= j render :partial => 'modal_form', :layout => '/layouts/modal_form_dialog', :locals => { title:'Animal Activity Observation' } %>');
+showAjaxModalForm('modal-form-dialog');

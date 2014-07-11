@@ -9,7 +9,8 @@
       </ul>
     </div>
   <% end %>
-  <%= f.text_field :post_content %>
+  <%#= f.text_field :post_content %>
+  <%= f.text_area :post_content, :rows => 5 %>
   <%= f.select :visibility, get_visibility_list_items, { label:'Visibility', include_blank:'[Visibility]' } %>
   <div class="actions">
     <%= f.submit "OK", class: "btn btn-primary" %>

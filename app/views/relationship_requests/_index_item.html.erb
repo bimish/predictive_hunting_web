@@ -1,0 +1,8 @@
+<tr data-id="<%=relationship_request.id%>">
+  <td><%= relationship_request.created_by_id %></td>
+  <td><%= (relationship_request.related_user_id.nil?) ? nil : relationship_request.related_user.get_display_name %></td>
+  <td><%= @view_data.get_status_description(relationship_request.status) %></td>
+  <td><%= item_show_command(relationship_request_path(relationship_request)) %></td>
+  <td><%= item_edit_command(edit_relationship_request_path(relationship_request), { remote: true }) %></td>
+  <td><%= item_delete_command(relationship_request_path(relationship_request), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

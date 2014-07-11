@@ -1,1 +1,1 @@
-json.extract! @animal_activity_observation, :id, :hunting_location_id, :animal_category_id, :animal_count, :animal_activity_type_id, :hunting_plot_named_animal_id, :observation_date_time, :created_at, :updated_at
+json.extract! @animal_activity_observation, :id, :created_at, :updated_at

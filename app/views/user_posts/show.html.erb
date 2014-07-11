@@ -5,7 +5,7 @@
 
     <p>
       <strong>Created by:</strong>
-      <%= @user_post.created_by_id %>
+      <%= get_user_description(@user_post) %>
     </p>
 
     <p>
@@ -15,7 +15,7 @@
 
     <p>
       <strong>Visibility:</strong>
-      <%= get_visibility_description(@user_post) %>
+      <%= @view_data.get_visibility_description(@user_post.visibility) %>
     </p>
 
     <%= link_to 'Edit', edit_user_post_path(@user_post) %> |

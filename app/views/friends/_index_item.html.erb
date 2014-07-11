@@ -1,0 +1,31 @@
+<% user = user_relationship.related_user %>
+<div class="friend-list-item">
+  <div class="fli-avatar">
+    <%= link_to gravatar_for(user), friend_path(user_relationship) %>
+  </div>
+  <div>
+      <%
+        user_name = "#{user.first_name} #{user.last_name}"
+        unless (user.alias.blank? || (0 == user_name.casecmp(user.alias)))
+          user_name = "#{user.alias} (#{user_name})"
+        end
+      %>
+    <span class="fli-name"><%= user_name %></span>
+    <span class="fli-email"><%= user.email %></span>
+    <span class="fli-commands">
+      <%=
+        link_to(
+          combine_tags(bootstrap_glyphicon('minus'), bootstrap_glyphicon('user')),
+          friend_path(user_relationship),
+          {
+            remote: true,
+            method: :delete,
+            class: 'btn btn-default btn-xs',
+            title:'Remove Friend',
+            data: { confirm: 'Are you sure?' }
+          }
+        )
+      %>
+    </span>
+  </div>
+</div>

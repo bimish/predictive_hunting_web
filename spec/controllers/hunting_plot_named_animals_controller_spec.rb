@@ -23,7 +23,7 @@ describe HuntingPlotNamedAnimalsController do
   # This should return the minimal set of attributes required to create a valid
   # HuntingPlotNamedAnimal. As you add validations to HuntingPlotNamedAnimal, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "name" => "MyString" } }
+  let(:valid_attributes) { {  } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -34,7 +34,7 @@ describe HuntingPlotNamedAnimalsController do
     it "assigns all hunting_plot_named_animals as @hunting_plot_named_animals" do
       hunting_plot_named_animal = HuntingPlotNamedAnimal.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:hunting_plot_named_animals).should eq([hunting_plot_named_animal])
+      assigns(:hunting_plot_named_animal).should eq([hunting_plot_named_animal])
     end
   end
 
@@ -85,14 +85,14 @@ describe HuntingPlotNamedAnimalsController do
       it "assigns a newly created but unsaved hunting_plot_named_animal as @hunting_plot_named_animal" do
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlotNamedAnimal.any_instance.stub(:save).and_return(false)
-        post :create, {:hunting_plot_named_animal => { "name" => "invalid value" }}, valid_session
+        post :create, {:hunting_plot_named_animal => {  }}, valid_session
         assigns(:hunting_plot_named_animal).should be_a_new(HuntingPlotNamedAnimal)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlotNamedAnimal.any_instance.stub(:save).and_return(false)
-        post :create, {:hunting_plot_named_animal => { "name" => "invalid value" }}, valid_session
+        post :create, {:hunting_plot_named_animal => {  }}, valid_session
         response.should render_template("new")
       end
     end
@@ -102,12 +102,12 @@ describe HuntingPlotNamedAnimalsController do
     describe "with valid params" do
       it "updates the requested hunting_plot_named_animal" do
         hunting_plot_named_animal = HuntingPlotNamedAnimal.create! valid_attributes
-        # Assuming there are no other hunting_plot_named_animals in the database, this
+        # Assuming there are no other hunting_plot_named_animal in the database, this
         # specifies that the HuntingPlotNamedAnimal created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        HuntingPlotNamedAnimal.any_instance.should_receive(:update).with({ "name" => "MyString" })
-        put :update, {:id => hunting_plot_named_animal.to_param, :hunting_plot_named_animal => { "name" => "MyString" }}, valid_session
+        HuntingPlotNamedAnimal.any_instance.should_receive(:update).with({ "these" => "params" })
+        put :update, {:id => hunting_plot_named_animal.to_param, :hunting_plot_named_animal => { "these" => "params" }}, valid_session
       end
 
       it "assigns the requested hunting_plot_named_animal as @hunting_plot_named_animal" do
@@ -128,7 +128,7 @@ describe HuntingPlotNamedAnimalsController do
         hunting_plot_named_animal = HuntingPlotNamedAnimal.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlotNamedAnimal.any_instance.stub(:save).and_return(false)
-        put :update, {:id => hunting_plot_named_animal.to_param, :hunting_plot_named_animal => { "name" => "invalid value" }}, valid_session
+        put :update, {:id => hunting_plot_named_animal.to_param, :hunting_plot_named_animal => {  }}, valid_session
         assigns(:hunting_plot_named_animal).should eq(hunting_plot_named_animal)
       end
 
@@ -136,7 +136,7 @@ describe HuntingPlotNamedAnimalsController do
         hunting_plot_named_animal = HuntingPlotNamedAnimal.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlotNamedAnimal.any_instance.stub(:save).and_return(false)
-        put :update, {:id => hunting_plot_named_animal.to_param, :hunting_plot_named_animal => { "name" => "invalid value" }}, valid_session
+        put :update, {:id => hunting_plot_named_animal.to_param, :hunting_plot_named_animal => {  }}, valid_session
         response.should render_template("edit")
       end
     end
@@ -150,7 +150,7 @@ describe HuntingPlotNamedAnimalsController do
       }.to change(HuntingPlotNamedAnimal, :count).by(-1)
     end
 
-    it "redirects to the hunting_plot_named_animals list" do
+    it "redirects to the hunting_plot_named_animal list" do
       hunting_plot_named_animal = HuntingPlotNamedAnimal.create! valid_attributes
       delete :destroy, {:id => hunting_plot_named_animal.to_param}, valid_session
       response.should redirect_to(hunting_plot_named_animals_url)

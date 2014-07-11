@@ -1,2 +1,1 @@
-closeAjaxForm();
 $('tr[data-id="<%=@user_post.id%>"]').replaceWith('<%= j render(:partial => 'index_item', :locals => { :user_post => @user_post })%>');

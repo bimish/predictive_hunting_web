@@ -27,6 +27,8 @@ class User < ActiveRecord::Base
     presence:true,
     if: ->(record) { record.new_record? || record.password_confirmation.present? || password.present?  }
 
+  enum authentication_method:  { authentication_method_direct: 1, authentication_method_facebook: 2, authentication_method_google: 3 }
+
   attr_readonly :admin
 
   has_many :hunting_plot_accesses, class_name:'UserHuntingPlotAccess'
@@ -40,20 +42,22 @@ class User < ActiveRecord::Base
 
   has_many :posts, class_name:'UserPost', foreign_key:'created_by_id'
 
-  def following?(other_user)
-    relationships.find_by_related_used_id(other_user.id)
-  end
-
-  def follow!(other_user)
-    relationships.create!(related_user_id: other_user.id, relationship_type: DataDomains::UserRelationshipType['Friend'])
-  end
-
-  def unfollow!(other_user)
-    relationships.find_by_related_used_id(other_user.id).destroy
-  end
-
   def get_display_name
     self.alias
+  end
+
+  def self.from_related_users(user)
+    joins(:reverse_relationships).where('user_relationship.owning_user_id = ?', user.id)
+  end
+
+  def self.search_new_friends(current_user, name_criteria)
+    search_results = joins("LEFT OUTER JOIN user_relationship ON (\"user\".id = user_relationship.related_user_id AND user_relationship.owning_user_id = #{current_user.id})")
+    search_results = search_results.where('user_relationship.related_user_id IS NULL')
+    search_results = search_results.where(admin: false)
+    search_results = search_results.where.not(id: current_user.id)
+    #unless name_criteria.blank? do
+    #end
+    search_results
   end
 
 private

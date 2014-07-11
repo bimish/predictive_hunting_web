@@ -11,7 +11,12 @@ Web::Application.routes.draw do
     end
   end
 
-  resources :hunting_plot_named_animals
+  resources :hunting_plot_named_animals do
+    collection do
+      post 'search'
+    end
+  end
+
   resources :sessions, only: [:new, :create, :destroy]
   resources :users
   resources :user_relationships
@@ -21,16 +26,22 @@ Web::Application.routes.draw do
       post 'status'
     end
   end
+  resources :relationship_requests
+  resources :friends do
+    post 'search', on: :new, to: 'friends#new_friend_search'
+  end
 
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'
   delete '/signout', to: 'sessions#destroy'
   get '/help', to: 'static_pages#help'
 
+  get '/map/hunting_plot/:id' => 'map#hunting_plot', as: :plot_map
+  get '/network_panel/:network_id' => 'static_pages#network_panel', as: :network_panel
+  get '/test' => 'static_pages#test', as: :test
+
   root to: 'static_pages#home'
 
-  get 'map/hunting_plot/:id' => 'map#hunting_plot', as: :plot_map
-  get 'test' => 'static_pages#test', as: :test
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,0 +1,1 @@
+$('tr[data-id="<%=@hunting_plot_named_animal.id%>"]').replaceWith('<%= j render(:partial => 'index_item', :locals => { :hunting_plot_named_animal => @hunting_plot_named_animal })%>');

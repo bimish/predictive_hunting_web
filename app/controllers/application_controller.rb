@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   # custom helper modules
   helper :rgeo
   helper :item_commands
+  helper :forms
+  helper :bootstrap
 
 #disable caching
 def set_as_private

@@ -1,10 +1,7 @@
 module Generated
   module UserPostsHelper
-    def get_visibility_list_items()
-
-    end
-    def get_visibility_description(user_post)
-      raise NotImplementedError
+    def get_user_description(user_post)
+      return user_post.user.get_display_name
     end
   end
 end

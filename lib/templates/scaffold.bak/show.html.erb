@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%%= notice %></p>
+
+    <%- model_attributes.reject(&:password_digest?).each do |attribute| -%>
+    <p>
+      <strong><%= attribute.human_name %>:</strong>
+    <%- if (attribute.reference?) -%>
+      <%%= get_<%= attribute.reference.name %>_description(@<%= singular_table_name %>) %>
+    <%- elsif (attribute.has_value_list?) -%>
+      <%%= get_<%= attribute.name %>_description(@<%= singular_table_name %>) %>
+    <%- else -%>
+      <%%= @<%= singular_table_name %>.<%= attribute.name %> %>
+    <%- end -%>
+    </p>
+
+    <%- end -%>
+    <%%= link_to 'Edit', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>) %> |
+    <%%= link_to 'Back', <%= index_helper %>_path %>
+
+  </div>
+</div>

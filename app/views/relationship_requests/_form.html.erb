@@ -1,0 +1,7 @@
+<%= bootstrap_form_for(@relationship_request) do |f| %>
+  <% if @relationship_request.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @relationship_request } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @relationship_request, 'Relationship Request') %>
+<% end %>

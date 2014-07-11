@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140501134732) do
+ActiveRecord::Schema.define(version: 20140707195444) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,17 @@ ActiveRecord::Schema.define(version: 20140501134732) do
 
   add_index "hunting_plot_named_animal", ["animal_category_id"], :name => "index_hunting_plot_named_animal_on_animal_category_id"
   add_index "hunting_plot_named_animal", ["hunting_plot_id"], :name => "index_hunting_plot_named_animal_on_hunting_plot_id"
+
+  create_table "relationship_request", force: true do |t|
+    t.integer  "created_by_id",   null: false
+    t.integer  "related_user_id", null: false
+    t.integer  "status",          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "relationship_request", ["created_by_id"], :name => "index_relationship_request_on_created_by_id"
+  add_index "relationship_request", ["related_user_id"], :name => "index_relationship_request_on_related_user_id"
 
   create_table "user", force: true do |t|
     t.string   "first_name",            limit: 100,                 null: false

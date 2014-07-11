@@ -2,6 +2,8 @@ class UserPostsController < ApplicationController
 
   before_action :set_user_post, only: [:show, :edit, :update, :destroy, :delete]
 
+  include UserPostsControllerExtensions
+
   # GET /user_posts
   def index
     @user_posts = UserPost.all
@@ -61,20 +63,6 @@ class UserPostsController < ApplicationController
       format.html { redirect_to user_posts_url, notice: 'User post was successfully destroyed.' }
       format.json { head :no_content }
       format.js
-    end
-  end
-
-  def status
-    @user_post = UserPost.new
-    @user_post.init_new current_user
-    @user_post.post_content = params[:post_content]
-    @user_post.visibility = params[:visibility]
-    respond_to do |format|
-      if @user_post.save
-        format.js { render '/user_posts/status/create'}
-      else
-        format.js { render '/user_posts/status/new' }
-      end
     end
   end
 

@@ -1,18 +1,9 @@
-<%
-	if !defined?(include_plot) then include_plot = true	end
-	if !defined?(editable) then editable = true	end
-	#include_plot ||= true
-	#editable ||= true
-%>
-<tr>
+<tr data-id="<%=hunting_location.id%>">
+  <td><%= (hunting_location.hunting_plot_id.nil?) ? nil : hunting_location.hunting_plot.get_display_name %></td>
   <td><%= hunting_location.name %></td>
-  <% if include_plot %>
-  <td><%= hunting_location.hunting_plot.name %></td>
-  <% end %>
-  <td><%= DataDomains::HuntingLocationTypes.key(hunting_location.location_type) %></td>
-  <td><%= link_to 'Show', hunting_location %></td>
-  <% if editable %>
-  <td><%= link_to 'Edit', edit_hunting_location_path(hunting_location) %></td>
-  <td><%= link_to 'Destroy', hunting_location, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  <% end %>
+  <td><%= hunting_location.coordinates %></td>
+  <td><%= @view_data.get_location_type_description(hunting_location.location_type) %></td>
+  <td><%= item_show_command(hunting_location_path(hunting_location)) %></td>
+  <td><%= item_edit_command(edit_hunting_location_path(hunting_location), { remote: true }) %></td>
+  <td><%= item_delete_command(hunting_location_path(hunting_location), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
 </tr>

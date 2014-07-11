@@ -1,22 +1,50 @@
-<p>
-  <strong>First name:</strong>
-  <%= @user.first_name %>
-</p>
+<div class="row">
+  <div class="col-md-12">
 
-<p>
-  <strong>Last name:</strong>
-  <%= @user.last_name %>
-</p>
+    <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Alias:</strong>
-  <%= @user.alias %>
-</p>
+    <p>
+      <strong>First name:</strong>
+      <%= @user.first_name %>
+    </p>
 
-<p>
-  <strong>Email:</strong>
-  <%= @user.email %>
-</p>
+    <p>
+      <strong>Last name:</strong>
+      <%= @user.last_name %>
+    </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+    <p>
+      <strong>Alias:</strong>
+      <%= @user.alias %>
+    </p>
+
+    <p>
+      <strong>Email:</strong>
+      <%= @user.email %>
+    </p>
+
+    <p>
+      <strong>Password digest:</strong>
+      <%= @user.password_digest %>
+    </p>
+
+    <p>
+      <strong>Remember token:</strong>
+      <%= @user.remember_token %>
+    </p>
+
+    <p>
+      <strong>Authentication method:</strong>
+      <%= @view_data.get_authentication_method_description(@user.authentication_method) %>
+    </p>
+
+    <p>
+      <strong>Admin:</strong>
+      <%= @user.admin %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_path(@user) %> |
+    <%= link_to 'Back', users_path %>
+
+  </div>
+</div>

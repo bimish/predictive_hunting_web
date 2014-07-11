@@ -4,31 +4,31 @@ describe HuntingLocationsController do
   describe "routing" do
 
     it "routes to #index" do
-      get("/hunting_locations").should route_to("hunting_locations#index")
+      get("/hunting_location").should route_to("hunting_location#index")
     end
 
     it "routes to #new" do
-      get("/hunting_locations/new").should route_to("hunting_locations#new")
+      get("/hunting_location/new").should route_to("hunting_location#new")
     end
 
     it "routes to #show" do
-      get("/hunting_locations/1").should route_to("hunting_locations#show", :id => "1")
+      get("/hunting_location/1").should route_to("hunting_location#show", :id => "1")
     end
 
     it "routes to #edit" do
-      get("/hunting_locations/1/edit").should route_to("hunting_locations#edit", :id => "1")
+      get("/hunting_location/1/edit").should route_to("hunting_location#edit", :id => "1")
     end
 
     it "routes to #create" do
-      post("/hunting_locations").should route_to("hunting_locations#create")
+      post("/hunting_location").should route_to("hunting_location#create")
     end
 
     it "routes to #update" do
-      put("/hunting_locations/1").should route_to("hunting_locations#update", :id => "1")
+      put("/hunting_location/1").should route_to("hunting_location#update", :id => "1")
     end
 
     it "routes to #destroy" do
-      delete("/hunting_locations/1").should route_to("hunting_locations#destroy", :id => "1")
+      delete("/hunting_location/1").should route_to("hunting_location#destroy", :id => "1")
     end
 
   end

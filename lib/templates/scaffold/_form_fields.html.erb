@@ -1,0 +1,32 @@
+<%-
+model_attributes.each do |attribute|
+  if attribute.password_digest? -%>
+-%>
+  <%%= _password_field(f, :password, 'Password') %>
+  <%%= _password_field(f, :password_confirmation, 'Confirmation') %>
+<%-
+  elsif !attribute.is_component_assigned?
+    if attribute.is_controller_assigned?
+-%>
+<%%= hidden_field_tag "<%=attribute.name%>", @view_data.<%=attribute.name%> %>
+<%-
+    elsif attribute.reference?
+-%>
+<%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.reference.name.to_s.pluralize %>) %>
+<%-
+    elsif attribute.has_value_list? || attribute.is_enum?
+-%>
+<%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.name.to_s.pluralize %>) %>
+<%-
+    elsif (attribute.type == :string)
+-%>
+<%%= _text_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', <%=attribute.length%>) %>
+<%-
+    else
+-%>
+<%%= _<%= attribute.field_type %>(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>') %>
+<%-
+    end
+  end
+end
+-%>

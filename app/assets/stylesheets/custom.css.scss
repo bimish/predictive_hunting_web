@@ -93,3 +93,28 @@ a.no-hover:hover {
   content: '\00B0';
 }
 
+/* friend list */
+.friend-list-item {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border: 1px solid $nav-tabs-border-color;
+  /*border-radius: $border-radius-large;*/
+}
+.fli-avatar {
+  float:left;
+  margin:5px;
+  height:100%;
+}
+.fli-name {
+  /*font-weight: bold;*/
+  display:block;
+}
+.fli-email {
+  color: gray;
+  font-size: 85%;
+  display:block;
+}
+.fli-commands {
+  margin-top:0.5em;
+  display:block;
+}

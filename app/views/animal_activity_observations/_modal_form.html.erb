@@ -1,0 +1,7 @@
+<% provide(:title, 'Animal Activity Observation') %>
+<%= bootstrap_form_for @animal_activity_observation, remote: true do |f| %>
+  <% if @animal_activity_observation.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @animal_activity_observation } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

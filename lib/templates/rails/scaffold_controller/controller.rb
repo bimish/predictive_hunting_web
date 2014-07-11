@@ -4,7 +4,10 @@ require_dependency "<%= namespaced_file_path %>/application_controller"
 <% end -%>
 <% module_namespacing do -%>
 class <%= controller_class_name %>Controller < ApplicationController
+
   before_action :set_<%= singular_table_name %>, only: [:show, :edit, :update, :destroy, :delete]
+
+  include <%= controller_class_name %>ControllerExtensions
 
   # GET <%= route_url %>
   def index

@@ -1,0 +1,8 @@
+<tr data-id="<%=hunting_plot_named_animal.id%>">
+  <td><%= (hunting_plot_named_animal.hunting_plot_id.nil?) ? nil : hunting_plot_named_animal.hunting_plot.get_display_name %></td>
+  <td><%= hunting_plot_named_animal.name %></td>
+  <td><%= (hunting_plot_named_animal.animal_category_id.nil?) ? nil : hunting_plot_named_animal.animal_category.get_display_name %></td>
+  <td><%= item_show_command(hunting_plot_named_animal_path(hunting_plot_named_animal)) %></td>
+  <td><%= item_edit_command(edit_hunting_plot_named_animal_path(hunting_plot_named_animal), { remote: true }) %></td>
+  <td><%= item_delete_command(hunting_plot_named_animal_path(hunting_plot_named_animal), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

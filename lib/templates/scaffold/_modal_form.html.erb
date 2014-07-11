@@ -1,0 +1,7 @@
+<%% provide(:title, '<%=human_name.titleize%>') %>
+<%%= bootstrap_form_for @<%= singular_table_name %>, remote: true do |f| %>
+  <%% if @<%= singular_table_name %>.errors.any? %>
+    <%%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @<%= singular_table_name %> } %>
+  <%% end %>
+  <%%= render :partial => 'form_fields', :locals => { :form => f } %>
+<%% end %>

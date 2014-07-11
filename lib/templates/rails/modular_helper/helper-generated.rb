@@ -8,9 +8,6 @@ module Generated
     if attribute.reference? || attribute.has_value_list?
       item_name = attribute.reference? ? attribute.reference.name : attribute.name
 -%>
-    def get_<%= item_name %>_list_items()
-
-    end
     def get_<%= item_name %>_description(<%= table_name.singularize %>)
 <%-
     if (attribute.reference? && attribute.reference_model.new.respond_to?('get_display_name'))

@@ -1,0 +1,7 @@
+<% provide(:title, 'User Relationship') %>
+<%= bootstrap_form_for @user_relationship, remote: true do |f| %>
+  <% if @user_relationship.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user_relationship } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

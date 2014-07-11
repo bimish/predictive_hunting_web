@@ -1,5 +1,18 @@
+<% content_for :head do %>
+<script type="text/javascript">
+$(document).ready(
+  function() {
+  }
+);
+</script>
+<% end %>
 <div class="row">
-  <div class="col-md-12" style="border:1px solid blue;height:400px;">
-    <%= render :partial => '/shared/networks_panel' %>
+  <div class="col-md-12">
+    <%= bootstrap_form_tag url: search_hunting_plot_named_animals_path do |form| %>
+      <%= _number_field(form, :hunting_plot_id, 'Hunting Plot') %>
+      <%= _search_field(form, :name, 'Name', 100) %>
+      <%#= _select_field(form, :animal_category_id, 'Animal Category', @view_data.animal_categories) %>
+      <%= _submit_button(form, nil, 'Search', { name: nil } ) %>
+    <% end %>
   </div>
 </div>

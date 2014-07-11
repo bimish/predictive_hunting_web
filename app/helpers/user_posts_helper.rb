@@ -1,5 +1,5 @@
 module UserPostsHelper
-  include Generated::UserPostsHelper
+  #include Generated::UserPostsHelper
   def get_user_list_items()
     User.all.map { |u| [u.alias, u.id] }
   end

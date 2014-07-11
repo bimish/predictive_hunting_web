@@ -23,7 +23,7 @@ describe AnimalActivityObservationsController do
   # This should return the minimal set of attributes required to create a valid
   # AnimalActivityObservation. As you add validations to AnimalActivityObservation, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "hunting_location" => "" } }
+  let(:valid_attributes) { {  } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -34,7 +34,7 @@ describe AnimalActivityObservationsController do
     it "assigns all animal_activity_observations as @animal_activity_observations" do
       animal_activity_observation = AnimalActivityObservation.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:animal_activity_observations).should eq([animal_activity_observation])
+      assigns(:animal_activity_observation).should eq([animal_activity_observation])
     end
   end
 
@@ -85,14 +85,14 @@ describe AnimalActivityObservationsController do
       it "assigns a newly created but unsaved animal_activity_observation as @animal_activity_observation" do
         # Trigger the behavior that occurs when invalid params are submitted
         AnimalActivityObservation.any_instance.stub(:save).and_return(false)
-        post :create, {:animal_activity_observation => { "hunting_location" => "invalid value" }}, valid_session
+        post :create, {:animal_activity_observation => {  }}, valid_session
         assigns(:animal_activity_observation).should be_a_new(AnimalActivityObservation)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         AnimalActivityObservation.any_instance.stub(:save).and_return(false)
-        post :create, {:animal_activity_observation => { "hunting_location" => "invalid value" }}, valid_session
+        post :create, {:animal_activity_observation => {  }}, valid_session
         response.should render_template("new")
       end
     end
@@ -102,12 +102,12 @@ describe AnimalActivityObservationsController do
     describe "with valid params" do
       it "updates the requested animal_activity_observation" do
         animal_activity_observation = AnimalActivityObservation.create! valid_attributes
-        # Assuming there are no other animal_activity_observations in the database, this
+        # Assuming there are no other animal_activity_observation in the database, this
         # specifies that the AnimalActivityObservation created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        AnimalActivityObservation.any_instance.should_receive(:update).with({ "hunting_location" => "" })
-        put :update, {:id => animal_activity_observation.to_param, :animal_activity_observation => { "hunting_location" => "" }}, valid_session
+        AnimalActivityObservation.any_instance.should_receive(:update).with({ "these" => "params" })
+        put :update, {:id => animal_activity_observation.to_param, :animal_activity_observation => { "these" => "params" }}, valid_session
       end
 
       it "assigns the requested animal_activity_observation as @animal_activity_observation" do
@@ -128,7 +128,7 @@ describe AnimalActivityObservationsController do
         animal_activity_observation = AnimalActivityObservation.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         AnimalActivityObservation.any_instance.stub(:save).and_return(false)
-        put :update, {:id => animal_activity_observation.to_param, :animal_activity_observation => { "hunting_location" => "invalid value" }}, valid_session
+        put :update, {:id => animal_activity_observation.to_param, :animal_activity_observation => {  }}, valid_session
         assigns(:animal_activity_observation).should eq(animal_activity_observation)
       end
 
@@ -136,7 +136,7 @@ describe AnimalActivityObservationsController do
         animal_activity_observation = AnimalActivityObservation.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         AnimalActivityObservation.any_instance.stub(:save).and_return(false)
-        put :update, {:id => animal_activity_observation.to_param, :animal_activity_observation => { "hunting_location" => "invalid value" }}, valid_session
+        put :update, {:id => animal_activity_observation.to_param, :animal_activity_observation => {  }}, valid_session
         response.should render_template("edit")
       end
     end
@@ -150,7 +150,7 @@ describe AnimalActivityObservationsController do
       }.to change(AnimalActivityObservation, :count).by(-1)
     end
 
-    it "redirects to the animal_activity_observations list" do
+    it "redirects to the animal_activity_observation list" do
       animal_activity_observation = AnimalActivityObservation.create! valid_attributes
       delete :destroy, {:id => animal_activity_observation.to_param}, valid_session
       response.should redirect_to(animal_activity_observations_url)

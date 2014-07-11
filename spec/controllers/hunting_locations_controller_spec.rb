@@ -23,7 +23,7 @@ describe HuntingLocationsController do
   # This should return the minimal set of attributes required to create a valid
   # HuntingLocation. As you add validations to HuntingLocation, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "name" => "MyString" } }
+  let(:valid_attributes) { {  } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -34,7 +34,7 @@ describe HuntingLocationsController do
     it "assigns all hunting_locations as @hunting_locations" do
       hunting_location = HuntingLocation.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:hunting_locations).should eq([hunting_location])
+      assigns(:hunting_location).should eq([hunting_location])
     end
   end
 
@@ -85,14 +85,14 @@ describe HuntingLocationsController do
       it "assigns a newly created but unsaved hunting_location as @hunting_location" do
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingLocation.any_instance.stub(:save).and_return(false)
-        post :create, {:hunting_location => { "name" => "invalid value" }}, valid_session
+        post :create, {:hunting_location => {  }}, valid_session
         assigns(:hunting_location).should be_a_new(HuntingLocation)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingLocation.any_instance.stub(:save).and_return(false)
-        post :create, {:hunting_location => { "name" => "invalid value" }}, valid_session
+        post :create, {:hunting_location => {  }}, valid_session
         response.should render_template("new")
       end
     end
@@ -102,12 +102,12 @@ describe HuntingLocationsController do
     describe "with valid params" do
       it "updates the requested hunting_location" do
         hunting_location = HuntingLocation.create! valid_attributes
-        # Assuming there are no other hunting_locations in the database, this
+        # Assuming there are no other hunting_location in the database, this
         # specifies that the HuntingLocation created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        HuntingLocation.any_instance.should_receive(:update).with({ "name" => "MyString" })
-        put :update, {:id => hunting_location.to_param, :hunting_location => { "name" => "MyString" }}, valid_session
+        HuntingLocation.any_instance.should_receive(:update).with({ "these" => "params" })
+        put :update, {:id => hunting_location.to_param, :hunting_location => { "these" => "params" }}, valid_session
       end
 
       it "assigns the requested hunting_location as @hunting_location" do
@@ -128,7 +128,7 @@ describe HuntingLocationsController do
         hunting_location = HuntingLocation.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingLocation.any_instance.stub(:save).and_return(false)
-        put :update, {:id => hunting_location.to_param, :hunting_location => { "name" => "invalid value" }}, valid_session
+        put :update, {:id => hunting_location.to_param, :hunting_location => {  }}, valid_session
         assigns(:hunting_location).should eq(hunting_location)
       end
 
@@ -136,7 +136,7 @@ describe HuntingLocationsController do
         hunting_location = HuntingLocation.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingLocation.any_instance.stub(:save).and_return(false)
-        put :update, {:id => hunting_location.to_param, :hunting_location => { "name" => "invalid value" }}, valid_session
+        put :update, {:id => hunting_location.to_param, :hunting_location => {  }}, valid_session
         response.should render_template("edit")
       end
     end
@@ -150,7 +150,7 @@ describe HuntingLocationsController do
       }.to change(HuntingLocation, :count).by(-1)
     end
 
-    it "redirects to the hunting_locations list" do
+    it "redirects to the hunting_location list" do
       hunting_location = HuntingLocation.create! valid_attributes
       delete :destroy, {:id => hunting_location.to_param}, valid_session
       response.should redirect_to(hunting_locations_url)

@@ -1,33 +1,45 @@
+<div class="row">
+  <div class="col-md-12">
 
-<p>
-  <strong>Hunting location:</strong>
-  <%= @animal_activity_observation.hunting_location %>
-</p>
+    <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Animal category:</strong>
-  <%= @animal_activity_observation.animal_category %>
-</p>
+    <p>
+      <strong>Hunting location:</strong>
+      <%= get_hunting_location_description(@animal_activity_observation) %>
+    </p>
 
-<p>
-  <strong>Animal count:</strong>
-  <%= @animal_activity_observation.animal_count %>
-</p>
+    <p>
+      <strong>Animal category:</strong>
+      <%= get_animal_category_description(@animal_activity_observation) %>
+    </p>
 
-<p>
-  <strong>Animal activity type:</strong>
-  <%= @animal_activity_observation.animal_activity_type %>
-</p>
+    <p>
+      <strong>Animal count:</strong>
+      <%= @animal_activity_observation.animal_count %>
+    </p>
 
-<p>
-  <strong>Hunting plot named animal:</strong>
-  <%= @animal_activity_observation.named_animal %>
-</p>
+    <p>
+      <strong>Animal activity type:</strong>
+      <%= get_animal_activity_type_description(@animal_activity_observation) %>
+    </p>
 
-<p>
-  <strong>Observation date time:</strong>
-  <%= @animal_activity_observation.observation_date_time %>
-</p>
+    <p>
+      <strong>Hunting plot named animal:</strong>
+      <%= get_named_animal_description(@animal_activity_observation) %>
+    </p>
 
-<%= link_to 'Edit', edit_animal_activity_observation_path(@animal_activity_observation) %> |
-<%= link_to 'Back', animal_activity_observations_path %>
+    <p>
+      <strong>Observation date time:</strong>
+      <%= @animal_activity_observation.observation_date_time %>
+    </p>
+
+    <p>
+      <strong>Created by:</strong>
+      <%= get_created_by_description(@animal_activity_observation) %>
+    </p>
+
+    <%= link_to 'Edit', edit_animal_activity_observation_path(@animal_activity_observation) %> |
+    <%= link_to 'Back', animal_activity_observations_path %>
+
+  </div>
+</div>

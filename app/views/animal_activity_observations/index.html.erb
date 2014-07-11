@@ -1,44 +1,32 @@
-<%
-  page_title = "Animal Activity Observations for #{@hunting_plot.name}"
-  provide(:title, page_title)
-%>
-<% content_for :head do %>
-  <script type="text/javascript">
-  function cancelInlineForm() {
-    $('#inline-form').empty();
-    $('#add-button').show();
-  }
-  </script>
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
 <% end %>
 
 <div class="row">
-
   <div class="col-md-12">
-
-    <h3><%=page_title%></h3>
+    <h3>Listing Animal Activity Observations</h3>
 
     <table class="table">
       <thead>
         <tr>
-          <th>Location</th>
+          <th>Hunting location</th>
           <th>Animal category</th>
           <th>Animal count</th>
-          <th>Activity</th>
-          <th>Named animal</th>
-          <th>Recorded By</th>
-          <th>Date/time</th>
-          <th colspan="3">
+          <th>Animal activity type</th>
+          <th>Hunting plot named animal</th>
+          <th>Observation date time</th>
+          <th>Created by</th>
+          <th colspan="3"></th>
         </tr>
       </thead>
-      <tbody id="observation-index">
-        <%= render "index" %>
+
+      <tbody id='items-tbody'>
+        <%= render :partial => 'index_item', :collection => @animal_activity_observations, :as => :animal_activity_observation %>
       </tbody>
     </table>
 
     <div id="inline-form"></div>
 
-    <%= link_to "New Observation", new_animal_activity_observation_path(hunting_plot_id: params[:hunting_plot_id]), { remote: true, class: "btn btn-default", id:'add-button' } %>
-
+    <%= link_to 'New Animal Activity Observation', new_animal_activity_observation_path( { hunting_plot_id: params[:hunting_plot_id] } ), { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
   </div>
-
 </div>

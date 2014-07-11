@@ -1,34 +1,7 @@
-<%= bootstrap_form_for @hunting_location do |f| %>
+<%= bootstrap_form_for(@hunting_location) do |f| %>
   <% if @hunting_location.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@hunting_location.errors.count, "error") %> prohibited this hunting location from being saved:</h2>
-
-      <ul>
-      <% @hunting_location.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location } %>
   <% end %>
-
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :coordinates %><br>
-    <%= f.text_field :coordinates %>
-    <!--<%#= f.coordinates_field :coordinates %>-->
-  </div>
-  <div class="field">
-    <%= f.label :hunting_plot_id %><br>
-    <%= f.select :hunting_plot_id, HuntingPlot.all.map { |m| [m.name, m.id] } %>
-  </div>
-  <div class="field">
-    <%= f.label :location_type %><br>
-    <%= f.select :location_type, DataDomains::HuntingLocationTypes %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @hunting_location, 'Hunting Location') %>
 <% end %>

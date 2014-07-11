@@ -1,3 +1,1 @@
-$('#inline-form').empty();
-$('#observation-index').append('<%= j render(:partial => 'index_item', :locals => { :animal_activity_observation => @animal_activity_observation })%>');
-$("#add-button").show();
+$('#items-tbody').append('<%= j render(:partial => 'index_item', :locals => { :animal_activity_observation => @animal_activity_observation })%>');

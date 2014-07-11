@@ -1,0 +1,46 @@
+<% content_for :head do %>
+<script type="text/javascript">
+function createRelationshipRequest(user_id) {
+  $.ajax({
+    type: 'POST',
+    contentType: 'application/json',
+    dataType: 'json',
+    url: '<%= j relationship_requests_url %>',
+    processData: false,
+    data: '{ "related_user_id": "' + user_id + '" }',
+    success: function(data, textStatus, jqXHR) {
+      // remove the user from the list
+      //$('div.friend-list-item').has('a[data-userid="' + data.related_user_id + '"]').remove();
+      // disable the link
+      $('div.friend-list-item > a[data-userid="' + data.related_user_id + '"]').addClass('disabled');
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      alert('failed [' + textStatus + ']: ' + errorThrown);
+    }
+  });
+}
+</script>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h4>Find Friends</h4>
+    <%= bootstrap_form_tag url: search_new_friend_path, remote: true do |f| %>
+    <div class="input-group">
+      <%= f.search_field :name, hide_label: true, placeholder:'Name', title:'Name', class:'input-sm' %>
+      <span class="input-group-btn">
+        <button class="btn btn-default btn-primary btn-sm" type="submit"><span class='glyphicon glyphicon-search' /></button>
+      </span>
+    </div>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12" id="new_friend_search_results">
+  </div>
+</div>
+<div style="display:none;">
+  <%= bootstrap_form_tag url: relationship_requests_path, remote: true, id: 'create_relationship_request_form' do |f| %>
+    <%= _hidden_field(f, :related_user_id, id:'related_user_id') %>
+  <% end %>
+</div>

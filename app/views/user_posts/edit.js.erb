@@ -1,1 +1,2 @@
-showAjaxForm('inline-form', "<%== escape_javascript(render 'inline_form') %>", ['add-item-button'] );
+$('#form-placeholder').html('<%= j render :partial => 'modal_form', :layout => '/layouts/modal_form_dialog', :locals => { title:'User Post' } %>');
+showAjaxModalForm('modal-form-dialog');

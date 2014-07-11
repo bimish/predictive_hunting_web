@@ -1,22 +1,30 @@
-<p>
-  <strong>Name:</strong>
-  <%= @hunting_location.name %>
-</p>
+<div class="row">
+  <div class="col-md-12">
 
-<p>
-  <strong>Coordinates:</strong>
-  <%= @hunting_location.coordinates %>
-</p>
+    <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Hunting plot:</strong>
-  <%= link_to @hunting_location.hunting_plot.name, hunting_plot_url(@hunting_location.hunting_plot) %>
-</p>
+    <p>
+      <strong>Hunting plot:</strong>
+      <%= get_hunting_plot_description(@hunting_location) %>
+    </p>
 
-<p>
-  <strong>Location type:</strong>
-  <%= @hunting_location.location_type %>
-</p>
+    <p>
+      <strong>Name:</strong>
+      <%= @hunting_location.name %>
+    </p>
 
-<%= link_to 'Edit', edit_hunting_location_path(@hunting_location) %> |
-<%= link_to 'Back', hunting_locations_path %>
+    <p>
+      <strong>Coordinates:</strong>
+      <%= @hunting_location.coordinates %>
+    </p>
+
+    <p>
+      <strong>Location type:</strong>
+      <%= @view_data.get_location_type_description(@hunting_location.location_type) %>
+    </p>
+
+    <%= link_to 'Edit', edit_hunting_location_path(@hunting_location) %> |
+    <%= link_to 'Back', hunting_locations_path %>
+
+  </div>
+</div>

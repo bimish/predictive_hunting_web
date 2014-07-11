@@ -22,6 +22,7 @@ module Rails
         else
           template 'helper.rb', File.join('app/helpers', class_path, "#{file_name}_helper.rb")
         end
+        say 'creating generated helper'
         template 'helper-generated.rb', File.join('app/helpers/generated', class_path, "#{file_name}_helper.rb")
       end
 

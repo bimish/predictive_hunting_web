@@ -1,17 +1,25 @@
-<p>
-  <strong>Name:</strong>
-  <%= @hunting_plot_named_animal.name %>
-</p>
+<div class="row">
+  <div class="col-md-12">
 
-<p>
-  <strong>Animal species:</strong>
-  <%= @hunting_plot_named_animal.animal_species %>
-</p>
+    <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Animal category:</strong>
-  <%= @hunting_plot_named_animal.animal_category %>
-</p>
+    <p>
+      <strong>Hunting plot:</strong>
+      <%= get_hunting_plot_description(@hunting_plot_named_animal) %>
+    </p>
 
-<%= link_to 'Edit', edit_hunting_plot_named_animal_path(@hunting_plot_named_animal) %> |
-<%= link_to 'Back', hunting_plot_named_animals_path %>
+    <p>
+      <strong>Name:</strong>
+      <%= @hunting_plot_named_animal.name %>
+    </p>
+
+    <p>
+      <strong>Animal category:</strong>
+      <%= get_animal_category_description(@hunting_plot_named_animal) %>
+    </p>
+
+    <%= link_to 'Edit', edit_hunting_plot_named_animal_path(@hunting_plot_named_animal) %> |
+    <%= link_to 'Back', hunting_plot_named_animals_path %>
+
+  </div>
+</div>

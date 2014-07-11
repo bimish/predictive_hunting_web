@@ -1,27 +1,7 @@
-<%= bootstrap_form_for @animal_activity_observation do |f| %>
-
+<%= bootstrap_form_for(@animal_activity_observation) do |f| %>
   <% if @animal_activity_observation.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@animal_activity_observation.errors.count, "error") %> prohibited this animal_activity_observation from being saved:</h2>
-      <ul>
-      <% @animal_activity_observation.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @animal_activity_observation } %>
   <% end %>
-
-  <%= hidden_field_tag 'hunting_plot_id', @hunting_plot.id %>
-  <%= f.select :hunting_location_id, @hunting_plot.locations.map { |m| [m.name, m.id] }, { label:'Location', include_blank:'[Location]' } %>
-  <%= f.select :animal_category_id, AnimalCategory.all.map { |m| [m.name, m.id] }, { label:'Animal Type', include_blank:'[Animal Category]' } %>
-  <%= f.number_field :animal_count, label:'Number of Animals', in:1...100 %>
-  <%= f.select :animal_activity_type_id, AnimalActivityType.all.map { |m| [m.name, m.id] }, { label:'Activity', include_blank:'[Activity]' } %>
-  <%= f.select :hunting_plot_named_animal_id, get_named_animal_list, { label:'Named Animal', include_blank:'[Named Animal]' } %>
-  <%= f.datetime_select :observation_date_time, { order: [:month,:day,:year], datetime_separator:':', ampm:true, default: Time.now.getlocal }, label:'Date/Time' %>
-
-  <div class="actions">
-    <%= f.submit class: "btn btn-primary" %>
-    <%= link_to "Cancel", "#", class: "btn", data: { dismiss: "modal" } %>
-  </div>
-
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @animal_activity_observation, 'Animal Activity Observation') %>
 <% end %>

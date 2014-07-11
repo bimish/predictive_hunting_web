@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.3'
+#gem 'rails', '4.0.3'
+gem 'rails', '~> 4.1.1'
 
 # Use postgresql as the database for Active Record
 gem 'pg'
@@ -35,7 +36,7 @@ gem "faker", "~> 1.3.0"
 
 # PostGIS support gems
 gem "rgeo", "~> 0.3.20"
-gem "activerecord-postgis-adapter", "~> 0.6.5"
+gem "activerecord-postgis-adapter", "~> 1.0.0"
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -66,7 +67,7 @@ end
 gem 'bcrypt-ruby', '~> 3.1.5'
 
 source "https://rubygems.org"
-ruby "2.0.0"
+ruby "2.1.2"
 
 # Use unicorn as the app server
 gem 'unicorn'

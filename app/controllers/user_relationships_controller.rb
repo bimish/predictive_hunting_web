@@ -1,5 +1,11 @@
 class UserRelationshipsController < ApplicationController
+
+  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
+  before_filter :correct_user, only: [:edit, :update, :destroy]
+
   before_action :set_user_relationship, only: [:show, :edit, :update, :destroy, :delete]
+
+  include UserRelationshipsControllerExtensions
 
   # GET /user_relationships
   def index
@@ -12,7 +18,8 @@ class UserRelationshipsController < ApplicationController
 
   # GET /user_relationships/new
   def new
-    @user_relationship = UserRelationship.new(:signed_in_user => current_user)
+    @user_relationship = UserRelationship.new
+    @user_relationship.init_new current_user
   end
 
   # GET /user_relationships/1/edit
@@ -21,7 +28,8 @@ class UserRelationshipsController < ApplicationController
 
   # POST /user_relationships
   def create
-    @user_relationship = UserRelationship.new(:signed_in_user => current_user, :params => user_relationship_create_params)
+    @user_relationship = UserRelationship.new(user_relationship_create_params)
+    @user_relationship.init_new current_user
 
     respond_to do |format|
       if @user_relationship.save

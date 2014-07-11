@@ -1,31 +1,28 @@
-<h1>Listing hunting_plot_named_animals</h1>
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Animal species</th>
-      <th>Animal category</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing Hunting Plot Named Animals</h3>
 
-  <tbody>
-    <% @hunting_plot_named_animals.each do |hunting_plot_named_animal| %>
-      <tr>
-        <td><%= hunting_plot_named_animal.name %></td>
-        <td><%= hunting_plot_named_animal.animal_species %></td>
-        <td><%= hunting_plot_named_animal.animal_category %></td>
-        <td><%= link_to 'Show', hunting_plot_named_animal %></td>
-        <td><%= link_to 'Edit', edit_hunting_plot_named_animal_path(hunting_plot_named_animal) %></td>
-        <td><%= link_to 'Destroy', hunting_plot_named_animal, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Hunting plot</th>
+          <th>Name</th>
+          <th>Animal category</th>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
 
-<br>
+      <tbody id='items-tbody'>
+        <%= render :partial => 'index_item', :collection => @hunting_plot_named_animals, :as => :hunting_plot_named_animal %>
+      </tbody>
+    </table>
 
-<%= link_to 'New Hunting plot named animal', new_hunting_plot_named_animal_path %>
+    <div id="inline-form"></div>
+
+    <%= link_to 'New Hunting Plot Named Animal', new_hunting_plot_named_animal_path, { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

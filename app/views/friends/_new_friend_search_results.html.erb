@@ -1,0 +1,9 @@
+<% users.in_groups_of(4) do |group| %>
+<div class="row">
+  <% group.reject { |user| user.nil? }.each do |user| %>
+    <div class="col-md-3">
+    <%= render :partial => 'new_friend_search_results_item', :locals => { :user => user } %>
+    </div>
+  <% end %>
+</div>
+<% end %>

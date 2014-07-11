@@ -1,11 +1,7 @@
 <tr data-id="<%=user_relationship.id%>">
-
-  <td><%= get_owning_user_description(user_relationship) %></td>
-
-  <td><%= get_related_user_description(user_relationship) %></td>
-
-  <td><%= get_relationship_type_description(user_relationship) %></td>
-
+  <td><%= (user_relationship.owning_user_id.nil?) ? nil : user_relationship.owning_user.get_display_name %></td>
+  <td><%= user_relationship.related_user_id %></td>
+  <td><%= @view_data.get_relationship_type_description(user_relationship.relationship_type) %></td>
   <td><%= item_show_command(user_relationship_path(user_relationship)) %></td>
   <td><%= item_edit_command(edit_user_relationship_path(user_relationship), { remote: true }) %></td>
   <td><%= item_delete_command(user_relationship_path(user_relationship), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>

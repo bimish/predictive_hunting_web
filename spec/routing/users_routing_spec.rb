@@ -4,31 +4,31 @@ describe UsersController do
   describe "routing" do
 
     it "routes to #index" do
-      get("/users").should route_to("users#index")
+      get("/user").should route_to("user#index")
     end
 
     it "routes to #new" do
-      get("/users/new").should route_to("users#new")
+      get("/user/new").should route_to("user#new")
     end
 
     it "routes to #show" do
-      get("/users/1").should route_to("users#show", :id => "1")
+      get("/user/1").should route_to("user#show", :id => "1")
     end
 
     it "routes to #edit" do
-      get("/users/1/edit").should route_to("users#edit", :id => "1")
+      get("/user/1/edit").should route_to("user#edit", :id => "1")
     end
 
     it "routes to #create" do
-      post("/users").should route_to("users#create")
+      post("/user").should route_to("user#create")
     end
 
     it "routes to #update" do
-      put("/users/1").should route_to("users#update", :id => "1")
+      put("/user/1").should route_to("user#update", :id => "1")
     end
 
     it "routes to #destroy" do
-      delete("/users/1").should route_to("users#destroy", :id => "1")
+      delete("/user/1").should route_to("user#destroy", :id => "1")
     end
 
   end

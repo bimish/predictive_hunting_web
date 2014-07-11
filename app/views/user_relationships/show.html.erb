@@ -10,12 +10,12 @@
 
     <p>
       <strong>Related user:</strong>
-      <%= get_related_user_description(@user_relationship) %>
+      <%= @user_relationship.related_user_id %>
     </p>
 
     <p>
       <strong>Relationship type:</strong>
-      <%= get_relationship_type_description(@user_relationship) %>
+      <%= @view_data.get_relationship_type_description(@user_relationship.relationship_type) %>
     </p>
 
     <%= link_to 'Edit', edit_user_relationship_path(@user_relationship) %> |
