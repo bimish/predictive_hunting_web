@@ -1,4 +1,4 @@
 <%= hidden_field_tag "hunting_plot_id", @view_data.hunting_plot_id %>
 <%= _text_field(form, :name, 'Name', 100) %>
 <%= _text_field(form, :coordinates, 'Coordinates') %>
-<%= _select_field(form, :location_type, 'Location Type', @view_data.location_types) %>
+<%= _select_field(form, :location_type, 'Location Type', EnumsHelper::HuntingLocationEnums::location_types) %>

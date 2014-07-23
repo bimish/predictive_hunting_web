@@ -5,7 +5,11 @@
 
 <div class="row">
   <div class="col-md-12">
-    <h3>Friends List</h3>
+    <span style="display:inline-block; vertical-align:text-bottom;">
+      <span class="h4">Friends List</span>
+      &nbsp;&nbsp;
+      <%= link_to 'Add', new_friend_path, { id:'add-item-button' } %>
+    </span>
   </div>
 </div>
 
@@ -19,4 +23,4 @@
 </div>
 <% end %>
 
-<%= link_to 'Add Friend(s)', new_friend_path, { class: 'btn btn-default', id:'add-item-button' } %>
+

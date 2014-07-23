@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%= notice %></p>
+
+    <p>
+      <strong>Name:</strong>
+      <%= @user_network.name %>
+    </p>
+
+    <p>
+      <strong>Network type:</strong>
+      <%= EnumsHelper::UserNetworkEnums::get_network_type_description(@user_network.network_type) %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_network_path(@user_network) %> |
+    <%= link_to 'Back', user_networks_path %>
+
+  </div>
+</div>

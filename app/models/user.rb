@@ -55,8 +55,21 @@ class User < ActiveRecord::Base
     search_results = search_results.where('user_relationship.related_user_id IS NULL')
     search_results = search_results.where(admin: false)
     search_results = search_results.where.not(id: current_user.id)
-    #unless name_criteria.blank? do
-    #end
+    if !name_criteria.blank?
+      name_parts = name_criteria.split()
+      user_query = User.arel_table
+      names_clause = nil
+      name_parts.each do |name|
+        name = "%#{name}%"
+        if names_clause.nil?
+          names_clause = user_query[:first_name].matches(name)
+        else
+          names_clause = names_clause.or(user_query[:first_name].matches(name))
+        end
+        names_clause = names_clause.or(user_query[:last_name].matches(name))
+      end
+      search_results = search_results.where(names_clause)
+    end
     search_results
   end
 

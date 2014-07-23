@@ -1,9 +1,18 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <tr data-id="<%=hunting_location.id%>">
-  <td><%= (hunting_location.hunting_plot_id.nil?) ? nil : hunting_location.hunting_plot.get_display_name %></td>
-  <td><%= hunting_location.name %></td>
-  <td><%= hunting_location.coordinates %></td>
-  <td><%= @view_data.get_location_type_description(hunting_location.location_type) %></td>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %><td><%= (hunting_location.hunting_plot_id.nil?) ? nil : hunting_location.hunting_plot.get_display_name %></td><% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:name)) %><td><%= hunting_location.name %></td><% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:coordinates)) %><td><%= hunting_location.coordinates %></td><% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:location_type)) %><td><%= EnumsHelper::HuntingLocationEnums::get_location_type_description(hunting_location.location_type) %></td><% end %>
+  <% if editable %>
   <td><%= item_show_command(hunting_location_path(hunting_location)) %></td>
   <td><%= item_edit_command(edit_hunting_location_path(hunting_location), { remote: true }) %></td>
   <td><%= item_delete_command(hunting_location_path(hunting_location), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% end %>
 </tr>

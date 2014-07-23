@@ -1,0 +1,7 @@
+<tr data-id="<%=composite_network_member.id%>">
+  <td><%= (composite_network_member.composite_network_id.nil?) ? nil : composite_network_member.composite_network.get_display_name %></td>
+  <td><%= (composite_network_member.member_network_id.nil?) ? nil : composite_network_member.member_network.get_display_name %></td>
+  <td><%= item_show_command(composite_network_member_path(composite_network_member)) %></td>
+  <td><%= item_edit_command(edit_composite_network_member_path(composite_network_member), { remote: true }) %></td>
+  <td><%= item_delete_command(composite_network_member_path(composite_network_member), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

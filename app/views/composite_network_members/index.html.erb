@@ -1,0 +1,15 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing Composite Network Members</h3>
+
+    <%= render :partial => 'index_table', locals: { composite_network_members: @composite_network_members } %>
+
+    <div id="inline-form"></div>
+
+    <%= link_to 'New Composite Network Member',  new_user_network_member_path(@user_network), { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

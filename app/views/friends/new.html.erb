@@ -1,23 +1,82 @@
 <% content_for :head do %>
 <script type="text/javascript">
-function createRelationshipRequest(user_id) {
+function createRelationshipRequest(userId) {
   $.ajax({
     type: 'POST',
     contentType: 'application/json',
     dataType: 'json',
     url: '<%= j relationship_requests_url %>',
     processData: false,
-    data: '{ "related_user_id": "' + user_id + '" }',
+    data: '{ "related_user_id": "' + userId + '" }',
     success: function(data, textStatus, jqXHR) {
-      // remove the user from the list
-      //$('div.friend-list-item').has('a[data-userid="' + data.related_user_id + '"]').remove();
-      // disable the link
-      $('div.friend-list-item > a[data-userid="' + data.related_user_id + '"]').addClass('disabled');
+      changeToRemoveFriendRequest($('div.friend-list-item a[data-userid="' + data.related_user_id + '"]').get());
+      g_existingRequests.push( { id: data.id, related_user_id: data.related_user_id, status: data.status } );
     },
     error: function(jqXHR, textStatus, errorThrown) {
       alert('failed [' + textStatus + ']: ' + errorThrown);
     }
   });
+}
+function deleteRelationshipRequest(userId) {
+  var request = getExistingRequestByUserId(userId);
+  $.ajax({
+    type: 'DELETE',
+    dataType: 'json',
+    url: '<%= j relationship_requests_url %>/' + request.id,
+    success: function(data, textStatus, jqXHR) {
+      changeToAddFriendRequest($('div.friend-list-item a[data-userid="' + userId + '"]').get());
+      g_existingRequests.splice(getRequestIndex(request.id), 1);
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      alert('failed [' + textStatus + ']: ' + errorThrown);
+    }
+  });
+}
+var g_existingRequests = [ <% @existing_requests.each_with_index { |request, index| %><%= (index > 0) ? ', ' : '' %>{ id: <%= request.id%>, related_user_id: <%= request.related_user_id %>, status: '<%= request.status %>' }<% }%> ];
+function initSearchResults() {
+  $('div.friend-list-item a[data-action="add"]').each(
+    function (index, element) {
+      var relatedUserId = parseInt($(element).data('userid'));
+      var existingRequest = getExistingRequestByUserId(relatedUserId);
+      if (existingRequest == null) {
+        changeToAddFriendRequest(element);
+      }
+      else {
+        if (existingRequest.status == 'status_rejected') {
+          $('div.friend-list-item[data-userid="' + relatedUserId + '"]').parent().remove();
+        }
+        else {
+          changeToRemoveFriendRequest(element);
+        }
+      }
+    }
+  );
+}
+function getExistingRequestByUserId(relatedUserId) {
+  for (var arrayIndex = 0; arrayIndex < g_existingRequests.length; arrayIndex++ ) {
+    if (g_existingRequests[arrayIndex].related_user_id == relatedUserId) {
+      return g_existingRequests[arrayIndex];
+    }
+  }
+  return null;
+}
+function getRequestIndex(requestId) {
+  for (var arrayIndex = 0; arrayIndex < g_existingRequests.length; arrayIndex++ ) {
+    if (g_existingRequests[arrayIndex].id == requestId) {
+      return arrayIndex;
+    }
+  }
+  return -1;
+}
+function changeToAddFriendRequest(anchor) {
+  $(anchor).find('span').first().removeClass('glyphicon-minus').addClass('glyphicon-plus');
+  $(anchor).prop('title', 'Send Friend Request');
+  $(anchor).data('action', 'add')
+}
+function changeToRemoveFriendRequest(anchor) {
+  $(anchor).find('span').first().removeClass('glyphicon-plus').addClass('glyphicon-minus');
+  $(anchor).prop('title', 'Cancel Friend Request');
+  $(anchor).data('action', 'delete')
 }
 </script>
 <% end %>
@@ -29,7 +88,7 @@ function createRelationshipRequest(user_id) {
     <div class="input-group">
       <%= f.search_field :name, hide_label: true, placeholder:'Name', title:'Name', class:'input-sm' %>
       <span class="input-group-btn">
-        <button class="btn btn-default btn-primary btn-sm" type="submit"><span class='glyphicon glyphicon-search' /></button>
+        <button class="btn btn-default btn-primary btn-sm" type="submit"><span class='glyphicon glyphicon-search'></span></button>
       </span>
     </div>
     <% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140707195444) do
+ActiveRecord::Schema.define(version: 20140722200934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,17 @@ ActiveRecord::Schema.define(version: 20140707195444) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "composite_network_member", force: true do |t|
+    t.integer  "composite_network_id", null: false
+    t.integer  "member_network_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "composite_network_member", ["composite_network_id", "member_network_id"], :name => "idx_composite_network_member_on_composite_and_member_networks", :unique => true
+  add_index "composite_network_member", ["composite_network_id"], :name => "index_composite_network_member_on_composite_network_id"
+  add_index "composite_network_member", ["member_network_id"], :name => "index_composite_network_member_on_member_network_id"
 
   create_table "hunting_location", force: true do |t|
     t.integer  "hunting_plot_id",                                                          null: false
@@ -125,6 +136,33 @@ ActiveRecord::Schema.define(version: 20140707195444) do
   add_index "user_hunting_plot_access", ["hunting_plot_id"], :name => "index_user_hunting_plot_access_on_hunting_plot_id"
   add_index "user_hunting_plot_access", ["user_id", "hunting_plot_id"], :name => "index_user_hunting_plot_access_on_user_id_and_hunting_plot_id", :unique => true
   add_index "user_hunting_plot_access", ["user_id"], :name => "index_user_hunting_plot_access_on_user_id"
+
+  create_table "user_network", force: true do |t|
+    t.string   "name",         limit: 100, null: false
+    t.integer  "network_type",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_network_boundary", force: true do |t|
+    t.integer  "user_network_id",                                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.spatial  "boundary",        limit: {:srid=>4326, :type=>"polygon"}
+  end
+
+  add_index "user_network_boundary", ["user_network_id"], :name => "index_user_network_boundary_on_user_network_id"
+
+  create_table "user_network_subscription", force: true do |t|
+    t.integer  "user_id",         null: false
+    t.integer  "user_network_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_network_subscription", ["user_id", "user_network_id"], :name => "idx_user_network_subscription_on_user_and_network", :unique => true
+  add_index "user_network_subscription", ["user_id"], :name => "index_user_network_subscription_on_user_id"
+  add_index "user_network_subscription", ["user_network_id"], :name => "index_user_network_subscription_on_user_network_id"
 
   create_table "user_post", force: true do |t|
     t.integer  "created_by_id",              null: false

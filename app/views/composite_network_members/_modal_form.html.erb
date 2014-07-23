@@ -1,0 +1,7 @@
+<% provide(:title, 'Composite Network Member') %>
+<%= bootstrap_form_for [@user_network,@composite_network_member], remote: true do |f| %>
+  <% if @composite_network_member.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @composite_network_member } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

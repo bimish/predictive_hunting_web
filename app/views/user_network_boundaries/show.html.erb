@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%= notice %></p>
+
+    <p>
+      <strong>User network:</strong>
+      <%= get_user_network_description(@user_network_boundary) %>
+    </p>
+
+    <p>
+      <strong>Boundary:</strong>
+      <%= @user_network_boundary.boundary %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_network_boundary_path(@user_network_boundary) %> |
+    <%= link_to 'Back', user_network_boundaries_path %>
+
+  </div>
+</div>

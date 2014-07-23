@@ -1,9 +1,9 @@
 class FriendsController < ApplicationController
 
   before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
-  before_filter :correct_user, only: [:edit, :update, :destroy]
 
   before_action :set_user_relationship, only: [:show, :edit, :update, :destroy, :delete]
+  before_action :authorize_action, only: [:show, :edit, :update, :destroy, :delete]
 
   # GET /friends
   def index
@@ -18,11 +18,12 @@ class FriendsController < ApplicationController
   def new
     @user_relationship = UserRelationship.new
     @user_relationship.init_new current_user
+    @existing_requests = RelationshipRequest.where(created_by_id: current_user.id)
   end
 
   def new_friend_search
     #@users = User.joins('LEFT OUTER JOIN user_relationship ON ("user".id = user_relationship.related_user_id AND user_relationship.owning_user_id = 2)').where(admin: false).where('user_relationship.related_user_id IS NULL').where.not(id: current_user.id)
-    @users = User.search_new_friends(current_user, nil)
+    @users = User.search_new_friends(current_user, params[:name])
   end
 
   # GET /friends/1/edit
@@ -30,22 +31,21 @@ class FriendsController < ApplicationController
   end
 
   # POST /friends
-  def create
-    @user_relationship = UserRelationship.new(user_relationship_create_params)
-    @user_relationship.init_new current_user
-
-    respond_to do |format|
-      if @user_relationship.save
-        format.html { redirect_to @user_relationship, notice: 'User relationship was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @user_relationship }
-        format.js
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @user_relationship.errors, status: :unprocessable_entity }
-        format.js { render action: 'new' }
-      end
-    end
-  end
+  # def create
+  #   @user_relationship = UserRelationship.new(user_relationship_create_params)
+  #   @user_relationship.init_new current_user
+  #   respond_to do |format|
+  #     if @user_relationship.save
+  #       format.html { redirect_to @user_relationship, notice: 'User relationship was successfully created.' }
+  #       format.json { render action: 'show', status: :created, location: @user_relationship }
+  #       format.js
+  #     else
+  #       format.html { render action: 'new' }
+  #       format.json { render json: @user_relationship.errors, status: :unprocessable_entity }
+  #       format.js { render action: 'new' }
+  #     end
+  #   end
+  # end
 
   # PATCH/PUT /friends/1
   def update
@@ -64,7 +64,7 @@ class FriendsController < ApplicationController
 
   # DELETE /friends/1
   def destroy
-    @user_relationship.destroy
+    UserRelationship.remove_relationship @user_relationship
     respond_to do |format|
       format.html { redirect_to user_relationships_url, notice: 'User relationship was successfully destroyed.' }
       format.json { head :no_content }
@@ -84,6 +84,10 @@ class FriendsController < ApplicationController
 
     def user_relationship_create_params
       params.require(:user_relationship).permit(:related_user_id, :relationship_type)
+    end
+
+    def authorize_action
+      raise Exceptions::NotAuthorized unless @user_relationship.authorize_action?(current_user, params[:action].to_sym)
     end
 
 end

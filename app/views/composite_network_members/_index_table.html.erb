@@ -1,0 +1,13 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Composite network</th>
+      <th>Member network</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'composite_network_members/index_item', :collection => @composite_network_members, :as => :composite_network_member %>
+  </tbody>
+</table>

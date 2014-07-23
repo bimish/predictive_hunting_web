@@ -1,0 +1,7 @@
+<%= bootstrap_form_for(@user_network_subscription) do |f| %>
+  <% if @user_network_subscription.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user_network_subscription } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @user_network_subscription, 'User Network Subscription') %>
+<% end %>

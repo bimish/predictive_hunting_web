@@ -1,12 +1,13 @@
 class HuntingLocationsController < ApplicationController
 
   before_action :set_hunting_location, only: [:show, :edit, :update, :destroy, :delete]
+  before_action :set_hunting_plot
 
   include HuntingLocationsControllerExtensions
 
   # GET /hunting_locations
   def index
-    @hunting_locations = HuntingLocation.all
+    @hunting_locations = @hunting_plot.locations
   end
 
   # GET /hunting_locations/1
@@ -16,6 +17,7 @@ class HuntingLocationsController < ApplicationController
   # GET /hunting_locations/new
   def new
     @hunting_location = HuntingLocation.new
+    @hunting_location.hunting_plot_id = params[:hunting_plot_id]
     @hunting_location.init_new current_user
   end
 
@@ -26,6 +28,7 @@ class HuntingLocationsController < ApplicationController
   # POST /hunting_locations
   def create
     @hunting_location = HuntingLocation.new(hunting_location_create_params)
+    @hunting_location.hunting_plot_id = params[:hunting_plot_id]
     @hunting_location.init_new current_user
 
     respond_to do |format|
@@ -71,13 +74,20 @@ class HuntingLocationsController < ApplicationController
     def set_hunting_location
       @hunting_location = HuntingLocation.find(params[:id])
     end
+    def set_hunting_plot
+      if @hunting_location.nil?
+        @hunting_plot = HuntingPlot.find(params[:hunting_plot_id])
+      else
+        @hunting_plot = @hunting_location.hunting_plot
+      end
+    end
 
     def hunting_location_update_params
       params.require(:hunting_location).permit(:name, :coordinates, :location_type)
     end
 
     def hunting_location_create_params
-      params.require(:hunting_location).permit(:hunting_plot_id, :name, :coordinates, :location_type)
+      params.require(:hunting_location).permit(:name, :coordinates, :location_type)
     end
 
 end

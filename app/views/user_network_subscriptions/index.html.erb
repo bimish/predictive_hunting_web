@@ -1,0 +1,15 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing User Network Subscriptions</h3>
+
+    <%= render :partial => 'index_table', locals: { user_network_subscriptions: @user_network_subscriptions } %>
+
+    <div id="inline-form"></div>
+
+    <%= link_to 'New User Network Subscription', new_user_network_subscription_path, { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<% content_for :head do %>
+<script type="text/javascript">
+$(document).ready(
+  function() {
+    $(".frli-commands a").click(
+      function(eventObject) {
+        var requestId = $(this).data('requestid');
+        var action = $(this).data('action');
+        processRequest(requestId, action);
+        eventObject.preventDefault();
+      }
+    )
+  }
+);
+function processRequest(requestId, action) {
+  var url = null;
+  switch (action) {
+    case 'accept':
+      url = '<%= j accept_friend_request_path('_requestId_') %>';
+      break;
+    case 'reject':
+      url = '<%= j reject_friend_request_path('_requestId_') %>';
+      break;
+    default:
+      throw 'Unsupported action (' + action + ')';
+  }
+  url = url.replace('_requestId_', requestId);
+  $.ajax({
+    type: 'PATCH',
+    contentType: 'application/json',
+    dataType: 'json',
+    url: url,
+    success: function(data, textStatus, jqXHR) {
+      $('div.friend-request-list-item[data-requestid="' + data.id + '"]').remove();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      alert('failed [' + textStatus + ']: ' + errorThrown);
+    }
+  });
+}
+</script>
+<% end %>
+<% @existing_requests.each do |existing_request| %>
+<div class="row">
+  <div class="col-md-12">
+  <%= render :partial => 'index_item', :locals => { :relationship_request => existing_request } %>
+  </div>
+</div>
+<% end %>

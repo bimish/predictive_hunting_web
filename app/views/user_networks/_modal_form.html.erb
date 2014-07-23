@@ -1,0 +1,7 @@
+<% provide(:title, 'User Network') %>
+<%= bootstrap_form_for @user_network, remote: true do |f| %>
+  <% if @user_network.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user_network } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

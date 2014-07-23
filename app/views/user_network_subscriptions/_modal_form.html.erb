@@ -1,0 +1,7 @@
+<% provide(:title, 'User Network Subscription') %>
+<%= bootstrap_form_for @user_network_subscription, remote: true do |f| %>
+  <% if @user_network_subscription.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user_network_subscription } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

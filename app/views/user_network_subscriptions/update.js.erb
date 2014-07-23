@@ -1,0 +1,1 @@
+$('tr[data-id="<%=@user_network_subscription.id%>"]').replaceWith('<%= j render(:partial => 'index_item', :locals => { :user_network_subscription => @user_network_subscription })%>');

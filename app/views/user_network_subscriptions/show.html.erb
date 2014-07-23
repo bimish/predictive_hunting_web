@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%= notice %></p>
+
+    <p>
+      <strong>User:</strong>
+      <%= get_user_description(@user_network_subscription) %>
+    </p>
+
+    <p>
+      <strong>User network:</strong>
+      <%= @user_network_subscription.user_network_id %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_network_subscription_path(@user_network_subscription) %> |
+    <%= link_to 'Back', user_network_subscriptions_path %>
+
+  </div>
+</div>

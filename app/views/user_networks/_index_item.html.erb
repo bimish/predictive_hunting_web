@@ -1,0 +1,7 @@
+<tr data-id="<%=user_network.id%>">
+  <td><%= user_network.name %></td>
+  <td><%= EnumsHelper::UserNetworkEnums::get_network_type_description(user_network.network_type) %></td>
+  <td><%= item_show_command(user_network_path(user_network)) %></td>
+  <td><%= item_edit_command(edit_user_network_path(user_network), { remote: true }) %></td>
+  <td><%= item_delete_command(user_network_path(user_network), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

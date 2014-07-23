@@ -1,5 +1,5 @@
 <% user = user_relationship.related_user %>
-<div class="friend-list-item">
+<div class="friend-list-item" data-userid="<%=user.id%>">
   <div class="fli-avatar">
     <%= link_to gravatar_for(user), friend_path(user_relationship) %>
   </div>

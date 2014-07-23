@@ -1,4 +1,4 @@
-<%= bootstrap_form_for(@hunting_location) do |f| %>
+<%= bootstrap_form_for([@hunting_plot, @hunting_location]) do |f| %>
   <% if @hunting_location.errors.any? %>
     <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location } %>
   <% end %>

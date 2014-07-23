@@ -1,0 +1,1 @@
+$('tr[data-id="<%=@composite_network_member.id%>"]').replaceWith('<%= j render(:partial => 'index_item', :locals => { :composite_network_member => @composite_network_member })%>');

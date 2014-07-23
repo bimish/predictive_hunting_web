@@ -1,0 +1,7 @@
+<tr data-id="<%=user_network_boundary.id%>">
+  <td><%= (user_network_boundary.user_network_id.nil?) ? nil : user_network_boundary.user_network.get_display_name %></td>
+  <td><%= user_network_boundary.boundary %></td>
+  <td><%= item_show_command(user_network_boundary_path(user_network_boundary)) %></td>
+  <td><%= item_edit_command(edit_user_network_boundary_path(user_network_boundary), { remote: true }) %></td>
+  <td><%= item_delete_command(user_network_boundary_path(user_network_boundary), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

@@ -1,0 +1,43 @@
+<% user = relationship_request.created_by_user %>
+<div class="friend-request-list-item" data-requestid="<%= relationship_request.id %>">
+  <div class="frli-avatar"><%= gravatar_for(user) %></div>
+  <div>
+    <%
+      user_name = "#{user.first_name} #{user.last_name}"
+      unless (user.alias.blank? || (0 == user_name.casecmp(user.alias)))
+        user_name = "#{user.alias} (#{user_name})"
+      end
+    %>
+    <span class="frli-name"><%= user_name %></span>
+    <span class="frli-commands">
+      <%=
+        link_to(
+          combine_tags(bootstrap_glyphicon('ok', class:'text-success'), content_tag(:span, ' Accept')),
+          '#',
+          {
+            class: 'btn btn-default btn-xs',
+            title:'Accept',
+            data: {
+              requestid: relationship_request.id,
+              action: 'accept'
+            }
+          }
+        )
+      %>
+      <%=
+        link_to(
+          combine_tags(bootstrap_glyphicon('remove', class:'text-danger'), content_tag(:span, ' Ignore')),
+          '#',
+          {
+            class: 'btn btn-default btn-xs',
+            title:'Ignore',
+            data: {
+              requestid: relationship_request.id,
+              action: 'reject'
+            }
+          }
+        )
+      %>
+    </span>
+  </div>
+</div>

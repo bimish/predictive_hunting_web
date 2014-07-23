@@ -210,7 +210,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">Locations</div>
           <div class="panel-body">
-            <%= render partial:'/hunting_locations/items_list', :locals => { :hunting_locations => @hunting_plot.locations, :include_plot => false, :editable => false } %>
+            <%= render partial:'/hunting_locations/index_table', :locals => { :hunting_locations => @hunting_plot.locations, :attribute_list => [:name, :location_type], :editable => false } %>
           </div>
         </div>
       </div>

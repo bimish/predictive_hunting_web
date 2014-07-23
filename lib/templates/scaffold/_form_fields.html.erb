@@ -14,7 +14,11 @@ model_attributes.each do |attribute|
 -%>
 <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.reference.name.to_s.pluralize %>) %>
 <%-
-    elsif attribute.has_value_list? || attribute.is_enum?
+    elsif attribute.is_enum?
+-%>
+<%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', EnumsHelper::<%=singular_table_name.camelize%>Enums::<%= attribute.name.to_s.pluralize %>) %>
+<%-
+    elsif attribute.has_value_list?
 -%>
 <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.name.to_s.pluralize %>) %>
 <%-

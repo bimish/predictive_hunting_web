@@ -1,3 +1,5 @@
+require "exceptions"
+
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -9,6 +11,8 @@ class ApplicationController < ActionController::Base
   helper :item_commands
   helper :forms
   helper :bootstrap
+  helper :enums
+  helper :nested_urls
 
 #disable caching
 def set_as_private

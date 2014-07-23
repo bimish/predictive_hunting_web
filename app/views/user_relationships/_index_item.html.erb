@@ -1,6 +1,6 @@
 <tr data-id="<%=user_relationship.id%>">
   <td><%= (user_relationship.owning_user_id.nil?) ? nil : user_relationship.owning_user.get_display_name %></td>
-  <td><%= user_relationship.related_user_id %></td>
+  <td><%= (user_relationship.related_user_id.nil?) ? nil : user_relationship.related_user.get_display_name %></td>
   <td><%= @view_data.get_relationship_type_description(user_relationship.relationship_type) %></td>
   <td><%= item_show_command(user_relationship_path(user_relationship)) %></td>
   <td><%= item_edit_command(edit_user_relationship_path(user_relationship), { remote: true }) %></td>

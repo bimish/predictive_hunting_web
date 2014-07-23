@@ -15,6 +15,11 @@ a.no-hover:hover {
   margin-right:5px;
 }
 
+.user-notification-alert {
+  font-size: 12pt;
+  color: $alert-info-text;
+}
+
 /* user post feed */
 .feed-item {
   margin-top: 0.5em;
@@ -97,12 +102,13 @@ a.no-hover:hover {
 .friend-list-item {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
+  padding: 0.5em;
   border: 1px solid $nav-tabs-border-color;
   /*border-radius: $border-radius-large;*/
 }
 .fli-avatar {
   float:left;
-  margin:5px;
+  margin-right:5px;
   height:100%;
 }
 .fli-name {
@@ -115,6 +121,34 @@ a.no-hover:hover {
   display:block;
 }
 .fli-commands {
+  float: clear;
+  margin-top:0.5em;
+  display:block;
+}
+
+/* friend request list */
+.friend-request-list-item {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding: 0.5em;
+  border: 1px solid $nav-tabs-border-color;
+  /*border-radius: $border-radius-large;*/
+}
+.frli-avatar {
+  float:left;
+  margin-right:0.5em;
+  height:100%;
+}
+.frli-name {
+  /*font-weight: bold;*/
+  display:block;
+}
+.frli-email {
+  color: gray;
+  font-size: 85%;
+  display:block;
+}
+.frli-commands {
   margin-top:0.5em;
   display:block;
 }

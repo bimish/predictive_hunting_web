@@ -4,31 +4,49 @@ Web::Application.routes.draw do
   resources :animal_activity_types
   resources :animal_categories
   resources :animal_species
-  resources :hunting_locations
-  resources :hunting_plots do
+
+  resources :hunting_plots, shallow: true do
     member do
       get 'edit_location'
     end
-  end
-
-  resources :hunting_plot_named_animals do
-    collection do
-      post 'search'
+    resources :named_animals, as: 'named_animals', controller: 'hunting_plot_named_animals', :only => [:index, :create, :new] do
+    end
+    resources :hunting_locations do
     end
   end
 
+  resources :hunting_plot_named_animals, :except => [:index, :create, :new]
+
   resources :sessions, only: [:new, :create, :destroy]
   resources :users
-  resources :user_relationships
   resources :user_hunting_plot_accesses
+
+  resources :user_networks, shallow: true do
+    resources :members, as:'members', controller: 'composite_network_members', :only => [:index, :create, :new] do
+    end
+  end
+
+  resources :composite_network_members, :except => [:index, :create, :new]
+
+  resources :user_network_subscriptions
+
   resources :user_posts do
     collection do
       post 'status'
     end
   end
+  resources :user_relationships
+
   resources :relationship_requests
-  resources :friends do
+
+  resources :friends, :only => [:show, :new, :edit, :update, :index, :destroy] do
     post 'search', on: :new, to: 'friends#new_friend_search'
+    collection do
+      resources :requests, as: 'friend_requests', controller: 'friend_requests', :only => [:index, :show] do
+        patch 'accept', on: :member
+        patch 'reject', on: :member
+      end
+    end
   end
 
   get '/signup', to: 'users#new'

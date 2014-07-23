@@ -1,8 +1,15 @@
 $('#new_friend_search_results').html('<%= j render(:partial => 'new_friend_search_results', :locals => { :users => @users })%>');
 $('#new_friend_search_results a[href="#new_relationship_request"]').click(
   function(eventObject) {
+    var action = $(this).data('action');
     var userId = $(this).data('userid');
-    createRelationshipRequest(userId);
+    if (action == 'add') {
+      createRelationshipRequest(userId);
+    }
+    else {
+      deleteRelationshipRequest(userId);
+    }
     eventObject.preventDefault();
   }
 );
+initSearchResults();

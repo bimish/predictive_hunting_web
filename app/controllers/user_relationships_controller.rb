@@ -1,9 +1,9 @@
 class UserRelationshipsController < ApplicationController
 
   before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
-  before_filter :correct_user, only: [:edit, :update, :destroy]
 
   before_action :set_user_relationship, only: [:show, :edit, :update, :destroy, :delete]
+  before_action :authorize_action, only: [:show, :edit, :update, :destroy, :delete]
 
   include UserRelationshipsControllerExtensions
 
@@ -81,6 +81,10 @@ class UserRelationshipsController < ApplicationController
 
     def user_relationship_create_params
       params.require(:user_relationship).permit(:related_user_id, :relationship_type)
+    end
+
+    def authorize_action
+      raise Exceptions::NotAuthorized unless @user_relationship.authorize_action?(current_user, params[:action].to_sym)
     end
 
 end

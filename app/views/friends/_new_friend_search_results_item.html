@@ -1,4 +1,4 @@
-<div class="friend-list-item" data-userid="">
+<div class="friend-list-item" data-userid="<%= user.id%>">
   <div class="fli-avatar"><%= gravatar_for(user) %></div>
   <div>
     <%
@@ -18,7 +18,8 @@
             class: 'btn btn-default btn-xs',
             title:'Add Friend',
             data: {
-              userid: user.id
+              userid: user.id,
+              action: 'add'
             }
           }
         )

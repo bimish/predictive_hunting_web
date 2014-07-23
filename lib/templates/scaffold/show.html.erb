@@ -7,8 +7,10 @@
     <p>
       <strong><%= attribute.human_name %>:</strong>
     <%- if (attribute.reference?) -%>
-      <%%= get_<%= attribute.reference.name %>_description(@<%= singular_table_name %>) %>
-    <%- elsif (attribute.has_value_list? || attribute.is_enum?) -%>
+      <%%= (<%= singular_table_name %>.<%= attribute.name%>.nil?) ? nil : <%= singular_table_name %>.<%= attribute.reference.name %>.get_display_name %>
+    <%- elsif attribute.is_enum? -%>
+      <%%= EnumsHelper::<%=singular_table_name.camelize%>Enums::get_<%= attribute.name %>_description(@<%= singular_table_name %>.<%=attribute.name%>) %>
+    <%- elsif attribute.has_value_list? -%>
       <%%= @view_data.get_<%= attribute.name %>_description(@<%= singular_table_name %>.<%=attribute.name%>) %>
     <%- else -%>
       <%%= @<%= singular_table_name %>.<%= attribute.name %> %>

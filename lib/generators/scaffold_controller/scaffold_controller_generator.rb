@@ -15,6 +15,10 @@ module Rails
 
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
 
+      def initialize(args, *options)
+        super
+      end
+
       def create_controller_files
 
         template "controller.rb", File.join('app/controllers', controller_class_path, "#{controller_file_name}_controller.rb")

@@ -1,0 +1,14 @@
+<table class="table">
+  <thead>
+    <tr>
+<%- model_attributes.reject(&:password_digest?).each do |attribute| -%>
+      <th><%= attribute.human_name %></th>
+<%- end -%>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%%= render :partial => '<%= plural_table_name %>/index_item', :collection => @<%= plural_table_name %>, :as => :<%= singular_table_name %> %>
+  </tbody>
+</table>

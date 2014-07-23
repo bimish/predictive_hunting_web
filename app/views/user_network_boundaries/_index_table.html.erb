@@ -1,0 +1,13 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>User network</th>
+      <th>Boundary</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'user_network_boundaries/index_item', :collection => @user_network_boundaries, :as => :user_network_boundary %>
+  </tbody>
+</table>

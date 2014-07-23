@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <!--<p id="notice"><%= notice %></p>-->
+
+    <p>
+      <strong>Composite network:</strong>
+      <%= (@composite_network_member.composite_network_id.nil?) ? nil : @composite_network_member.composite_network.get_display_name %>
+    </p>
+
+    <p>
+      <strong>Member network:</strong>
+      <%= (@composite_network_member.member_network_id.nil?) ? nil : @composite_network_member.member_network.get_display_name %>
+    </p>
+
+    <%= link_to 'Edit', edit_composite_network_member_path(@composite_network_member) %> |
+    <%= link_to 'Back', user_network_composite_network_members_path(@user_network) %>
+
+  </div>
+</div>
