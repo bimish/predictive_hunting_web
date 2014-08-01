@@ -1,0 +1,93 @@
+<%
+  if (defined?(parent_network) && !parent_network.nil?)
+    breadcrumb_networks = Array.new
+    breadcrumb_network = parent_network.parent_network
+    while !breadcrumb_network.nil?
+      breadcrumb_networks.push( { name: breadcrumb_network.name, id: breadcrumb_network.id } )
+      breadcrumb_network = breadcrumb_network.parent_network
+    end
+    breadcrumb_networks.reverse!
+%>
+<ol class="breadcrumb">
+  <% breadcrumb_networks.each do |breadcrumb_network| %>
+    <%=
+      content_tag :li do
+        link_to(
+          breadcrumb_network[:name],
+          child_list_user_network_subscriptions_path(breadcrumb_network[:id]),
+          {
+            remote: true,
+            title:'List Networks',
+            data: {
+              networkid: breadcrumb_network[:id],
+              action: 'list-children'
+            }
+          }
+        )
+      end
+    %>
+  <% end %>
+  <li class="active"><%= parent_network.name %></li>
+  <%
+  %>
+</ol>
+<% end %>
+
+<%
+  ConfigData::user_network_categories.each do |category|
+    category_networks = child_networks.select { |network| network.category_id == category[:id] }
+    unless category_networks.empty?
+%>
+<h5><%=category[:name].pluralize %></h5>
+<ul class="subscriptions-list">
+  <%
+    category_networks.sort! { |a, b| a.name <=> b.name }
+    category_networks.each do |network|
+      subscription_name = network.name
+      if category[:is_composite]
+  %>
+  <li>
+    <%=
+      link_to(
+        combine_tags(content_tag(:span, "#{subscription_name} "), bootstrap_glyphicon('chevron-right')),
+        child_list_user_network_subscriptions_path(network.id),
+        {
+          remote: true,
+          title:'List Networks',
+          data: {
+            networkid: network.id,
+            action: 'list-children'
+          }
+        }
+      )
+    %>
+  </li>
+  <%
+      else
+  %>
+  <li>
+    <%=
+      link_to(
+        combine_tags(content_tag(:span, "#{subscription_name} "), bootstrap_glyphicon('plus', class:'text-success')),
+        add_user_network_subscriptions_path(network_id: network.id),
+        {
+          remote: true,
+          method: :post,
+          title:'Subscribe to Network',
+          data: {
+            networkid: network.id,
+            action: 'subscribe'
+          }
+        }
+      )
+    %>
+  </li>
+  <%
+      end
+    end
+  %>
+</ul>
+<%
+    end
+  end
+%>

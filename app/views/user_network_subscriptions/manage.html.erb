@@ -1,0 +1,38 @@
+<% content_for :head do %>
+<script type="text/javascript">
+/*
+$(document).ready(
+  function() {
+    initializeNetworksList();
+  }
+);
+function initializeNetworksList() {
+  $('ul[class="subscriptions-list"] li a').onclick(
+    function(eventObject) {
+      var action = $(this).data('action');
+      var networkId = $(this).data('networkid');
+      processRequest(requestId, action);
+      eventObject.preventDefault();
+    }
+  );
+}
+*/
+</script>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">Current Subscriptions</div>
+      <div class="panel-body" id="current-subscriptions">
+      <%= render partial:'current_subscriptions_list', locals: { current_subscriptions: @current_subscriptions } %>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">Add Subscriptions</div>
+      <div class="panel-body" id='available-networks'>
+      <%= render partial:'available_subscriptions_list', locals: { child_networks: @top_level_networks } %>
+      </div>
+    </div>
+  </div>
+</div>

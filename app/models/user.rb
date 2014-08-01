@@ -27,6 +27,8 @@ class User < ActiveRecord::Base
     presence:true,
     if: ->(record) { record.new_record? || record.password_confirmation.present? || password.present?  }
 
+  validates :admin, inclusion: [true,false]
+
   enum authentication_method:  { authentication_method_direct: 1, authentication_method_facebook: 2, authentication_method_google: 3 }
 
   attr_readonly :admin
@@ -41,6 +43,8 @@ class User < ActiveRecord::Base
   has_many :users_following, through: :reverse_relationships, class_name:'User', source: :owning_user #, inverse_of: :related_user
 
   has_many :posts, class_name:'UserPost', foreign_key:'created_by_id'
+
+  has_many :network_subscriptions, class_name:'UserNetworkSubscription'
 
   def get_display_name
     self.alias

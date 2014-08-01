@@ -9,16 +9,28 @@ module GeneratorHelpers
       @source_model = model
     end
 
+    def parent_reference?
+      !self.parent_reference.nil?
+    end
+
+    def parent_reference
+      @parent_reference ||= @source_model.parent_reference_for self.name
+    end
+
+    def parent_reference_model
+      @parent_reference_model ||= @source_model.parent_model_for self.name
+    end
+
     def reference?
       !self.reference.nil?
     end
 
     def reference
-      @reference ||= @source_model.parent_reference_for self.name
+      @reference ||= @source_model.reference_for self.name
     end
 
     def reference_model
-      @reference_model ||= @source_model.parent_model_for self.name
+      @reference_model ||= @source_model.reference_model_for self.name
     end
 
     def required?

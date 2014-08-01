@@ -138,11 +138,15 @@ ActiveRecord::Schema.define(version: 20140722200934) do
   add_index "user_hunting_plot_access", ["user_id"], :name => "index_user_hunting_plot_access_on_user_id"
 
   create_table "user_network", force: true do |t|
-    t.string   "name",         limit: 100, null: false
-    t.integer  "network_type",             null: false
+    t.string   "name",              limit: 100, null: false
+    t.integer  "category_id",                   null: false
+    t.integer  "parent_network_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "user_network", ["category_id"], :name => "index_user_network_on_category_id"
+  add_index "user_network", ["parent_network_id"], :name => "index_user_network_on_parent_network_id"
 
   create_table "user_network_boundary", force: true do |t|
     t.integer  "user_network_id",                                         null: false
@@ -151,7 +155,18 @@ ActiveRecord::Schema.define(version: 20140722200934) do
     t.spatial  "boundary",        limit: {:srid=>4326, :type=>"polygon"}
   end
 
+  add_index "user_network_boundary", ["boundary"], :name => "index_user_network_boundary_on_boundary", :spatial => true
   add_index "user_network_boundary", ["user_network_id"], :name => "index_user_network_boundary_on_user_network_id"
+
+  create_table "user_network_category", force: true do |t|
+    t.string   "name",               limit: 100, null: false
+    t.boolean  "is_composite",                   null: false
+    t.integer  "parent_category_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_network_category", ["parent_category_id"], :name => "index_user_network_category_on_parent_category_id"
 
   create_table "user_network_subscription", force: true do |t|
     t.integer  "user_id",         null: false

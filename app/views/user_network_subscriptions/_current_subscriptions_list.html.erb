@@ -1,0 +1,12 @@
+<%= current_subscriptions.size() == 0 ? 'None' : '' %>
+<ul class="subscriptions-list">
+  <%
+    current_subscriptions.each do |subscription|
+      network = subscription.network
+      subscription_name = "#{network.name} (#{network.category.name})"
+  %>
+  <li><%= subscription_name %>&nbsp;&nbsp;<a href="#remove_subscription"><%= bootstrap_glyphicon('remove', class:'text-danger')%></a></li>
+  <%
+    end
+  %>
+</ul>

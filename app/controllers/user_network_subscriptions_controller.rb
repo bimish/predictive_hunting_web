@@ -6,7 +6,7 @@ class UserNetworkSubscriptionsController < ApplicationController
 
   # GET /user_network_subscriptions
   def index
-    @user_network_subscriptions = UserNetworkSubscription.all
+    @user_network_subscriptions = current_user.network_subscriptions.preload(:network)
   end
 
   # GET /user_network_subscriptions/1
@@ -64,6 +64,28 @@ class UserNetworkSubscriptionsController < ApplicationController
       format.json { head :no_content }
       format.js
     end
+  end
+
+  # GET /user_network_subscriptions/manage
+  def manage
+    @current_subscriptions = current_user.network_subscriptions.preload(:network)
+    @top_level_networks = UserNetwork.root_level_networks
+    @network_categories = UserNetworkCategory.all.map { |m| { id: m.id, name: m.name, is_composite: m.is_composite } }
+  end
+
+  # GET /user_network_subscriptions/child_networks/1
+  def child_networks
+    @parent_network = UserNetwork.find(params[:id])
+    @child_networks = @parent_network.child_networks
+  end
+
+  # GET /user_network_subscriptions/subscribe?network_id
+  def add_subscription
+    # TODO: proper error handling
+    @user_network_subscription = UserNetworkSubscription.new(user_network_id: params[:network_id])
+    @user_network_subscription.init_new current_user
+    @user_network_subscription.save
+    @current_subscriptions = current_user.network_subscriptions.preload(:network)
   end
 
   private

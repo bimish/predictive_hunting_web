@@ -134,6 +134,12 @@ module GeneratorHelpers
     #  end
     #end
 
+    def reference_for(col_name)
+      reference_reflection = model.reflections.values.detect do |reflection|
+        reflection.foreign_key == col_name && (reflection.macro == :has_one || reflection.macro == :belongs_to)
+      end
+    end
+
     def parent_reference_for(col_name)
       parent_reflection = model.reflections.values.detect do |reflection|
         reflection.foreign_key == col_name && reflection.macro == :belongs_to
@@ -150,6 +156,20 @@ module GeneratorHelpers
       else
         find_model(parent_reflection.name.to_s)
       end
+    end
+
+    def reference_model_for(col_name)
+      reference_reflection = reference_for(col_name)
+      if reference_reflection.nil?
+        nil
+      end
+      class_name = reference_reflection.name.to_s
+      if (reference_reflection.macro == :has_one && reference_reflection.options.has_key?(:class))
+        class_name = reference_reflection.options[:class]
+      elsif (reference_reflection.macro == :belongs_to && reference_reflection.options.has_key?(:class_name))
+        class_name = reference_reflection.options[:class_name]
+      end
+      find_model(class_name)
     end
 
     def validators

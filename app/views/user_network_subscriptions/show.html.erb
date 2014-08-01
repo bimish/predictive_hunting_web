@@ -5,12 +5,12 @@
 
     <p>
       <strong>User:</strong>
-      <%= get_user_description(@user_network_subscription) %>
+      <%= (@user_network_subscription.user_id.nil?) ? nil : @user_network_subscription.user.get_display_name %>
     </p>
 
     <p>
       <strong>User network:</strong>
-      <%= @user_network_subscription.user_network_id %>
+      <%= (@user_network_subscription.user_network_id.nil?) ? nil : @user_network_subscription.network.get_display_name %>
     </p>
 
     <%= link_to 'Edit', edit_user_network_subscription_path(@user_network_subscription) %> |

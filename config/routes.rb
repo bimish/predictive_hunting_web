@@ -21,6 +21,8 @@ Web::Application.routes.draw do
   resources :users
   resources :user_hunting_plot_accesses
 
+  resources :user_network_categories
+
   resources :user_networks, shallow: true do
     resources :members, as:'members', controller: 'composite_network_members', :only => [:index, :create, :new] do
     end
@@ -28,7 +30,13 @@ Web::Application.routes.draw do
 
   resources :composite_network_members, :except => [:index, :create, :new]
 
-  resources :user_network_subscriptions
+  resources :user_network_subscriptions do
+    collection do
+      get 'manage'
+      get 'child_networks/:id' => 'user_network_subscriptions#child_networks', as: :child_list
+      post 'subscribe' => 'user_network_subscriptions#add_subscription', as: :add
+    end
+  end
 
   resources :user_posts do
     collection do

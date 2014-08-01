@@ -1,0 +1,8 @@
+<tr data-id="<%=user_network_category.id%>">
+  <td><%= user_network_category.name %></td>
+  <td><%= user_network_category.is_composite %></td>
+  <td><%= (user_network_category.parent_category_id.nil?) ? nil : user_network_category.parent_category.get_display_name %></td>
+  <td><%= item_show_command(user_network_category_path(user_network_category)) %></td>
+  <td><%= item_edit_command(edit_user_network_category_path(user_network_category), { remote: true }) %></td>
+  <td><%= item_delete_command(user_network_category_path(user_network_category), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+</tr>

@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p id="notice"><%= notice %></p>
+
+    <p>
+      <strong>Name:</strong>
+      <%= @user_network_category.name %>
+    </p>
+
+    <p>
+      <strong>Is composite:</strong>
+      <%= @user_network_category.is_composite %>
+    </p>
+
+    <p>
+      <strong>Parent category:</strong>
+      <%= (@user_network_category.parent_category_id.nil?) ? nil : @user_network_category.parent_category.get_display_name %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_network_category_path(@user_network_category) %> |
+    <%= link_to 'Back', user_network_categories_path %>
+
+  </div>
+</div>

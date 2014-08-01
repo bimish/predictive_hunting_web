@@ -6,5 +6,6 @@ class CreateUserNetworkBoundary < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :user_network_boundary, :boundary, :spatial => true
   end
 end

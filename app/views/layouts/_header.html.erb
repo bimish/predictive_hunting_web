@@ -20,7 +20,7 @@
         <li><%= link_to "Home", root_path %></li>
         <% if signed_in? %>
         <li><%= link_to "Friends", friends_path %></li>
-        <li><%= link_to "Networks", root_path %></li>
+        <li><%= link_to "Networks", user_network_subscriptions_path %></li>
         <% if RelationshipRequest.user_has_pending_requests?(current_user) %>
           <li class="dropdown">
             <%= link_to(bootstrap_glyphicon('info-sign', class:'user-notification-alert'), '#', { class: 'dropdown-toggle', data: { toggle: 'dropdown' } }) %>

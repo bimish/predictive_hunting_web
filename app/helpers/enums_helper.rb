@@ -14,5 +14,11 @@ module EnumsHelper
     def self.get_network_type_description(network_type)
       network_type.sub("network_type_", "").humanize
     end
+    def self.categories
+      @@categories_map ||= UserNetwork.categories.collect { |item| [get_category_description(item[0]), item[0]] }
+    end
+    def self.get_category_description(category)
+      category.sub("category_", "").humanize
+    end
   end
 end

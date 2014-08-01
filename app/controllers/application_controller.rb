@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   helper :bootstrap
   helper :enums
   helper :nested_urls
+  helper ConfigData
 
 #disable caching
 def set_as_private

@@ -9,8 +9,13 @@
     </p>
 
     <p>
-      <strong>Network type:</strong>
-      <%= EnumsHelper::UserNetworkEnums::get_network_type_description(@user_network.network_type) %>
+      <strong>Category:</strong>
+      <%= (@user_network.category_id.nil?) ? nil : @user_network.category.get_display_name %>
+    </p>
+
+    <p>
+      <strong>Parent network:</strong>
+      <%= (@user_network.parent_network_id.nil?) ? nil : @user_network.parent_network.get_display_name %>
     </p>
 
     <%= link_to 'Edit', edit_user_network_path(@user_network) %> |

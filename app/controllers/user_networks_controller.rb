@@ -73,11 +73,11 @@ class UserNetworksController < ApplicationController
     end
 
     def user_network_update_params
-      params.require(:user_network).permit(:name, :network_type)
+      params.require(:user_network).permit(:name, :category_id, :parent_network_id)
     end
 
     def user_network_create_params
-      params.require(:user_network).permit(:name, :network_type)
+      params.require(:user_network).permit(:name, :category_id, :parent_network_id)
     end
 
 end

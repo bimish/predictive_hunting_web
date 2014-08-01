@@ -7,7 +7,7 @@
     <p>
       <strong><%= attribute.human_name %>:</strong>
     <%- if (attribute.reference?) -%>
-      <%%= (<%= singular_table_name %>.<%= attribute.name%>.nil?) ? nil : <%= singular_table_name %>.<%= attribute.reference.name %>.get_display_name %>
+      <%%= (@<%= singular_table_name %>.<%= attribute.name%>.nil?) ? nil : @<%= singular_table_name %>.<%= attribute.reference.name %>.get_display_name %>
     <%- elsif attribute.is_enum? -%>
       <%%= EnumsHelper::<%=singular_table_name.camelize%>Enums::get_<%= attribute.name %>_description(@<%= singular_table_name %>.<%=attribute.name%>) %>
     <%- elsif attribute.has_value_list? -%>

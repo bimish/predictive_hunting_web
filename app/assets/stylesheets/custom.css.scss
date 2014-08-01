@@ -152,3 +152,22 @@ a.no-hover:hover {
   margin-top:0.5em;
   display:block;
 }
+
+ul.subscriptions-list {
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 0px;
+  li {
+    display: inline-block;
+    padding-right: 1em;
+    padding-left: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    border: 1px solid $nav-tabs-border-color;
+    border-radius: $border-radius-large;
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+  }
+}
