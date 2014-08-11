@@ -1,0 +1,28 @@
+<% provide(:title, "Manage Hunting Plot (#{@hunting_plot.name})") %>
+
+<div id="navigation-tabs" class="well well-sm" role="tablist">
+  <ul class="nav nav-pills">
+    <li class="active"><a href="#name-location" role="tab" data-toggle="pill">Name &amp; Location</a></li>
+    <li><a href="#locations" role="tab" data-toggle="pill">Locations</a></li>
+    <li><a href="#members" role="tab" data-toggle="pill">Members</a></li>
+    <li><a href="#named-animals" role="tab" data-toggle="pill">Named Animals</a></li>
+  </ul>
+</div>
+
+<div id="content-tabs" class="tab-content row">
+  <div id="name-location" class="col-md-12 tab-pane active">
+    <strong>Name:</strong>
+    <span id="hunting_plot_name"><%= @hunting_plot.name %></span>
+    <div id="edit-name-form" style="display:none;"></div>
+    <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :name), { remote: true, class:'btn btn-default btn-sm', id:'change_name_button', title:'Edit name' } do |link| %>
+    <span class="glyphicon glyphicon-edit"></span>
+    <% end %>
+  </div>
+  <div id="locations" class="col-md-12 tab-pane">
+    <%= render partial:'/hunting_locations/index_table', :locals => { :hunting_locations => @hunting_plot.locations, :attribute_list => [:name, :location_type], :editable => false } %>
+  </div>
+  <div id="members" class="col-md-12 tab-pane">
+    <%= render partial:'/hunting_plot_user_accesses/index_table', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses, :attribute_list => [:name, :location_type], :editable => false } %>
+  </div>
+  <div id="named-animals" class="col-md-12 tab-pane">Named Animals</div>
+</div>

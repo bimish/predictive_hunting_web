@@ -7,7 +7,7 @@ class HuntingPlot < ActiveRecord::Base
 
   has_many :locations, :class_name => 'HuntingLocation'
   has_many :named_animals, :class_name => 'HuntingPlotNamedAnimal'
-  has_many :user_accesses, :class_name => 'UserHuntingPlotAccess'
+  has_many :user_accesses, :class_name => 'HuntingPlotUserAccess'
   has_many :users, through: :user_accesses, :class_name => 'User'
 
   def get_display_name

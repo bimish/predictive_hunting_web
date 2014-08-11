@@ -64,6 +64,30 @@ module GeneratorHelpers
       @source_model.is_write_once?(self.name)
     end
 
+    def is_flags?
+      @source_model.is_flags?(self.name)
+    end
+
+    def flags
+      @source_model.flags_for(self.name)
+    end
+
+    def flag_attribute_name(flag_value)
+      if (flag_value.is_a? String)
+        flag_name = flag_value
+      elsif (flag_value.is_a? Symbol)
+        flag_name = flag_value.to_s
+      else
+        flag_name = self.flags[:values][flag_value].to_s
+      end
+      flag_options = self.flags[:options]
+      if flag_options[:flag_prefix].blank?
+        "#{self.name}_#{flag_name}"
+      else
+        "#{self.name}_#{flag_options[:flag_prefix]}_#{flag_name}"
+      end
+    end
+
     private
 
   end

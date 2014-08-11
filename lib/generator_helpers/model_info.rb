@@ -224,6 +224,16 @@ module GeneratorHelpers
       model.defined_enums.detect { |key, value| (key.to_s == col_name) }
     end
 
+    def is_flags?(col_name)
+      !model.flags_attributes.nil? && model.flags_attributes.has_key?(col_name.to_s)
+    end
+
+    def flags_for(col_name)
+      if is_flags?(col_name)
+        model.flags_attributes[col_name]
+      end
+    end
+
   private
 
     def find_model(model_name)

@@ -12,6 +12,7 @@ class HuntingPlotsController < ApplicationController
   # GET /hunting_plots/1
   # GET /hunting_plots/1.json
   def show
+    render 'manage'
   end
 
   # GET /hunting_plots/new

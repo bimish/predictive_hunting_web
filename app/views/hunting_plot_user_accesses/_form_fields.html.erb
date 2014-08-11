@@ -1,0 +1,7 @@
+<%= _select_field(form, :user_id, 'User', @view_data.users) %>
+<%= _text_field(form, :alias, 'Alias', 255) %>
+<%= _check_box_list(form, 'Permissions') do |check_box_list| %>
+  <%= check_box_list.add_item(:permissions_can_administrate, 'Administrate', inline: true) %>
+  <%= check_box_list.add_item(:permissions_can_manage_locations, 'Manage Locations', inline: true) %>
+  <%= check_box_list.add_item(:permissions_can_manage_members, 'Manage Members', inline: true) %>
+<% end %>

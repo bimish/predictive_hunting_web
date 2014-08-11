@@ -13,13 +13,15 @@ Web::Application.routes.draw do
     end
     resources :hunting_locations do
     end
+    resources :user_accesses, as: 'user_accesses', controller: 'hunting_plot_user_accesses', :only => [:index, :create, :new] do
+    end
   end
 
   resources :hunting_plot_named_animals, :except => [:index, :create, :new]
+  resources :hunting_plot_user_accesses, :except => [:index, :create, :new]
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :users
-  resources :user_hunting_plot_accesses
 
   resources :user_network_categories
 
@@ -35,6 +37,9 @@ Web::Application.routes.draw do
       get 'manage'
       get 'child_networks/:id' => 'user_network_subscriptions#child_networks', as: :child_list
       post 'subscribe' => 'user_network_subscriptions#add_subscription', as: :add
+    end
+    member do
+      delete 'unsubscribe' => 'user_network_subscriptions#remove_subscription', as: :remove
     end
   end
 

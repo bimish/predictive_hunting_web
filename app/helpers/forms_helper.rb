@@ -1,7 +1,10 @@
 module FormsHelper
 
   def _check_box(form, instance_method, label, options = {})
-    form.check_box instance_method
+    if (!label.nil?)
+      options[:label] = label
+    end
+    form.check_box instance_method, options
   end
   def _color_field(form, instance_method, label, options = {})
     form.color_field instance_method
@@ -16,7 +19,10 @@ module FormsHelper
     form.datetime_local_field instance_method
   end
   def _datetime_select(form, instance_method, label, options = {})
-    form.datetime_select instance_method, { label:label }
+    if (!label.nil?)
+      options[:label] = label
+    end
+    form.datetime_select instance_method, options
   end
   def _email_field(form, instance_method, label, options = {})
     form.email_field instance_method
@@ -90,4 +96,28 @@ module FormsHelper
     options[:class] = 'btn btn-default btn-primary btn-sm'
     form.submit instance_record.nil? ? 'Search' : instance_record.new_record? ? 'Create' : 'Update', options
   end
+
+  def _check_box_list(form, title, options = {}, &block)
+    raise ArgumentError, "Missing block" unless block_given?
+    content_tag(:div, class:'form-group') do
+      check_box_list_builder = CheckBoxListBuilder.new(form)
+      label_tag(nil, title, class:'control-label') +
+      content_tag(:div, class:'input-group') do
+        yield check_box_list_builder
+      end
+    end
+  end
+
+  class CheckBoxListBuilder
+    def initialize(form)
+      @form = form
+    end
+    def add_item(instance_method, label, options = {})
+      if (!label.nil?)
+        options[:label] = label
+      end
+      @form.check_box instance_method, options
+    end
+  end
+
 end

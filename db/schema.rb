@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140722200934) do
+ActiveRecord::Schema.define(version: 20140805134104) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,6 +100,19 @@ ActiveRecord::Schema.define(version: 20140722200934) do
   add_index "hunting_plot_named_animal", ["animal_category_id"], :name => "index_hunting_plot_named_animal_on_animal_category_id"
   add_index "hunting_plot_named_animal", ["hunting_plot_id"], :name => "index_hunting_plot_named_animal_on_hunting_plot_id"
 
+  create_table "hunting_plot_user_access", force: true do |t|
+    t.integer  "user_id",                                 null: false
+    t.integer  "hunting_plot_id",                         null: false
+    t.string   "alias",           limit: 100
+    t.integer  "permissions",                 default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hunting_plot_user_access", ["hunting_plot_id"], :name => "index_hunting_plot_user_access_on_hunting_plot_id"
+  add_index "hunting_plot_user_access", ["user_id", "hunting_plot_id"], :name => "index_hunting_plot_user_access_on_user_id_and_hunting_plot_id", :unique => true
+  add_index "hunting_plot_user_access", ["user_id"], :name => "index_hunting_plot_user_access_on_user_id"
+
   create_table "relationship_request", force: true do |t|
     t.integer  "created_by_id",   null: false
     t.integer  "related_user_id", null: false
@@ -123,19 +136,6 @@ ActiveRecord::Schema.define(version: 20140722200934) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "user_hunting_plot_access", force: true do |t|
-    t.integer  "user_id",                                 null: false
-    t.integer  "hunting_plot_id",                         null: false
-    t.string   "alias",           limit: 100
-    t.integer  "permissions",                 default: 1
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_hunting_plot_access", ["hunting_plot_id"], :name => "index_user_hunting_plot_access_on_hunting_plot_id"
-  add_index "user_hunting_plot_access", ["user_id", "hunting_plot_id"], :name => "index_user_hunting_plot_access_on_user_id_and_hunting_plot_id", :unique => true
-  add_index "user_hunting_plot_access", ["user_id"], :name => "index_user_hunting_plot_access_on_user_id"
 
   create_table "user_network", force: true do |t|
     t.string   "name",              limit: 100, null: false

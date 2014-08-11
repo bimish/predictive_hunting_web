@@ -5,12 +5,8 @@ model_attributes.each do |attribute|
   <%%= _password_field(f, :password, 'Password') %>
   <%%= _password_field(f, :password_confirmation, 'Confirmation') %>
 <%-
-  elsif !attribute.is_component_assigned?
-    if attribute.is_controller_assigned?
--%>
-<%%= hidden_field_tag "<%=attribute.name%>", @view_data.<%=attribute.name%> %>
-<%-
-    elsif attribute.reference?
+  elsif !attribute.is_component_assigned? && !attribute.is_controller_assigned?
+    if attribute.reference?
 -%>
 <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.reference.name.to_s.pluralize %>) %>
 <%-
@@ -21,6 +17,18 @@ model_attributes.each do |attribute|
     elsif attribute.has_value_list?
 -%>
 <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.name.to_s.pluralize %>) %>
+<%-
+    elsif attribute.is_flags?
+-%>
+<%%= _check_box_list(form, '<%= attribute.human_name.titleize %>') do |check_box_list| %>
+  <%-
+      attribute.flags[:values].each do |flag_value, flag_name|
+  -%>
+  <%%= check_box_list.add_item(:<%= attribute.flag_attribute_name(flag_value) %>, '<%= flag_name.to_s.titleize %>', inline: true) %>
+  <%-
+      end
+  -%>
+<%% end %>
 <%-
     elsif (attribute.type == :string)
 -%>

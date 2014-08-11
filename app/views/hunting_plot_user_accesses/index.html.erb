@@ -1,0 +1,15 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing Hunting Plot User Accesses</h3>
+
+    <%= render :partial => 'index_table', locals: { hunting_plot_user_accesses: @hunting_plot_user_accesses } %>
+
+    <div id="inline-form"></div>
+
+    <%= link_to 'New Hunting Plot User Access', new_hunting_plot_user_access_path, { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

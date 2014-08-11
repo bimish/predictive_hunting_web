@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 
   attr_readonly :admin
 
-  has_many :hunting_plot_accesses, class_name:'UserHuntingPlotAccess'
+  has_many :hunting_plot_accesses, class_name:'HuntingPlotUserAccess'
   has_many :hunting_plots, through: :hunting_plot_accesses, class_name:'HuntingPlot'
 
   has_many :relationships, class_name:'UserRelationship', foreign_key:'owning_user_id' #, inverse_of: :owning_user

@@ -65,7 +65,7 @@
   <%
       else
   %>
-  <li>
+  <li data-networkid="<%=network.id%>">
     <%=
       link_to(
         combine_tags(content_tag(:span, "#{subscription_name} "), bootstrap_glyphicon('plus', class:'text-success')),
@@ -74,10 +74,6 @@
           remote: true,
           method: :post,
           title:'Subscribe to Network',
-          data: {
-            networkid: network.id,
-            action: 'subscribe'
-          }
         }
       )
     %>

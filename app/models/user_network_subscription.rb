@@ -14,6 +14,15 @@ class UserNetworkSubscription < ActiveRecord::Base
     self.network.name
   end
 
+  def authorize_action?(user, action)
+    case action
+    when :show, :create, :update, :destroy
+      self.user_id == user.id
+    else
+      raise ArgumentError, 'The specified action (' + action.to_s + ') is not supported'
+    end
+  end
+
 private
   def new_record_init(signed_in_user)
     self.user_id = signed_in_user.id unless signed_in_user.nil?

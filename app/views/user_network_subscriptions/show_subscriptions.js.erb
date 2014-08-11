@@ -1,0 +1,3 @@
+$('#current-subscriptions').html('<%= j render partial:'current_subscriptions_list', locals: { current_subscriptions: @current_subscriptions } %>');
+g_currentSubscriptions = [ <% @current_subscriptions.each_with_index do |subscription, index| %><%= (index > 0 ? ',' : '') %><%= subscription.user_network_id %><% end %> ];
+initializeAddSubscriptionsList();

@@ -1,22 +1,24 @@
 <% content_for :head do %>
 <script type="text/javascript">
-/*
 $(document).ready(
   function() {
-    initializeNetworksList();
+    initializeAddSubscriptionsList();
   }
 );
-function initializeNetworksList() {
-  $('ul[class="subscriptions-list"] li a').onclick(
-    function(eventObject) {
-      var action = $(this).data('action');
-      var networkId = $(this).data('networkid');
-      processRequest(requestId, action);
-      eventObject.preventDefault();
+var g_currentSubscriptions = [ <% @current_subscriptions.each_with_index do |subscription, index| %><%= (index > 0 ? ',' : '') %><%= subscription.user_network_id %><% end %> ];
+function initializeAddSubscriptionsList() {
+  $('#available-networks ul li').each(
+    function (index, element) {
+      var networkId = parseInt($(element).data('networkid'));
+      if ($.inArray(networkId, g_currentSubscriptions) >= 0) {
+        $(element).hide();
+      }
+      else {
+        $(element).show();
+      }
     }
   );
 }
-*/
 </script>
 <% end %>
 

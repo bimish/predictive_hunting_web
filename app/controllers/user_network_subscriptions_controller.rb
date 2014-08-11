@@ -1,6 +1,7 @@
 class UserNetworkSubscriptionsController < ApplicationController
 
   before_action :set_user_network_subscription, only: [:show, :edit, :update, :destroy, :delete]
+  before_action :authorize_action, only: [:show, :update, :destroy]
 
   include UserNetworkSubscriptionsControllerExtensions
 
@@ -86,6 +87,17 @@ class UserNetworkSubscriptionsController < ApplicationController
     @user_network_subscription.init_new current_user
     @user_network_subscription.save
     @current_subscriptions = current_user.network_subscriptions.preload(:network)
+    render 'show_subscriptions'
+  end
+
+  # GET /user_network_subscriptions/subscribe?network_id
+  def remove_subscription
+    # TODO: proper error handling
+    set_user_network_subscription
+    authorize_action :destroy
+    @user_network_subscription.destroy
+    @current_subscriptions = current_user.network_subscriptions.preload(:network)
+    render 'show_subscriptions'
   end
 
   private
@@ -100,6 +112,10 @@ class UserNetworkSubscriptionsController < ApplicationController
 
     def user_network_subscription_create_params
       params.require(:user_network_subscription).permit(:user_network_id)
+    end
+
+    def authorize_action(action = params[:action].to_sym)
+      raise Exceptions::NotAuthorized unless @user_network_subscription.authorize_action?(current_user, action)
     end
 
 end

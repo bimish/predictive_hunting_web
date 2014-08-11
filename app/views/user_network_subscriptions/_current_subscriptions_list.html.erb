@@ -1,12 +1,34 @@
 <%= current_subscriptions.size() == 0 ? 'None' : '' %>
 <ul class="subscriptions-list">
-  <%
-    current_subscriptions.each do |subscription|
-      network = subscription.network
-      subscription_name = "#{network.name} (#{network.category.name})"
-  %>
-  <li><%= subscription_name %>&nbsp;&nbsp;<a href="#remove_subscription"><%= bootstrap_glyphicon('remove', class:'text-danger')%></a></li>
-  <%
+<%
+  current_subscriptions.each do |subscription|
+    network = subscription.network
+    subscription_name = "#{network.name} #{network.category.name}"
+    parent_network = subscription.network.parent_network
+    while !parent_network.nil?
+      subscription_name << ", #{parent_network.name}"
+      parent_network = parent_network.parent_network
     end
-  %>
+%>
+<%=
+    content_tag :li do
+      concat subscription_name + ' '
+      concat link_to(
+        bootstrap_glyphicon('remove', class:'text-danger'),
+        remove_user_network_subscription_path(subscription.id),
+        {
+          remote: true,
+          method: :delete,
+          title:'Unsubscribe',
+          data: {
+            networkid: subscription.user_network_id,
+            action: 'unsubscribe'
+          }
+        }
+      )
+    end
+%>
+<%
+  end
+%>
 </ul>
