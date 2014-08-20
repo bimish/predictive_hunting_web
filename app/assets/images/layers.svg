@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24px" height="24px">
+  <g fill="white" stroke="rgb(128,128,128)" stroke-width="2">
+    <polygon points="12,11 23,16 12,21 1,16" />
+    <polygon points="12,6 23,11 12,16 1,11" />
+    <polygon points="12,1 23,6 12,11 1,6" />
+  </g>
+</svg>

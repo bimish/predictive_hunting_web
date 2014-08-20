@@ -3,15 +3,13 @@ require_dependency "<%= namespaced_file_path %>/application_controller"
 
 <% end -%>
 <% module_namespacing do -%>
-class <%= controller_class_name %>Controller < ApplicationController
-
-  before_action :set_<%= singular_table_name %>, only: [:show, :edit, :update, :destroy, :delete]
+class <%= controller_class_name %>Controller < ComponentController
 
   include <%= controller_class_name %>ControllerExtensions
 
   # GET <%= route_url %>
   def index
-    @<%= plural_table_name %> = <%= orm_class.all(class_name) %>
+    @<%= plural_table_name %> ||= <%= orm_class.all(class_name) %>
   end
 
   # GET <%= route_url %>/1
@@ -20,8 +18,6 @@ class <%= controller_class_name %>Controller < ApplicationController
 
   # GET <%= route_url %>/new
   def new
-    @<%= singular_table_name %> = <%= orm_class.build(class_name) %>
-    @<%= singular_table_name %>.init_new current_user
   end
 
   # GET <%= route_url %>/1/edit
@@ -30,9 +26,6 @@ class <%= controller_class_name %>Controller < ApplicationController
 
   # POST <%= route_url %>
   def create
-    @<%= singular_table_name %> = <%= orm_class.build(class_name, "#{singular_table_name}_create_params") %>
-    @<%= singular_table_name %>.init_new current_user
-
     respond_to do |format|
       if @<%= orm_instance.save %>
         format.html { redirect_to @<%= singular_table_name %>, notice: <%= "'#{human_name} was successfully created.'" %> }
@@ -49,7 +42,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   # PATCH/PUT <%= route_url %>/1
   def update
     respond_to do |format|
-      if @<%= orm_instance.update("#{singular_table_name}_update_params") %>
+      if @<%= orm_instance.update("update_params") %>
         format.html { redirect_to @<%= singular_table_name %>, notice: '<%= human_name %> was successfully updated.' }
         format.json { head :no_content }
         format.js
@@ -72,24 +65,27 @@ class <%= controller_class_name %>Controller < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_<%= singular_table_name %>
+    def get_component
       @<%= singular_table_name %> = <%= orm_class.find(class_name, "params[:id]") %>
     end
 
-    def <%= "#{singular_table_name}_update_params" %>
+    def new_component(params = nil)
+      @<%= singular_table_name %> = <%= orm_class.build(class_name, "params") %>
+    end
+
+    def update_params
       <%- if model_attributes.empty? -%>
       params[:<%= singular_table_name %>]
       <%- else -%>
-      params.require(:<%= singular_table_name %>).permit(<%= model_attributes.reject { |a| a.is_component_assigned? || a.is_write_once? }.map { |a| ":#{a.name}" }.join(', ') %>)
+      params.require(:<%= singular_table_name %>).permit(<%= model.updateable_attribute_names.map { |attribute_name| ":#{attribute_name}" }.join(', ') %>)
       <%- end -%>
     end
 
-    def <%= "#{singular_table_name}_create_params" %>
+    def create_params
       <%- if model_attributes.empty? -%>
       params[:<%= singular_table_name %>]
       <%- else -%>
-      params.require(:<%= singular_table_name %>).permit(<%= model_attributes.reject { |a| a.is_component_assigned? }.map { |a| ":#{a.name}" }.join(', ') %>)
+      params.require(:<%= singular_table_name %>).permit(<%= model.assignable_attribute_names.map { |attribute_name| ":#{attribute_name}" }.join(', ') %>)
       <%- end -%>
     end
 

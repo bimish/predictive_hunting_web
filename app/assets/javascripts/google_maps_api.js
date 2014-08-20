@@ -29,6 +29,7 @@ function MapsHelper(mapCanvas, options)
 	this.setMode = function(mode) { setModeImpl(mode); };
 	this.getMode = function() { return getModeImpl(); };
 	this.getBoundaryVertices = function() { return getBoundaryVerticesImpl(); };
+	this.setMapType = function(mapType) { setMapTypeImpl(mapType); }
 
 	function initOptions(options) {
 		// default to center of US
@@ -53,6 +54,10 @@ function MapsHelper(mapCanvas, options)
 				_mapOptions.markerTitle = options.markerTitle;
 			if (isDefinedAndNonNull(options.boundary))
 				_mapOptions.boundary = options.boundary;
+			if (isDefinedAndNonNull(options.mapTypeControl))
+				_mapOptions.mapTypeControl = options.mapTypeControl;
+			if (isDefinedAndNonNull(options.streetViewControl))
+				_mapOptions.streetViewControl = options.streetViewControl;
 			if (isDefinedAndNonNull(options.view_window))
 			{
 				_mapOptions.view_window = new google.maps.LatLngBounds(
@@ -282,6 +287,9 @@ function MapsHelper(mapCanvas, options)
 		}
 		return boundaryVertices;
 	}
+	function setMapTypeImpl(mapType) {
+		_map.setMapTypeId(mapType);
+	}
 }
 
 MapsHelper.DEFAULT_ZOOM = 10;
@@ -305,4 +313,4 @@ MapsHelper.getLocationAddress = function(latitude, longitude, resultHandler) {
 	);
 }
 MapsHelper.Mode = { View: 1, SetLocation: 2, SetBoundary: 3 };
-
+MapsHelper.MapTypes = { Roadmap: google.maps.MapTypeId.ROADMAP, Satellite: google.maps.MapTypeId.SATELLITE };

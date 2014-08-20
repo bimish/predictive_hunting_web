@@ -1,9 +1,26 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <tr data-id="<%=hunting_plot_user_access.id%>">
-  <td><%= (hunting_plot_user_access.user_id.nil?) ? nil : hunting_plot_user_access.user.get_display_name %></td>
-  <td><%= (hunting_plot_user_access.hunting_plot_id.nil?) ? nil : hunting_plot_user_access.hunting_plot.get_display_name %></td>
-  <td><%= hunting_plot_user_access.alias %></td>
-  <td><%= hunting_plot_user_access.permissions %></td>
-  <td><%= item_show_command(hunting_plot_user_access_path(hunting_plot_user_access)) %></td>
-  <td><%= item_edit_command(edit_hunting_plot_user_access_path(hunting_plot_user_access), { remote: true }) %></td>
-  <td><%= item_delete_command(hunting_plot_user_access_path(hunting_plot_user_access), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+    <td><%= (hunting_plot_user_access.user_id.nil?) ? nil : hunting_plot_user_access.user.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+    <td><%= (hunting_plot_user_access.hunting_plot_id.nil?) ? nil : hunting_plot_user_access.hunting_plot.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:alias)) %>
+    <td><%= hunting_plot_user_access.alias %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:permissions)) %>
+    <td><%= HuntingPlotUserAccessesHelper.get_permissions_description(hunting_plot_user_access) %></td>
+  <% end %>
+  <% if editable %>
+    <td><%= item_show_command(hunting_plot_user_access_path(hunting_plot_user_access)) %></td>
+    <td><%= item_edit_command(edit_hunting_plot_user_access_path(hunting_plot_user_access), { remote: true }) %></td>
+    <td><%= item_delete_command(hunting_plot_user_access_path(hunting_plot_user_access), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% end %>
 </tr>

@@ -15,4 +15,6 @@
 //= require jquery.ui.all
 //= require turbolinks
 //= require bootstrap
-//= require_tree .
+//= require ajax_form_helper
+//= require common
+//= require google_maps_api

@@ -1,11 +1,9 @@
 <div class="row">
   <div class="col-md-12">
 
-    <p id="notice"><%= notice %></p>
-
     <p>
       <strong>Hunting plot:</strong>
-      <%= get_hunting_plot_description(@hunting_plot_named_animal) %>
+      <%= (@hunting_plot_named_animal.hunting_plot_id.nil?) ? nil : @hunting_plot_named_animal.hunting_plot.get_display_name %>
     </p>
 
     <p>
@@ -15,11 +13,11 @@
 
     <p>
       <strong>Animal category:</strong>
-      <%= get_animal_category_description(@hunting_plot_named_animal) %>
+      <%= (@hunting_plot_named_animal.animal_category_id.nil?) ? nil : @hunting_plot_named_animal.animal_category.get_display_name %>
     </p>
 
     <%= link_to 'Edit', edit_hunting_plot_named_animal_path(@hunting_plot_named_animal) %> |
-    <%= link_to 'Back', hunting_plot_named_animals_path %>
+    <%= link_to 'Back', hunting_plot_named_animals_path(@hunting_plot_named_animal.hunting_plot_id) %>
 
   </div>
 </div>

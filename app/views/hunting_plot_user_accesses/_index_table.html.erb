@@ -1,15 +1,30 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <table class="table">
   <thead>
     <tr>
-      <th>User</th>
-      <th>Hunting plot</th>
-      <th>Alias</th>
-      <th>Permissions</th>
+      <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+        <th>User</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+        <th>Hunting plot</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:alias)) %>
+        <th>Alias</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:permissions)) %>
+        <th>Permissions</th>
+      <% end %>
       <th colspan="3"></th>
     </tr>
   </thead>
 
   <tbody id='items-tbody'>
-    <%= render :partial => 'hunting_plot_user_accesses/index_item', :collection => hunting_plot_user_accesses, :as => :hunting_plot_user_access %>
+    <%= render :partial => 'hunting_plot_user_accesses/index_item', :collection => hunting_plot_user_accesses, :as => :hunting_plot_user_access, locals: { attribute_list: attribute_list, editable: editable } %>
   </tbody>
 </table>

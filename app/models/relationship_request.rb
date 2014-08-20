@@ -12,8 +12,6 @@ class RelationshipRequest < ActiveRecord::Base
   component_assigned_attribute :created_by_id
   write_once_attribute :created_by_id, :related_user_id
 
-  set_new_record_initializer :new_record_init
-
   def self.user_has_pending_requests?(user)
     RelationshipRequest.exists?(related_user_id: user.id, status: RelationshipRequest.statuses[:status_new])
   end
@@ -53,10 +51,12 @@ class RelationshipRequest < ActiveRecord::Base
     end
   end
 
-private
-  def new_record_init(signed_in_user)
+  def init_new(signed_in_user)
+    super
     self.status = RelationshipRequest.statuses[:status_new] if self.status.nil?
     self.created_by_id = signed_in_user.id unless signed_in_user.nil?
   end
+
+private
 
 end

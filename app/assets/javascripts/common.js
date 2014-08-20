@@ -18,10 +18,6 @@ function resolveElement(element) {
 function roundNumber(number, places) {
 	return Math.round(number * Math.pow(10,places)) / Math.pow(10, places);
 }
-function setPageInitFunction(init) {
-	$(document).ready(init);
-	$(document).on('page:load', init);
-}
 function parseWKTPoint(wktPoint) {
 		var currentLocationCoordinates = /POINT\s*\((-?\d+(?:\.\d*)?)\s+(-?\d+(?:\.\d*)?)\)/g.exec(wktPoint);
 		if (currentLocationCoordinates == null)

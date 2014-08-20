@@ -1,14 +1,23 @@
+<%%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <table class="table">
   <thead>
     <tr>
 <%- model_attributes.reject(&:password_digest?).each do |attribute| -%>
-      <th><%= attribute.human_name %></th>
+      <%% if (attribute_list.nil? || attribute_list.include?(:<%= attribute.name%>)) %>
+        <th><%= attribute.human_name %></th>
+      <%% end %>
 <%- end -%>
       <th colspan="3"></th>
     </tr>
   </thead>
 
   <tbody id='items-tbody'>
-    <%%= render :partial => '<%= plural_table_name %>/index_item', :collection => <%= plural_table_name %>, :as => :<%= singular_table_name %> %>
+    <%%= render :partial => '<%= plural_table_name %>/index_item', :collection => <%= plural_table_name %>, :as => :<%= singular_table_name %>, locals: { attribute_list: attribute_list, editable: editable } %>
   </tbody>
 </table>

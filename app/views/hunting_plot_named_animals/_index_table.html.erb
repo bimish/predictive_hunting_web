@@ -1,0 +1,27 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<table class="table">
+  <thead>
+    <tr>
+      <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+        <th>Hunting plot</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:name)) %>
+        <th>Name</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:animal_category_id)) %>
+        <th>Animal category</th>
+      <% end %>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'hunting_plot_named_animals/index_item', :collection => hunting_plot_named_animals, :as => :hunting_plot_named_animal, locals: { attribute_list: attribute_list, editable: editable } %>
+  </tbody>
+</table>

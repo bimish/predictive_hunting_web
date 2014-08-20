@@ -28,6 +28,39 @@ module WeatherForecastHelper
 
   end
 
+  def get_hourly_weather_forecast(hunting_plot)
+
+    #forecast_result = JSON.parse(dummy_forecast)
+
+    location_url = URI.parse("http://api.wunderground.com/api/be50215583adc47b/geolookup/q/#{hunting_plot.location_coordinates.y()},#{hunting_plot.location_coordinates.x()}.json")
+    location_request = Net::HTTP::Get.new(location_url.path)
+    location_response = Net::HTTP.start(location_url.host, location_url.port) do |http|
+      http.request(location_request)
+    end
+    location_result = JSON.parse(location_response.body)
+
+    forecast_url = URI.parse("http://api.wunderground.com/api/be50215583adc47b/hourly/q/#{location_result['location']['state']}/#{location_result['location']['city'].gsub(/ /,'_')}.json")
+    forecast_request = Net::HTTP::Get.new(forecast_url.path)
+    forecast_response = Net::HTTP.start(forecast_url.host, forecast_url.port) do |http|
+      http.request(forecast_request)
+    end
+    forecast_result = JSON.parse(forecast_response.body)
+
+    astronomy_url = URI.parse("http://api.wunderground.com/api/be50215583adc47b/astronomy/q/#{location_result['location']['state']}/#{location_result['location']['city'].gsub(/ /,'_')}.json")
+    astronomy_request = Net::HTTP::Get.new(astronomy_url.path)
+    astronomy_response = Net::HTTP.start(astronomy_url.host, astronomy_url.port) do |http|
+      http.request(astronomy_request)
+    end
+    astronomy_result = JSON.parse(astronomy_response.body)
+
+    return {
+      details_url: location_result['location']['wuiurl'],
+      forecast: forecast_result['hourly_forecast'],
+      astronomy: astronomy_result['moon_phase']
+    }
+
+  end
+
   def dummy_forecast
     '{
        "response":{

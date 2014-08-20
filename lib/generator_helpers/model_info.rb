@@ -128,12 +128,6 @@ module GeneratorHelpers
       model.columns.detect { |col| is_foreign_key_for?(col, parent_model_name) }
     end
 
-    #def parent_model_for(col_name)
-    #  parent_reflection = model.reflections.values.detect do |reflection|
-    #    reflection.foreign_key == col_name && reflection.macro == :belongs_to
-    #  end
-    #end
-
     def reference_for(col_name)
       reference_reflection = model.reflections.values.detect do |reflection|
         reflection.foreign_key == col_name && (reflection.macro == :has_one || reflection.macro == :belongs_to)
@@ -234,6 +228,18 @@ module GeneratorHelpers
       end
     end
 
+    def assignable_attribute_names
+      @assignable_attribute_names = get_assignable_attribute_names
+    end
+
+    def updateable_attribute_names
+      @updateable_attribute_names = get_updateable_attribute_names
+    end
+
+    def readable_attribute_names
+      @readable_attribute_names = get_readable_attribute_names
+    end
+
   private
 
     def find_model(model_name)
@@ -290,8 +296,47 @@ module GeneratorHelpers
       end
     end
 
-    def get_attributes
-      @attributes ||= active_record_columns.collect { |col| AttributeInfo.new col.name, col.type }
+    def get_assignable_attribute_names
+      attribute_names = Array.new
+      attributes.each do |attribute|
+        if attribute.is_flags?
+          attribute_names.push *attribute.get_flag_attribute_names
+        elsif attribute.is_assignable?
+          attribute_names.push attribute.name
+        end
+      end
+      attribute_names
+    end
+
+    def get_updateable_attribute_names
+      attribute_names = Array.new
+      attributes.each do |attribute|
+        if attribute.is_flags?
+          attribute_names.push *attribute.get_flag_attribute_names
+        elsif attribute.is_updateable?
+          attribute_names.push attribute.name
+        end
+      end
+      attribute_names
+    end
+
+    def attribute_for(column_name)
+      attributes.detect { |attribute| attribute.name == column_name }
+    end
+
+    def get_readable_attribute_names
+      attribute_names = Array.new
+      model.columns.each do |column|
+        column_attribute = attribute_for(column.name)
+        if column_attribute.nil?
+          attribute_names.push column.name
+        elsif column_attribute.is_flags?
+          attribute_names.push *column_attribute.get_flag_attribute_names
+        else
+          attribute_names.push column_attribute.name
+        end
+      end
+      attribute_names
     end
 
   end

@@ -1,26 +1,27 @@
+<%%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <tr data-id="<%%=<%=singular_table_name%>.id%>">
-<%-
-  model_attributes.reject(&:password_digest?).each do |attribute|
-    if (attribute.reference?)
--%>
-  <td><%%= (<%= singular_table_name %>.<%= attribute.name%>.nil?) ? nil : <%= singular_table_name %>.<%= attribute.reference.name %>.get_display_name %></td>
-<%-
-    elsif attribute.is_enum?
--%>
-  <td><%%= EnumsHelper::<%=singular_table_name.camelize%>Enums::get_<%= attribute.name %>_description(<%= singular_table_name %>.<%=attribute.name%>) %></td>
-<%-
-    elsif attribute.has_value_list?
--%>
-  <td><%%= @view_data.get_<%= attribute.name %>_description(<%= singular_table_name %>.<%=attribute.name%>) %></td>
-<%-
-    else
--%>
-  <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
-<%-
-    end
-  end
--%>
-  <td><%%= item_show_command(<%= singular_table_name %>_path(<%= singular_table_name %>)) %></td>
-  <td><%%= item_edit_command(edit_<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true }) %></td>
-  <td><%%= item_delete_command(<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+<%- model_attributes.reject(&:password_digest?).each do |attribute| -%>
+  <%% if (attribute_list.nil? || attribute_list.include?(:<%= attribute.name%>)) %>
+  <%- if (attribute.reference?) -%>
+    <td><%%= (<%= singular_table_name %>.<%= attribute.name%>.nil?) ? nil : <%= singular_table_name %>.<%= attribute.reference.name %>.get_display_name %></td>
+  <%- elsif attribute.is_enum? -%>
+    <td><%%= EnumsHelper::<%=singular_table_name.camelize%>Enums::get_<%= attribute.name %>_description(<%= singular_table_name %>.<%=attribute.name%>) %></td>
+  <%- elsif attribute.has_value_list? -%>
+    <td><%%= @view_data.get_<%= attribute.name %>_description(<%= singular_table_name %>.<%=attribute.name%>) %></td>
+  <%- else -%>
+    <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
+  <%- end -%>
+  <%% end %>
+<%- end -%>
+  <%% if editable %>
+    <td><%%= item_show_command(<%= singular_table_name %>_path(<%= singular_table_name %>)) %></td>
+    <td><%%= item_edit_command(edit_<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true }) %></td>
+    <td><%%= item_delete_command(<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <%% end %>
 </tr>

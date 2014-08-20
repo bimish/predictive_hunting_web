@@ -1,0 +1,72 @@
+<% content_for :head do %>
+<script type="text/javascript">
+function showMap() {
+  if (typeof(g_map) == 'undefined') {
+    var mapOptions = {
+      mapTypeControl: false,
+      streetViewControl: false,
+      center: { lat: <%=@hunting_plot.location_coordinates.y()%>, lng: <%=@hunting_plot.location_coordinates.x()%> },
+  <%
+  if !@hunting_plot.boundary.nil?
+      view_window = rgeo_get_bounds(@hunting_plot.boundary)
+  %>
+      view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+      boundary: parseWKTPolygon('<%=@hunting_plot.boundary.to_s%>'),
+  <%
+  end
+  if @hunting_plot.locations.size > 0
+  %>
+      additional_markers: [
+  <%
+    @hunting_plot.locations.each_with_index  do |hunting_location, index|
+      if index > 0 %>,<% end %>{ name: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>} }
+  <%
+    end
+  %>
+      ],
+  <%
+  end
+  %>
+      zoom: 12
+    };
+    try {
+      g_map = new MapsHelper('map-canvas', mapOptions);
+    }
+    catch (e) {
+      alert("The following error occurred: " + e);
+    }
+    //$('#map-options-popup').top($('#map-canvas').top());
+    $('#map-options-close-button').click(
+      function (eventObject) {
+        g_map.setMapType( $('#satellite-checkbox').prop('checked') ? MapsHelper.MapTypes.Satellite : MapsHelper.MapTypes.Roadmap);
+      }
+    );
+  }
+}
+</script>
+<% end %>
+<% content_for :panels do %>
+<div data-role="panel" data-display="overlay" data-position="right" id="map-options-panel" class="right-align-panel">
+  <ul data-role="listview">
+    <li>
+      <input name="satellite-checkbox" id="satellite-checkbox" type="checkbox" data-role="flipswitch">
+      Satellite Imagery
+    </li>
+    <li>
+      <input name="members-checkbox" id="members-checkbox" type="checkbox" data-role="flipswitch">
+      Show Members
+    </li>
+    <li>
+      <input name="stands-checkbox" id="stands-checkbox" type="checkbox" data-role="flipswitch">
+      Show Stands
+    </li>
+    <li>??</li>
+  </ul>
+  <br/>
+  <a href="#header" data-rel="close" class="ui-btn ui-icon-delete ui-btn-icon-left" id="map-options-close-button">Close</a>
+</div>
+<% end %>
+<div id="map-canvas" style="width:100%;height:100%;">Loading, please wait...</div>
+<div id="map-options-popup" style="position:absolute; right: 0px;top: 100px;">
+  <a class="ui-btn ui-btn-inline" href="#map-options-panel" title="Display Options" data-role="button"><%= image_tag 'layers.svg' %></a>
+</div>

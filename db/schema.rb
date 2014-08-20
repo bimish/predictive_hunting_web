@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140805134104) do
+ActiveRecord::Schema.define(version: 20140818201923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,29 @@ ActiveRecord::Schema.define(version: 20140805134104) do
   end
 
   add_index "hunting_location", ["hunting_plot_id"], :name => "index_hunting_location_on_hunting_plot_id"
+
+  create_table "hunting_mode_user_location", force: true do |t|
+    t.integer  "hunting_plot_id",                                                               null: false
+    t.integer  "user_id",                                                                       null: false
+    t.spatial  "location_coordinates", limit: {:srid=>4326, :type=>"point", :geographic=>true}, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hunting_mode_user_location", ["hunting_plot_id"], :name => "index_hunting_mode_user_location_on_hunting_plot_id"
+  add_index "hunting_mode_user_location", ["user_id"], :name => "index_hunting_mode_user_location_on_user_id"
+
+  create_table "hunting_mode_user_status", force: true do |t|
+    t.integer  "user_id",                      null: false
+    t.integer  "hunting_plot_id",              null: false
+    t.integer  "status_id",                    null: false
+    t.string   "status_text",     limit: 1000, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hunting_mode_user_status", ["hunting_plot_id"], :name => "index_hunting_mode_user_status_on_hunting_plot_id"
+  add_index "hunting_mode_user_status", ["user_id"], :name => "index_hunting_mode_user_status_on_user_id"
 
   create_table "hunting_plot", force: true do |t|
     t.string   "name",                 limit: 100,                                              null: false

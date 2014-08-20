@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Predictive Hunting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= stylesheet_link_tag "hunting-app", :media => "all" %>
+  <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?libraries=drawing" %>
+  <%= javascript_include_tag "hunting_app" %>
+  <%= yield :head %>
+</head>
+
+<body data-no-turbolink="true">
+
+  <div data-role="page">
+
+    <%= yield :panels %>
+
+    <div data-role="header" data-position="fixed" id="header">
+      <%= image_tag "logo.png", size:'40x40', style:'float:right;' %><h1>Predictive Hunting</h1>
+      <a href="#topmenu" class="jqm-navmenu-link ui-nodisc-icon ui-alt-icon ui-btn-left ui-btn ui-icon-bars ui-btn-icon-notext" style="font-size: 110%;" data-role="button">Menu</a>
+      <%= yield :header %>
+    </div>
+
+    <div data-role="content" class="ui-content">
+      <%= yield :content %>
+    </div>
+
+  </div>
+
+</body>
+</html>

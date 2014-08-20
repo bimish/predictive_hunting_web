@@ -8,8 +8,6 @@ class UserNetworkSubscription < ActiveRecord::Base
 
   component_assigned_attribute :user_id
 
-  set_new_record_initializer :new_record_init
-
   def get_display_name
     self.network.name
   end
@@ -23,9 +21,11 @@ class UserNetworkSubscription < ActiveRecord::Base
     end
   end
 
-private
-  def new_record_init(signed_in_user)
+  def init_new(signed_in_user)
+    super
     self.user_id = signed_in_user.id unless signed_in_user.nil?
   end
+
+private
 
 end

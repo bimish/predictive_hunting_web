@@ -4,7 +4,7 @@ class CreateUserHuntingPlotAccess < ActiveRecord::Migration
       t.references :user, index: true, null: false
       t.references :hunting_plot, index: true, null: false
       t.string :alias, limit: 100, null: true
-      t.integer :permissions, default: 1
+      t.integer :permissions, default: 0
 
       t.timestamps
     end

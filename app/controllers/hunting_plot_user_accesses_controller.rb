@@ -1,14 +1,10 @@
-class HuntingPlotUserAccessesController < ComponentController #ApplicationController
-
-  #before_action :set_hunting_plot_user_access, only: [:show, :edit, :update, :destroy, :delete]
-
-  after_initialize_new_instance { @hunting_plot_user_access.hunting_plot_id = params[:hunting_plot_id] }
+class HuntingPlotUserAccessesController < ComponentController
 
   include HuntingPlotUserAccessesControllerExtensions
 
   # GET /hunting_plot_user_accesses
   def index
-    @hunting_plot_user_accesses = HuntingPlotUserAccess.all
+    @hunting_plot_user_accesses ||= HuntingPlotUserAccess.all
   end
 
   # GET /hunting_plot_user_accesses/1
@@ -17,8 +13,6 @@ class HuntingPlotUserAccessesController < ComponentController #ApplicationContro
 
   # GET /hunting_plot_user_accesses/new
   def new
-    @hunting_plot_user_access = HuntingPlotUserAccess.new
-    @hunting_plot_user_access.init_new current_user
   end
 
   # GET /hunting_plot_user_accesses/1/edit
@@ -27,9 +21,6 @@ class HuntingPlotUserAccessesController < ComponentController #ApplicationContro
 
   # POST /hunting_plot_user_accesses
   def create
-    #@hunting_plot_user_access = HuntingPlotUserAccess.new(hunting_plot_user_access_create_params)
-    #@hunting_plot_user_access.init_new current_user
-
     respond_to do |format|
       if @hunting_plot_user_access.save
         format.html { redirect_to @hunting_plot_user_access, notice: 'Hunting plot user access was successfully created.' }
@@ -69,7 +60,6 @@ class HuntingPlotUserAccessesController < ComponentController #ApplicationContro
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def get_component
       @hunting_plot_user_access = HuntingPlotUserAccess.find(params[:id])
     end
@@ -83,7 +73,7 @@ class HuntingPlotUserAccessesController < ComponentController #ApplicationContro
     end
 
     def create_params
-      params.require(:hunting_plot_user_access).permit(:user_id, :hunting_plot_id, :alias, :permissions_can_administrate, :permissions_can_manage_locations, :permissions_can_manage_members)
+      params.require(:hunting_plot_user_access).permit(:user_id, :alias, :permissions_can_administrate, :permissions_can_manage_locations, :permissions_can_manage_members)
     end
 
 end

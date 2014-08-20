@@ -68,6 +68,14 @@ module GeneratorHelpers
       @source_model.is_flags?(self.name)
     end
 
+    def is_updateable?
+      self.is_assignable? && !self.is_write_once?
+    end
+
+    def is_assignable?
+      !self.is_component_assigned? && !self.is_controller_assigned?
+    end
+
     def flags
       @source_model.flags_for(self.name)
     end
@@ -85,6 +93,12 @@ module GeneratorHelpers
         "#{self.name}_#{flag_name}"
       else
         "#{self.name}_#{flag_options[:flag_prefix]}_#{flag_name}"
+      end
+    end
+
+    def get_flag_attribute_names
+      self.flags[:values].collect do |flag_value, flag_name|
+        self.flag_attribute_name(flag_value)
       end
     end
 

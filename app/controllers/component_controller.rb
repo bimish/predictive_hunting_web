@@ -22,12 +22,12 @@ class ComponentController < ApplicationController
     end
   end
 
-  def self.after_initialize_new_instance(&block)
-    set_callback :initialize_new_instance, :after, block
+  def self.after_initialize_new_instance(*args, &block)
+    set_callback :initialize_new_instance, :after, *args, &block
   end
 
-  def self.before_initialize_new_instance(&block)
-    set_callback :initialize_new_instance, :before, block
+  def self.before_initialize_new_instance(*args, &block)
+    set_callback :initialize_new_instance, :before, *args, &block
   end
 
 private

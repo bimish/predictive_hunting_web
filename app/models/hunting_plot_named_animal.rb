@@ -13,6 +13,19 @@ class HuntingPlotNamedAnimal < ActiveRecord::Base
     self.name
   end
 
+  def authorize_action?(user, crud_action)
+    case crud_action
+      when :create, :update, :delete
+        # users can manage themselves or other users if they have the manage users permission
+        HuntingPlotUserAccess.can_manage_named_animals?(self.hunting_plot_id, user.id)
+      when :read
+        # members of a hunting plot can see the named animals
+        HuntingPlotUserAccess.exists?(hunting_plot_id: self.hunting_plot_id, user_id: user.id)
+      else
+        raise ArgumentError, "The specified action (#{crud_action}) is not supported"
+    end
+  end
+
   def self.search(params)
     search_results = HuntingPlotNamedAnimal.order(:name)
     search_results = search_results.where('hunting_plot_id = ?', params[:hunting_plot_id]) unless params[:hunting_plot_id].blank?

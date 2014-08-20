@@ -12,8 +12,6 @@ class UserRelationship < ActiveRecord::Base
   component_assigned_attribute :owning_user_id
   write_once_attribute :owning_user_id, :related_user_id
 
-  set_new_record_initializer :new_record_init
-
   def authorize_action?(user, action)
     case action
     when :show, :create, :update, :destroy
@@ -37,10 +35,12 @@ class UserRelationship < ActiveRecord::Base
     end
   end
 
-private
-  def new_record_init(signed_in_user)
+  def init_new(signed_in_user)
+    super
     self.relationship_type = UserRelationship.relationship_types[:relationship_type_friend] if self.relationship_type.nil?
     self.owning_user_id = signed_in_user.id unless signed_in_user.nil?
   end
+
+private
 
 end

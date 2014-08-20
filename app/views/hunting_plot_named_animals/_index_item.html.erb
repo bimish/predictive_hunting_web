@@ -1,8 +1,23 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <tr data-id="<%=hunting_plot_named_animal.id%>">
-  <td><%= (hunting_plot_named_animal.hunting_plot_id.nil?) ? nil : hunting_plot_named_animal.hunting_plot.get_display_name %></td>
-  <td><%= hunting_plot_named_animal.name %></td>
-  <td><%= (hunting_plot_named_animal.animal_category_id.nil?) ? nil : hunting_plot_named_animal.animal_category.get_display_name %></td>
-  <td><%= item_show_command(hunting_plot_named_animal_path(hunting_plot_named_animal)) %></td>
-  <td><%= item_edit_command(edit_hunting_plot_named_animal_path(hunting_plot_named_animal), { remote: true }) %></td>
-  <td><%= item_delete_command(hunting_plot_named_animal_path(hunting_plot_named_animal), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+    <td><%= (hunting_plot_named_animal.hunting_plot_id.nil?) ? nil : hunting_plot_named_animal.hunting_plot.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:name)) %>
+    <td><%= hunting_plot_named_animal.name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:animal_category_id)) %>
+    <td><%= (hunting_plot_named_animal.animal_category_id.nil?) ? nil : hunting_plot_named_animal.animal_category.get_display_name %></td>
+  <% end %>
+  <% if editable %>
+    <td><%= item_show_command(hunting_plot_named_animal_path(hunting_plot_named_animal)) %></td>
+    <td><%= item_edit_command(edit_hunting_plot_named_animal_path(hunting_plot_named_animal), { remote: true }) %></td>
+    <td><%= item_delete_command(hunting_plot_named_animal_path(hunting_plot_named_animal), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% end %>
 </tr>

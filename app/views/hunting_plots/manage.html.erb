@@ -22,7 +22,9 @@
     <%= render partial:'/hunting_locations/index_table', :locals => { :hunting_locations => @hunting_plot.locations, :attribute_list => [:name, :location_type], :editable => false } %>
   </div>
   <div id="members" class="col-md-12 tab-pane">
-    <%= render partial:'/hunting_plot_user_accesses/index_table', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses, :attribute_list => [:name, :location_type], :editable => false } %>
+    <%= render partial:'/hunting_plot_user_accesses/index_table', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses, :attribute_list => [:user_id, :alias, :permissions], :editable => false } %>
   </div>
-  <div id="named-animals" class="col-md-12 tab-pane">Named Animals</div>
+  <div id="named-animals" class="col-md-12 tab-pane">
+    <%= render partial:'/hunting_plot_named_animals/index_table', :locals => { :hunting_plot_named_animals => @hunting_plot.named_animals, :attribute_list => [:name, :animal_category_id], :editable => false } %>
+  </div>
 </div>

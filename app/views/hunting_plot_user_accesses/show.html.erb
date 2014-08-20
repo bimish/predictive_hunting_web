@@ -18,7 +18,7 @@
 
     <p>
       <strong>Permissions:</strong>
-      <%= @hunting_plot_user_access.permissions %>
+      <%= HuntingPlotUserAccessesHelper.get_permissions_description(@hunting_plot_user_access) %>
     </p>
 
     <%= link_to 'Edit', edit_hunting_plot_user_access_path(@hunting_plot_user_access) %> |

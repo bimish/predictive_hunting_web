@@ -8,9 +8,7 @@ module ActiveModel
 
     # custom initializer
     def init_new(signed_in_user)
-      if !self.class.new_record_initializer.nil?
-        self.send(self.class.new_record_initializer, signed_in_user)
-      end
+      # can be overridden in the models to initialize new instances
     end
 
     module ClassMethods
@@ -43,10 +41,6 @@ module ActiveModel
         else
           @controller_assigned_attributes.push attribute_list
         end
-      end
-
-      def set_new_record_initializer(initializer_method)
-        @new_record_initializer = initializer_method
       end
 
       def is_flags(attribute, flag_values, options = {})

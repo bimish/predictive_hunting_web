@@ -1,5 +1,7 @@
 class HuntingPlotsController < ApplicationController
 
+  helper HuntingPlotUserAccessesHelper
+
   before_action :set_hunting_plot, only: [:show, :edit, :update, :destroy]
 
   # GET /hunting_plots

@@ -62,6 +62,13 @@ Web::Application.routes.draw do
     end
   end
 
+  get '/hunting_app/:hunting_plot_id', to: 'hunting_app#landing_page', as: :hunting_app
+  get '/hunting_app/:hunting_plot_id/home', to: 'hunting_app#home', as: :hunting_app_home
+  get '/hunting_app/:hunting_plot_id/map', to: 'hunting_app#map', as: :hunting_app_map
+  get '/hunting_app/:hunting_plot_id/activity', to: 'hunting_app#activity', as: :hunting_app_activity
+  get '/hunting_app/:hunting_plot_id/conditions', to: 'hunting_app#conditions', as: :hunting_app_conditions
+  post '/hunting_app/:hunting_plot_id/checkin', to: 'hunting_app#check_in', as: :hunting_app_checkin
+
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'
   delete '/signout', to: 'sessions#destroy'
