@@ -62,7 +62,7 @@ test:
 production:
   adapter: postgis #postgresql
   encoding: unicode
-  database: d9804ed6v66rm7
+  database: dellchnbe76d6a
   host: ec2-54-83-38-13.compute-1.amazonaws.com
   port: 5582
   pool: 5
