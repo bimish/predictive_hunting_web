@@ -66,4 +66,6 @@ production:
   host: ec2-54-83-38-13.compute-1.amazonaws.com
   port: 5582
   pool: 5
+  username: ubvgb7srdbtkj
+  password: p8cdj4sf931oumeh6kd9ev8krlp
   schema_search_path: public,postgis
