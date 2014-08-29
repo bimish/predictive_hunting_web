@@ -1,12 +1,10 @@
-class AnimalActivityObservationsController < ApplicationController
-
-  before_action :set_animal_activity_observation, only: [:show, :edit, :update, :destroy, :delete]
+class AnimalActivityObservationsController < ComponentController
 
   include AnimalActivityObservationsControllerExtensions
 
   # GET /animal_activity_observations
   def index
-    @animal_activity_observations = AnimalActivityObservation.all
+    @animal_activity_observations ||= AnimalActivityObservation.all
   end
 
   # GET /animal_activity_observations/1
@@ -15,8 +13,6 @@ class AnimalActivityObservationsController < ApplicationController
 
   # GET /animal_activity_observations/new
   def new
-    @animal_activity_observation = AnimalActivityObservation.new
-    @animal_activity_observation.init_new current_user
   end
 
   # GET /animal_activity_observations/1/edit
@@ -25,9 +21,6 @@ class AnimalActivityObservationsController < ApplicationController
 
   # POST /animal_activity_observations
   def create
-    @animal_activity_observation = AnimalActivityObservation.new(animal_activity_observation_create_params)
-    @animal_activity_observation.init_new current_user
-
     respond_to do |format|
       if @animal_activity_observation.save
         format.html { redirect_to @animal_activity_observation, notice: 'Animal activity observation was successfully created.' }
@@ -44,7 +37,7 @@ class AnimalActivityObservationsController < ApplicationController
   # PATCH/PUT /animal_activity_observations/1
   def update
     respond_to do |format|
-      if @animal_activity_observation.update(animal_activity_observation_update_params)
+      if @animal_activity_observation.update(update_params)
         format.html { redirect_to @animal_activity_observation, notice: 'Animal activity observation was successfully updated.' }
         format.json { head :no_content }
         format.js
@@ -67,16 +60,19 @@ class AnimalActivityObservationsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_animal_activity_observation
+    def get_component
       @animal_activity_observation = AnimalActivityObservation.find(params[:id])
     end
 
-    def animal_activity_observation_update_params
+    def new_component(params = nil)
+      @animal_activity_observation = AnimalActivityObservation.new(params)
+    end
+
+    def update_params
       params.require(:animal_activity_observation).permit(:hunting_location_id, :animal_category_id, :animal_count, :animal_activity_type_id, :hunting_plot_named_animal_id, :observation_date_time)
     end
 
-    def animal_activity_observation_create_params
+    def create_params
       params.require(:animal_activity_observation).permit(:hunting_location_id, :animal_category_id, :animal_count, :animal_activity_type_id, :hunting_plot_named_animal_id, :observation_date_time)
     end
 

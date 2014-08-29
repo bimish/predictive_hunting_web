@@ -1,12 +1,41 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <tr data-id="<%=animal_activity_observation.id%>">
-  <td><%= (animal_activity_observation.hunting_location_id.nil?) ? nil : animal_activity_observation.hunting_location.get_display_name %></td>
-  <td><%= (animal_activity_observation.animal_category_id.nil?) ? nil : animal_activity_observation.animal_category.get_display_name %></td>
-  <td><%= animal_activity_observation.animal_count %></td>
-  <td><%= (animal_activity_observation.animal_activity_type_id.nil?) ? nil : animal_activity_observation.animal_activity_type.get_display_name %></td>
-  <td><%= (animal_activity_observation.hunting_plot_named_animal_id.nil?) ? nil : animal_activity_observation.named_animal.get_display_name %></td>
-  <td><%= animal_activity_observation.observation_date_time %></td>
-  <td><%= (animal_activity_observation.created_by_id.nil?) ? nil : animal_activity_observation.created_by.get_display_name %></td>
-  <td><%= item_show_command(animal_activity_observation_path(animal_activity_observation)) %></td>
-  <td><%= item_edit_command(edit_animal_activity_observation_path(animal_activity_observation), { remote: true }) %></td>
-  <td><%= item_delete_command(animal_activity_observation_path(animal_activity_observation), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% if (!attribute_list.nil? && attribute_list.include?(:hunting_plot_id)) %>
+    <td><%= (animal_activity_observation.hunting_plot_id.nil?) ? nil : animal_activity_observation.hunting_plot.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_location_id)) %>
+    <td><%= (animal_activity_observation.hunting_location_id.nil?) ? nil : animal_activity_observation.hunting_location.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:location_coordinates)) %>
+    <td><%= animal_activity_observation.location_coordinates %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:animal_category_id)) %>
+    <td><%= (animal_activity_observation.animal_category_id.nil?) ? nil : animal_activity_observation.animal_category.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:animal_count)) %>
+    <td><%= animal_activity_observation.animal_count %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:animal_activity_type_id)) %>
+    <td><%= (animal_activity_observation.animal_activity_type_id.nil?) ? nil : animal_activity_observation.animal_activity_type.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_named_animal_id)) %>
+    <td><%= (animal_activity_observation.hunting_plot_named_animal_id.nil?) ? nil : animal_activity_observation.named_animal.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:observation_date_time)) %>
+    <td><%= date_time_to_s(animal_activity_observation.observation_date_time) %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:created_by_id)) %>
+    <td><%= (animal_activity_observation.created_by_id.nil?) ? nil : animal_activity_observation.created_by.get_display_name %></td>
+  <% end %>
+  <% if editable %>
+    <td><%= item_show_command(animal_activity_observation_path(animal_activity_observation)) %></td>
+    <td><%= item_edit_command(edit_animal_activity_observation_path(animal_activity_observation), { remote: true }) %></td>
+    <td><%= item_delete_command(animal_activity_observation_path(animal_activity_observation), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% end %>
 </tr>

@@ -1,5 +1,8 @@
 module Generated
   module AnimalActivityObservationsHelper
+    def get_hunting_plot_description(animal_activity_observation)
+      return animal_activity_observation.hunting_plot.get_display_name
+    end
     def get_hunting_location_description(animal_activity_observation)
       return animal_activity_observation.hunting_location.get_display_name
     end

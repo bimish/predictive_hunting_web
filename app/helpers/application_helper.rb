@@ -11,28 +11,32 @@ module ApplicationHelper
     end
   end
 
-  def date_time_to_s(date_time_value, include_year = false)
-    if include_year
-      date_time_value.utc.getlocal.strftime("%m/%d/%Y %I:%M %p")
-    else
-      date_time_value.utc.getlocal.strftime("%B %d %I:%M %p")
-    end
+  def date_time_to_s(date_time_value, format = :short)
+    date_to_s(date_time_value, format) + " " + time_to_s(date_time_value, format)
+  end
+
+  def date_to_s(date_time_value, format = :short)
+    localize date_time_value.to_date, format: format
+  end
+
+  def time_to_s(date_time_value, format = :short)
+    localize date_time_value.to_time, format: format
   end
 
   def date_time_to_feed(date_time_value)
-    today = Date.today
-    value_date_as_local = date_time_value.utc.getlocal
-    value_date = value_date_as_local.to_date
-    difference = Date.today - value_date
-    if (difference) < 1
-      "Today at " + value_date_as_local.strftime("%I:%M %p")
-    elsif (difference) < 2
-      "Yesterday at " + value_date_as_local.strftime("%I:%M %p")
-    elsif (today.year == value_date_as_local.year)
-      value_date_as_local.strftime("%B %d %I:%M %p")
-    else
-      value_date_as_local.strftime("%B %d %Y %I:%M %p")
-    end
+    time_ago_in_words date_time_value
+    # today = Date.today
+    # value_date = date_time_value.to_date
+    # difference = Date.current - value_date
+    # if (difference) < 1
+    #   "Today at " + value_date_as_local.strftime("%I:%M %p")
+    # elsif (difference) < 2
+    #   "Yesterday at " + value_date_as_local.strftime("%I:%M %p")
+    # elsif (today.year == value_date_as_local.year)
+    #   value_date_as_local.strftime("%B %d %I:%M %p")
+    # else
+    #   value_date_as_local.strftime("%B %d %Y %I:%M %p")
+    # end
   end
 
   def gravatar_for(user, options = { size: 40 })

@@ -6,6 +6,7 @@
   <%= stylesheet_link_tag "hunting-app", :media => "all" %>
   <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?libraries=drawing" %>
   <%= javascript_include_tag "hunting_app" %>
+  <%= csrf_meta_tag %>
   <%= yield :head %>
 </head>
 
@@ -22,7 +23,7 @@
     </div>
 
     <div data-role="content" class="ui-content">
-      <%= yield :content %>
+      <%= yield %>
     </div>
 
   </div>

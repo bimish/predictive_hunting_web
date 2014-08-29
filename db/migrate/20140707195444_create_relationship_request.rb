@@ -7,6 +7,6 @@ class CreateRelationshipRequest < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :relationship_request, [:created_by, :related_user], :unique => true
+    add_index :relationship_request, [:created_by_id, :related_user_id], :unique => true
   end
 end

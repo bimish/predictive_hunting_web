@@ -13,14 +13,20 @@ module FormsHelper
     form.date_field instance_method
   end
   def _datetime_field(form, instance_method, label, options = {})
-    form.datetime_field instance_method
+    form.datetime_field instance_method, options
   end
   def _datetime_local_field(form, instance_method, label, options = {})
-    form.datetime_local_field instance_method
+    form.datetime_local_field instance_method, options
   end
   def _datetime_select(form, instance_method, label, options = {})
     if (!label.nil?)
       options[:label] = label
+    end
+    if (options[:ampm].blank?)
+      options[:ampm] = true
+    end
+    if (options[:default].blank?)
+      options[:default] = Time.zone.now - 1
     end
     form.datetime_select instance_method, options
   end
@@ -37,7 +43,10 @@ module FormsHelper
     form.month_field instance_method
   end
   def _number_field(form, instance_method, label, options = {})
-    form.number_field instance_method
+    if (!label.nil?)
+      options[:label] = label
+    end
+    form.number_field instance_method, options
   end
   def _password_field(form, instance_method, label, options = {})
     form.password_field instance_method

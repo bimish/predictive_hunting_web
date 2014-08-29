@@ -18,20 +18,21 @@ ActiveRecord::Schema.define(version: 20140818201923) do
   enable_extension "postgis"
 
   create_table "animal_activity_observation", force: true do |t|
-    t.integer  "hunting_location_id",                    null: false
-    t.integer  "animal_category_id",                     null: false
-    t.integer  "animal_count",                 limit: 2, null: false
-    t.integer  "animal_activity_type_id",                null: false
+    t.integer  "hunting_plot_id",                                                                       null: false
+    t.integer  "hunting_location_id"
+    t.spatial  "location_coordinates",         limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.integer  "animal_category_id",                                                                    null: false
+    t.integer  "animal_count",                 limit: 2,                                                null: false
+    t.integer  "animal_activity_type_id",                                                               null: false
     t.integer  "hunting_plot_named_animal_id"
-    t.datetime "observation_date_time",                  null: false
+    t.datetime "observation_date_time",                                                                 null: false
     t.integer  "created_by_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "animal_activity_observation", ["animal_activity_type_id"], :name => "index_animal_activity_observation_on_animal_activity_type_id"
-  add_index "animal_activity_observation", ["animal_category_id"], :name => "index_animal_activity_observation_on_animal_category_id"
   add_index "animal_activity_observation", ["hunting_location_id"], :name => "index_animal_activity_observation_on_hunting_location_id"
+  add_index "animal_activity_observation", ["hunting_plot_id"], :name => "index_animal_activity_observation_on_hunting_plot_id"
 
   create_table "animal_activity_type", force: true do |t|
     t.string   "name",       limit: 100, null: false
@@ -144,6 +145,7 @@ ActiveRecord::Schema.define(version: 20140818201923) do
     t.datetime "updated_at"
   end
 
+  add_index "relationship_request", ["created_by_id", "related_user_id"], :name => "index_relationship_request_on_created_by_id_and_related_user_id", :unique => true
   add_index "relationship_request", ["created_by_id"], :name => "index_relationship_request_on_created_by_id"
   add_index "relationship_request", ["related_user_id"], :name => "index_relationship_request_on_related_user_id"
 

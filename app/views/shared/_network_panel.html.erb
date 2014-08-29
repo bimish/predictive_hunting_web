@@ -10,16 +10,15 @@
   weather_forecast[:forecast]['simpleforecast']['forecastday'].each_with_index do |day_forecast, index|
     day_of_week = day_forecast['date']['weekday']
     day_text_forecast = weather_forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == (index * 2) }
-    puts day_text_forecast['fcttext']
 %>
-<div class="wf-day-panel">
-  <p class="wf-day"><%=day_of_week%></p>
-  <%=image_tag(day_forecast['icon_url'], class:'wf-icon')%>
-  <div class="wf-temp">
-    <div class="wf-temp-high"><%=day_forecast['high']['fahrenheit']%></div>
-    <div class="wf-temp-low"><%=day_forecast['low']['fahrenheit']%></div>
+  <div class="wf-day-panel">
+    <p class="wf-day"><%=day_of_week%></p>
+    <%=image_tag(day_forecast['icon_url'], class:'wf-icon')%>
+    <div class="wf-temp">
+      <div class="wf-temp-high"><%=day_forecast['high']['fahrenheit']%></div>
+      <div class="wf-temp-low"><%=day_forecast['low']['fahrenheit']%></div>
+    </div>
   </div>
-</div>
 <%
   end
 %>

@@ -1,19 +1,28 @@
 <% content_for :head do %>
-<script type="text/javascript">
-$(document).ready(
-  function() {
-  }
-);
-</script>
+<style>
+.form-datetime-select input {
+  display: inline-block;
+  width: auto;
+}
+</style>
 <% end %>
 <div class="row">
   <div class="col-md-12">
-    <%= bootstrap_form_tag url: search_hunting_plot_named_animals_path do |form| %>
+    <%= bootstrap_form_tag url: animal_activity_observations_path do |form| %>
       <%= _number_field(form, :hunting_plot_id, 'Hunting Plot') %>
       <%= _search_field(form, :name, 'Name', 100) %>
       <%#= _select_field(form, :animal_category_id, 'Animal Category', @view_data.animal_categories) %>
       <%= _submit_button(form, nil, 'Search', { name: nil } ) %>
+
+      <div class="form-group">
+        <label class="control-label">Observation Date/Time</label>
+        <div class="form-datetime-select">
+          <input type="date" class="form-control date-picker" id="observation_datetime_date">
+          <input type="time" class="form-control time-picker" id="observation_datetime_time">
+        </div>
+      </div>
     <% end %>
   </div>
-  <%= bootstrap_glyphicon('ok') + content_tag(:span, 'Accept') %>
 </div>
+
+

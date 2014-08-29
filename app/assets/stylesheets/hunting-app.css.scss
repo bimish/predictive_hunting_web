@@ -1,4 +1,5 @@
 // *= require jquery.mobile
+// *= require jquery.mobile.datepicker
 
 div.content-panel {
   /*
@@ -19,6 +20,7 @@ div.ui-content {
   margin: 0 20%;
 }
 
+/* hourly forecast listview */
 .hourly-forecast-item {
   div, p {
     font-size: 8pt !important;
@@ -89,5 +91,41 @@ div.ui-content {
   }
   .hfi-pressure-indicator {
     font-weight: bold;
+  }
+}
+@media only screen and (max-width: 320px) and (orientation: portrait) {
+  .hourly-forecast-item {
+    .hfi-forecast {
+      clear: none;
+      float: right;
+      width: 200px;
+    }
+    .hfi-condition-icon {
+      margin-right: 0;
+    }
+    .hfi-time {
+      float: none;
+    }
+    .hfi-condition-icon {
+      float: none;
+    }
+  }
+}
+
+/* activity list */
+ul.animal-activity-list {
+  li {
+    p {
+      font-size: 0.75em;
+      /*display: inline-block;*/
+      margin: 0;
+      padding: 0;
+    }
+    p.ai-label {
+      font-weight: bold;
+      color: #aaaaaa;
+      float:left;
+      margin-right:0.5em;
+    }
   }
 }

@@ -1,0 +1,62 @@
+<% content_for :head do %>
+<script type="text/javascript">
+</script>
+<% end %>
+<% content_for :panels do %>
+<div data-role="panel" data-display="overlay" data-position="right" id="activity-filters-panel" class="right-align-panel">
+  <%= form_tag hunting_app_activity_path(@hunting_plot.id), remote: true do %>
+  <div data-role="collapsible">
+    <h4>Deer Type(s)</h4>
+    <% ConfigData.animal_categories.values.each do |category| %>
+    <label><input name="animal_category_id[]" type="checkbox" value="<%= category[:id]%>"><%= category[:name]%></label>
+    <% end %>
+  </div>
+  <div data-role="collapsible">
+    <h4>Behavior(s)</h4>
+    <% ConfigData.animal_activity_types.values.each do |activity_type| %>
+    <label><input name="animal_activity_type_id[]" type="checkbox" value="<%= activity_type[:id]%>"><%= activity_type[:name]%></label>
+    <% end %>
+  </div>
+  <div data-role="collapsible">
+    <h4>Named Animals(s)</h4>
+    <% @hunting_plot.named_animals.each do |named_animal| %>
+    <label><input name="hunting_plot_named_animal_id[]" type="checkbox" value="<%= named_animal[:id]%>"><%= named_animal[:name]%></label>
+    <% end %>
+  </div>
+  <div data-role="collapsible">
+    <h4>Date Range</h4>
+    <label>Activity After</label>
+    <input name="after_date" type="date" value="">
+    <label>Activity Before</label>
+    <input name="before_date" type="date" value="">
+  </div>
+  <hr/>
+  <div class="ui-grid-a ui-responsive">
+    <div class="ui-block-a">
+      <%= submit_tag 'Apply', class:'ui-btn', data: { rel: 'close', icon: 'check' }  %>
+    </div>
+    <div class="ui-block-b">
+      <a href="#header" data-rel="close" class="ui-btn ui-icon-delete ui-btn-icon-left" id="activity-options-close-button">Close</a>
+    </div>
+  </div>
+
+  <% end %>
+</div>
+<% end %>
+
+<div>
+  <a class="ui-btn ui-btn-inline" href="#activity-filters-panel" title="Filter Options" data-role="button"><%= image_tag 'filter.png' %> Filter Results</a>
+  <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-info ui-btn-icon-notext" href="#popupBasic" data-transition="pop" data-rel="popup">Info</a>
+  <div id="popupBasic" data-role="popup">
+    <p id="filter-summary">Current Filter(s)</p>
+  </div>
+</div>
+
+<div id="activity-list" style="clear:both;"></div>
+
+<!-- :hunting_location_id
+:hunting_plot_named_animal_id
+:animal_category_id
+:animal_activity_type_id
+:after_date
+:before_date -->

@@ -26,35 +26,38 @@ module AnimalActivityObservationsControllerExtensions
 
   end
 
+  # controller assign-properties
+  def initialize_new_instance
+    @animal_activity_observation.hunting_plot_id = params[:hunting_plot_id]
+  end
+
   extend ActiveSupport::Concern
 
   included do
     append_before_action :set_hunting_plot
     append_before_action :set_view_data
+    after_initialize_new_instance :initialize_new_instance
   end
 
 private
 
   def set_hunting_plot
     @hunting_plot = get_hunting_plot
+    if @hunting_plot.nil?
+      raise "hunting plot could not be found (id=" + params[:hunting_plot_id] + ")"
+    end
   end
 
   def get_hunting_plot
-    if (@animal_activity_observation.nil?)
+    if (@animal_activity_observation.nil? || @animal_activity_observation.hunting_plot_id.nil?)
       HuntingPlot.find(params[:hunting_plot_id])
     else
-      @animal_activity_observation.hunting_location.hunting_plot
+      @animal_activity_observation.hunting_plot
     end
   end
 
   def set_view_data
-    hunting_plot = nil
-    if (@animal_activity_observation.nil?)
-      hunting_plot = HuntingPlot.find(params[:hunting_plot_id])
-    else
-      hunting_plot = @animal_activity_observation.hunting_location.hunting_plot
-    end
-    @view_data = ViewData.new(hunting_plot)
+    @view_data = ViewData.new(@hunting_plot)
   end
 
 end

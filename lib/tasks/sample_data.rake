@@ -1,5 +1,6 @@
 #require 'active_support'
 #require 'active_support/core_ext/integer/time'
+require 'json'
 
 namespace :db do
   desc 'Populate database with sample data'
@@ -14,6 +15,10 @@ namespace :db do
     make_hunting_plot_named_animals
     make_user_plot_accesses
     make_user_posts
+    make_user_networks
+  end
+  task populate_networks: :environment do
+    make_user_networks
   end
 end
 
@@ -113,5 +118,97 @@ def create_user_posts(user, count)
     post = user.posts.build(post_content: Faker::Lorem.sentence(10, false, 10), visibility:1)
     post.created_at = rand(168).hours.ago
     post.save
+  end
+end
+
+def make_user_networks
+  create_user_network_categories
+  usa_network = UserNetwork.create(name: 'United States', category_id: @user_network_categories[:country])
+  create_state_networks(usa_network.id)
+  create_county_networks
+end
+
+def create_user_network_categories
+  country_category = UserNetworkCategory.create(name:'Country', is_composite: true)
+  state_category = UserNetworkCategory.create(name:'State', is_composite: true, parent_category_id: country_category.id)
+  state_region_category = UserNetworkCategory.create(name:'State Region', is_composite: true, parent_category_id: state_category.id)
+  region_category = UserNetworkCategory.create(name:'Region', is_composite: true, parent_category_id: country_category.id)
+  county_category = UserNetworkCategory.create(name:'County', is_composite: false, parent_category_id: state_category.id)
+  @user_network_categories =
+    {
+      country: country_category.id,
+      state: state_category.id,
+      region: region_category.id,
+      state_region: state_region_category.id,
+      county: county_category.id
+    }
+end
+
+def create_state_networks(parent_network_id)
+  [
+    'Alabama',
+    'Alaska',
+    'Arizona',
+    'Arkansas',
+    'California',
+    'Colorado',
+    'Connecticut',
+    'Delaware',
+    'Florida',
+    'Georgia',
+    'Hawaii',
+    'Idaho',
+    'Illinois',
+    'Indiana',
+    'Iowa',
+    'Kansas',
+    'Kentucky',
+    'Louisiana',
+    'Maine',
+    'Maryland',
+    'Massachusetts',
+    'Michigan',
+    'Minnesota',
+    'Mississippi',
+    'Missouri',
+    'Montana',
+    'Nebraska',
+    'Nevada',
+    'New Hampshire',
+    'New Jersey',
+    'New Mexico',
+    'New York',
+    'North Carolina',
+    'North Dakota',
+    'Ohio',
+    'Oklahoma',
+    'Oregon',
+    'Pennsylvania',
+    'Rhode Island',
+    'South Carolina',
+    'South Dakota',
+    'Tennessee',
+    'Texas',
+    'Utah',
+    'Vermont',
+    'Virginia',
+    'Washington',
+    'West Virginia',
+    'Wisconsin',
+    'Wyoming'
+  ].each do |state_name|
+    UserNetwork.create!(name: state_name, category_id: @user_network_categories[:state], parent_network_id: parent_network_id)
+  end
+end
+
+def create_county_networks()
+  georgia_state_network_id = UserNetwork.find_by(name: 'Georgia', category_id: @user_network_categories[:state]).id
+  source_json = File.read("#{Rails.root}/lib/tasks/ga_county_boundaries.json")
+  county_boundaries = JSON.parse(source_json)
+  county_boundaries['county_boundaries'].each do |county|
+    county_network = UserNetwork.create(name: county['county_name'], category_id: @user_network_categories[:county], parent_network_id: georgia_state_network_id)
+    county['boundaries'].each do |boundary|
+      county_network.boundaries.create!(boundary: boundary)
+    end
   end
 end

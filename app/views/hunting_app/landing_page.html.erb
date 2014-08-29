@@ -89,16 +89,14 @@ function checkInFail(jqXHR, textStatus, errorThrown) {
   <ul>
     <li><%= link_to 'Home', hunting_app_home_path(@hunting_plot.id), { class: "ui-btn-active", remote: true, data: { icon:'home', target:'home' } } %></li>
     <li><%= link_to 'Map', hunting_app_map_path(@hunting_plot.id), { remote: true, data: { icon:'location', target:'map' } } %></li>
-    <li><%= link_to 'Activity', hunting_app_activity_path(@hunting_plot.id), { remote: true, data: { icon:'bullets', target:'activity' } } %></li>
+    <li><%= link_to 'Activity', hunting_app_activity_path(@hunting_plot.id), { method: 'post', remote: true, data: { icon:'bullets', target:'activity' } } %></li>
     <li><%= link_to 'Conditions', hunting_app_conditions_path(@hunting_plot.id), { remote: true, data: { icon:'cloud', target:'conditions' } } %></li>
   </ul>
 </div>
 <% end %>
 
-<% content_for :content do %>
-  <div data-content-id="home" class="content-panel content-panel-active"><%= render partial:'home' %></div>
-  <div data-content-id="map" class="content-panel" style="padding:0px;width:100%;height:100%;"><%= render partial:'map', locals: { hunting_plot: @hunting_plot } %></div>
-  <div data-content-id="activity" class="content-panel">Activity</div>
-  <div data-content-id="conditions" class="content-panel">Loading, please wait...</div>
-<% end %>
-
+<% # main content %>
+<div data-content-id="home" class="content-panel content-panel-active"><%= render partial:'home' %></div>
+<div data-content-id="map" class="content-panel" style="padding:0px;width:100%;height:100%;"><%= render partial:'map', locals: { hunting_plot: @hunting_plot } %></div>
+<div data-content-id="activity" class="content-panel"><%= render partial:'activity' %></div>
+<div data-content-id="conditions" class="content-panel">Loading, please wait...</div>

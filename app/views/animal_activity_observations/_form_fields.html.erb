@@ -3,6 +3,5 @@
 <%= _number_field(form, :animal_count, 'Animal Count') %>
 <%= _select_field(form, :animal_activity_type_id, 'Animal Activity Type', @view_data.animal_activity_types) %>
 <%= _select_field(form, :hunting_plot_named_animal_id, 'Hunting Plot Named Animal', @view_data.named_animals) %>
-<%= _datetime_select(form, :observation_date_time, 'Observation Date Time') %>
-
+<%= _datetime_select(form, :observation_date_time, 'Observation Date Time', default: Time.zone.now) %>
 <%= hidden_field_tag "hunting_plot_id", params[:hunting_plot_id].to_s %>

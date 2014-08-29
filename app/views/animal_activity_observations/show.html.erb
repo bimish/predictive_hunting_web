@@ -1,16 +1,24 @@
 <div class="row">
   <div class="col-md-12">
 
-    <p id="notice"><%= notice %></p>
+    <p>
+      <strong>Hunting plot:</strong>
+      <%= (@animal_activity_observation.hunting_plot_id.nil?) ? nil : @animal_activity_observation.hunting_plot.get_display_name %>
+    </p>
 
     <p>
       <strong>Hunting location:</strong>
-      <%= get_hunting_location_description(@animal_activity_observation) %>
+      <%= (@animal_activity_observation.hunting_location_id.nil?) ? nil : @animal_activity_observation.hunting_location.get_display_name %>
+    </p>
+
+    <p>
+      <strong>Location coordinates:</strong>
+      <%= @animal_activity_observation.location_coordinates %>
     </p>
 
     <p>
       <strong>Animal category:</strong>
-      <%= get_animal_category_description(@animal_activity_observation) %>
+      <%= (@animal_activity_observation.animal_category_id.nil?) ? nil : @animal_activity_observation.animal_category.get_display_name %>
     </p>
 
     <p>
@@ -20,22 +28,22 @@
 
     <p>
       <strong>Animal activity type:</strong>
-      <%= get_animal_activity_type_description(@animal_activity_observation) %>
+      <%= (@animal_activity_observation.animal_activity_type_id.nil?) ? nil : @animal_activity_observation.animal_activity_type.get_display_name %>
     </p>
 
     <p>
       <strong>Hunting plot named animal:</strong>
-      <%= get_named_animal_description(@animal_activity_observation) %>
+      <%= (@animal_activity_observation.hunting_plot_named_animal_id.nil?) ? nil : @animal_activity_observation.named_animal.get_display_name %>
     </p>
 
     <p>
       <strong>Observation date time:</strong>
-      <%= @animal_activity_observation.observation_date_time %>
+      <%= date_time_to_s(@animal_activity_observation.observation_date_time) %>
     </p>
 
     <p>
       <strong>Created by:</strong>
-      <%= get_created_by_description(@animal_activity_observation) %>
+      <%= (@animal_activity_observation.created_by_id.nil?) ? nil : @animal_activity_observation.created_by.get_display_name %>
     </p>
 
     <%= link_to 'Edit', edit_animal_activity_observation_path(@animal_activity_observation) %> |

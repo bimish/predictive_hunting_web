@@ -24,4 +24,14 @@ en:
 
   time:
     formats:
-      short: "I:%M %p"
+      short: "%l:%M %p"
+      descriptive: "%l:%M %p (%Z)"
+
+  date:
+    order:
+      - :month
+      - :day
+      - :year
+    formats:
+      short: "%m/%d/%Y"
+      descriptive: "%A, %B %d, %Y"

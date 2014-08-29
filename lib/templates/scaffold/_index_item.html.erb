@@ -14,6 +14,8 @@ end
     <td><%%= EnumsHelper::<%=singular_table_name.camelize%>Enums::get_<%= attribute.name %>_description(<%= singular_table_name %>.<%=attribute.name%>) %></td>
   <%- elsif attribute.has_value_list? -%>
     <td><%%= @view_data.get_<%= attribute.name %>_description(<%= singular_table_name %>.<%=attribute.name%>) %></td>
+  <%- elsif attribute.type == :datetime -%>
+    <td><%%= date_time_to_s(<%= singular_table_name %>.<%=attribute.name%>) %></td>
   <%- else -%>
     <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
   <%- end -%>

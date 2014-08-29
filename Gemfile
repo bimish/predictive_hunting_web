@@ -39,9 +39,6 @@ gem "faker", "~> 1.3.0"
 gem "rgeo", "~> 0.3.20"
 gem "activerecord-postgis-adapter", "~> 1.0.0"
 
-# bit field support for ActiveRecord
-gem 'flag_shih_tzu'
-
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
