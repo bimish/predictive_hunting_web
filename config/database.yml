@@ -64,6 +64,6 @@ production:
   encoding: unicode
   database: d9804ed6v66rm7
   host: ec2-54-83-43-242.compute-1.amazonaws.com
-  port: 5742
+  port: 5582
   pool: 5
   schema_search_path: public,postgis
