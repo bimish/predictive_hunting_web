@@ -1,13 +1,38 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <tr data-id="<%=user.id%>">
-  <td><%= user.first_name %></td>
-  <td><%= user.last_name %></td>
-  <td><%= user.alias %></td>
-  <td><%= user.email %></td>
-  <td><%= user.password_digest %></td>
-  <td><%= user.remember_token %></td>
-  <td><%= @view_data.get_authentication_method_description(user.authentication_method) %></td>
-  <td><%= user.admin %></td>
-  <td><%= item_show_command(user_path(user)) %></td>
-  <td><%= item_edit_command(edit_user_path(user), { remote: true }) %></td>
-  <td><%= item_delete_command(user_path(user), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% if (attribute_list.nil? || attribute_list.include?(:first_name)) %>
+    <td><%= user.first_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:last_name)) %>
+    <td><%= user.last_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:alias)) %>
+    <td><%= user.alias %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:email)) %>
+    <td><%= user.email %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:password_digest)) %>
+    <td><%= user.password_digest %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:remember_token)) %>
+    <td><%= user.remember_token %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:authentication_method)) %>
+    <td><%= EnumsHelper::UserEnums::get_authentication_method_description(user.authentication_method) %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:admin)) %>
+    <td><%= @view_data.get_admin_description(user.admin) %></td>
+  <% end %>
+  <% if editable %>
+    <td><%= item_show_command(user_path(user)) %></td>
+    <td><%= item_edit_command(edit_user_path(user), { remote: true }) %></td>
+    <td><%= item_delete_command(user_path(user), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% end %>
 </tr>

@@ -1,12 +1,10 @@
-class UsersController < ApplicationController
-
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :delete]
+class UsersController < ComponentController
 
   include UsersControllerExtensions
 
   # GET /users
   def index
-    @users = User.all
+    @users ||= User.all
   end
 
   # GET /users/1
@@ -15,8 +13,6 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
-    @user = User.new
-    @user.init_new current_user
   end
 
   # GET /users/1/edit
@@ -25,9 +21,6 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_create_params)
-    @user.init_new current_user
-
     respond_to do |format|
       if @user.save
         format.html { redirect_to @user, notice: 'User was successfully created.' }
@@ -44,7 +37,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   def update
     respond_to do |format|
-      if @user.update(user_update_params)
+      if @user.update(update_params)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { head :no_content }
         format.js
@@ -67,17 +60,20 @@ class UsersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
+    def get_component
       @user = User.find(params[:id])
     end
 
-    def user_update_params
-      params.require(:user).permit(:first_name, :last_name, :alias, :email, :password_digest, :remember_token, :authentication_method, :admin)
+    def new_component(params = nil)
+      @user = User.new(params)
     end
 
-    def user_create_params
-      params.require(:user).permit(:first_name, :last_name, :alias, :email, :password_digest, :remember_token, :authentication_method, :admin)
+    def update_params
+      params.require(:user).permit(:first_name, :last_name, :alias, :password, :password_confirmation, :authentication_method, :admin)
+    end
+
+    def create_params
+      params.require(:user).permit(:first_name, :last_name, :alias, :email, :password, :password_confirmation, :authentication_method, :admin)
     end
 
 end

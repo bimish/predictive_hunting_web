@@ -1,9 +1,8 @@
 <%-
 model_attributes.each do |attribute|
-  if attribute.password_digest? -%>
--%>
-  <%%= _password_field(f, :password, 'Password') %>
-  <%%= _password_field(f, :password_confirmation, 'Confirmation') %>
+  if attribute.name == 'password_digest' -%>
+  <%%= _password_field(form, :password, 'Password') %>
+  <%%= _password_field(form, :password_confirmation, 'Confirmation') %>
 <%-
   elsif !attribute.is_component_assigned? && !attribute.is_controller_assigned?
     if attribute.reference?
@@ -14,7 +13,7 @@ model_attributes.each do |attribute|
 -%>
 <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', EnumsHelper::<%=singular_table_name.camelize%>Enums::<%= attribute.name.to_s.pluralize %>) %>
 <%-
-    elsif attribute.has_value_list?
+    elsif (attribute.type != :boolean) && (attribute.has_value_list?)
 -%>
 <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.name.to_s.pluralize %>) %>
 <%-

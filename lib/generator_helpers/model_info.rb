@@ -299,7 +299,10 @@ module GeneratorHelpers
     def get_assignable_attribute_names
       attribute_names = Array.new
       attributes.each do |attribute|
-        if attribute.is_flags?
+        if attribute.name == 'password_digest'
+          attribute_names.push 'password'
+          attribute_names.push 'password_confirmation'
+        elsif attribute.is_flags?
           attribute_names.push *attribute.get_flag_attribute_names
         elsif attribute.is_assignable?
           attribute_names.push attribute.name
@@ -311,7 +314,10 @@ module GeneratorHelpers
     def get_updateable_attribute_names
       attribute_names = Array.new
       attributes.each do |attribute|
-        if attribute.is_flags?
+        if attribute.name == 'password_digest'
+          attribute_names.push 'password'
+          attribute_names.push 'password_confirmation'
+        elsif attribute.is_flags?
           attribute_names.push *attribute.get_flag_attribute_names
         elsif attribute.is_updateable?
           attribute_names.push attribute.name

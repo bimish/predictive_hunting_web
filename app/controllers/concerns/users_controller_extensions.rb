@@ -8,6 +8,10 @@ module UsersControllerExtensions
     def get_authentication_method_description(authentication_method)
       authentication_method.sub("authentication_method_", "").humanize
     end
+
+    def get_admin_description(admin_value)
+      admin_value.to_s
+    end
   end
 
   extend ActiveSupport::Concern

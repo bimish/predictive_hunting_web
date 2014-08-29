@@ -23,9 +23,8 @@
             <td><%= hunting_plot.name %></td>
             <td><%= hunting_plot.location_address %></td>
             <td>
-              <%= item_show_command hunting_plot %>
-              <%= item_edit_command edit_hunting_plot_path(hunting_plot) %>
-              <%= item_delete_command hunting_plot, { method: :delete , data: { confirm: 'Are you sure?' } } %>
+              <%= item_command 'Manage', hunting_plot %>
+              <%= item_command 'Check-in', hunting_app_path(hunting_plot), :target => '_blank' %>
             </td>
           </tr>
         <% end %>
@@ -34,7 +33,9 @@
 
     <br>
 
+    <!--
     <%= link_to 'New Hunting plot', new_hunting_plot_path, class:'btn btn-default' %>
+    -->
 
   </div>
 

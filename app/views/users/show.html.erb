@@ -1,8 +1,6 @@
 <div class="row">
   <div class="col-md-12">
 
-    <p id="notice"><%= notice %></p>
-
     <p>
       <strong>First name:</strong>
       <%= @user.first_name %>
@@ -35,12 +33,12 @@
 
     <p>
       <strong>Authentication method:</strong>
-      <%= @view_data.get_authentication_method_description(@user.authentication_method) %>
+      <%= EnumsHelper::UserEnums::get_authentication_method_description(@user.authentication_method) %>
     </p>
 
     <p>
       <strong>Admin:</strong>
-      <%= @user.admin %>
+      <%= @view_data.get_admin_description(@user.admin) %>
     </p>
 
     <%= link_to 'Edit', edit_user_path(@user) %> |

@@ -21,4 +21,12 @@ module EnumsHelper
       category.sub("category_", "").humanize
     end
   end
+  module UserEnums
+    def self.get_authentication_method_description(authentication_method)
+      authentication_method.sub("authentication_method_", "").humanize
+    end
+    def self.authentication_methods
+      @@authentication_methods_map ||= User.authentication_methods.collect { |item| [get_authentication_method_description(item[0]), item[0]] }
+    end
+  end
 end

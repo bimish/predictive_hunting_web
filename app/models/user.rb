@@ -46,6 +46,10 @@ class User < ActiveRecord::Base
 
   has_many :network_subscriptions, class_name:'UserNetworkSubscription'
 
+  component_assigned_attribute :password_digest, :remember_token
+
+  write_once_attribute :email
+
   def get_display_name
     self.alias
   end
@@ -75,6 +79,21 @@ class User < ActiveRecord::Base
       search_results = search_results.where(names_clause)
     end
     search_results
+  end
+
+  def authorize_action?(user, action)
+    case action
+    when :read
+      self.id == user.id
+    when :create
+      true
+    when :update
+      self.id == user.id
+    when :destroy
+      false
+    else
+      raise ArgumentError, 'The specified action is not supported'
+    end
   end
 
 private
