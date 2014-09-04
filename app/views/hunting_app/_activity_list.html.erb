@@ -5,7 +5,7 @@
 <%
   last_observation_date = nil
   animal_activity_observations.order(created_at: :desc).each do |observation|
-    observation_date = observation.created_at.to_date
+    observation_date = observation.observation_date_time.to_date
     if (last_observation_date.nil? || last_observation_date != observation_date)
 %>
   <li data-role="list-divider"><%= date_to_s(observation_date, :descriptive) %></li>
@@ -24,7 +24,7 @@
 %>
   <li class="activity-item">
     <%= content_tag(:p, "Time", class:'ai-label') %>
-    <%= content_tag(:p, time_to_s(observation.created_at, :short), class:'ai-observation-time') %>
+    <%= content_tag(:p, time_to_s(observation.observation_date_time, :short), class:'ai-observation-time') %>
 
     <%= content_tag(:p, "Deer Type", class:'ai-label') %>
     <%= content_tag(:p, animal_description, class:'ai-animal-type') %>

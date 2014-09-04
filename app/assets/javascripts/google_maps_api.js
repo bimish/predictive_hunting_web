@@ -352,13 +352,5 @@ MapsHelper.getLocationAddress = function(latitude, longitude, resultHandler) {
 MapsHelper.Mode = { View: 1, SetLocation: 2, SetBoundary: 3 };
 MapsHelper.MapTypes = { Roadmap: google.maps.MapTypeId.ROADMAP, Satellite: google.maps.MapTypeId.SATELLITE };
 MapIcons = {
-	HuntingPlotLocation:
-	{
-		path: google.maps.SymbolPath.CIRCLE,
-		scale: 5,
-		strokeWeight: 1,
-		strokeColor: 'black',
-		fillColor: 'green',
-		fillOpacity: 0.8
-	}
+	HuntingPlotLocation: new google.maps.MarkerImage('/assets/hunting_plot_location.png', null, null, null, new google.maps.Size(16,16))
 };
