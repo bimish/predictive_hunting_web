@@ -1,8 +1,8 @@
 <% content_for :head do %>
 <script type="text/javascript">
 g_userLocation = null;
-$(document).ready(
-  function() {
+pageInit(
+  function(event) {
     $('div[data-role="navbar"] > ul > li > a').click(
       function (eventObject) {
         targetPanelId = $(this).data('target');
@@ -23,29 +23,10 @@ $(document).ready(
     var contentCurrent = $(".ui-content").outerHeight() - $(".ui-content").height();
     var content = screen - header - footer - contentCurrent;
     $(".ui-content").height(content);
-
-    if (!navigator.geolocation) {
-      alert('This application requires that you enable it to access your current location.');
-    }
-    else {
-      // get the initial position and setup a refresh
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          g_userLocation = position;
-          doCheckIn(position);
-          /*
-          setInterval(
-            function() {
-              navigator.geolocation.getCurrentPosition(doCheckIn);
-            },
-            60000 // refresh every 60 seconds
-          );
-          */
-        }
-      );
-    }
   }
 );
+
+/*
 var g_checkinRequestPending = false;
 function doCheckIn(currentPosition) {
   if (g_checkinRequestPending) return; // still have a pending request, don't send another
@@ -68,6 +49,7 @@ function checkInSuccess(data, textStatus, jqXHR) {
 function checkInFail(jqXHR, textStatus, errorThrown) {
   g_checkinRequestPending = false;
 }
+*/
 </script>
 <% end %>
 

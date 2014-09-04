@@ -1,8 +1,11 @@
 <% content_for :head do %>
 <script type="text/javascript">
+var g_memberLocations = null;
+var g_huntingLocations = null;
 function showMap() {
   if (typeof(g_map) == 'undefined') {
     var mapOptions = {
+      showCenterMarker: false,
       mapTypeControl: false,
       streetViewControl: false,
       center: { lat: <%=@hunting_plot.location_coordinates.y()%>, lng: <%=@hunting_plot.location_coordinates.x()%> },
@@ -14,18 +17,6 @@ function showMap() {
       boundary: parseWKTPolygon('<%=@hunting_plot.boundary.to_s%>'),
   <%
   end
-  if @hunting_plot.locations.size > 0
-  %>
-      additional_markers: [
-  <%
-    @hunting_plot.locations.each_with_index  do |hunting_location, index|
-      if index > 0 %>,<% end %>{ name: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>} }
-  <%
-    end
-  %>
-      ],
-  <%
-  end
   %>
       zoom: 12
     };
@@ -35,34 +26,118 @@ function showMap() {
     catch (e) {
       alert("The following error occurred: " + e);
     }
-    //$('#map-options-popup').top($('#map-canvas').top());
+    /*
     $('#map-options-close-button').click(
       function (eventObject) {
         g_map.setMapType( $('#satellite-checkbox').prop('checked') ? MapsHelper.MapTypes.Satellite : MapsHelper.MapTypes.Roadmap);
       }
     );
+    */
+    $('#map-options-panel ul li input').change(
+      function(event) {
+        var isChecked = $(this).is(':checked');
+        switch ($(this).attr('name')) {
+          case 'satellite-checkbox':
+          {
+            g_map.setMapType( isChecked ? MapsHelper.MapTypes.Satellite : MapsHelper.MapTypes.Roadmap );
+            break;
+          }
+          case 'members-checkbox':
+          {
+            var markerTag = 'plot-members'
+            if (isChecked) {
+              $.each(
+                g_memberLocations,
+                function(index, member_location) {
+                  g_map.addMarker(
+                    {
+                      title: member_location.first_name +  " " + member_location.last_name,
+                      coordinates: member_location.location_coordinates,
+                      icon: new google.maps.MarkerImage('<%= asset_url('user_pin.png') %>', null, null, null, new google.maps.Size(24,24)),
+                      zIndex: 3,
+                      infoWindowContent: member_location.first_name + '&nbsp;' + member_location.last_name + '<br/>' + member_location.location_name
+                    },
+                    markerTag
+                  );
+                }
+              );
+            }
+            else {
+              g_map.clearMarkers(markerTag);
+            }
+            break;
+          }
+          case 'stands-checkbox':
+          {
+            var markerTag = 'hunting-locations'
+            if (isChecked) {
+              $.each(
+                g_huntingLocations,
+                function(index, hunting_location) {
+                  g_map.addMarker(
+                    {
+                      title: hunting_location.name,
+                      coordinates: hunting_location.coordinates,
+                      icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)),
+                      zIndex: 2
+                    },
+                    markerTag
+                  );
+                }
+              );
+            }
+            else {
+              g_map.clearMarkers(markerTag);
+            }
+            break;
+          }
+          case 'wind-forecast-checkbox':
+          {
+
+            break;
+          }
+        }
+      }
+    );
   }
 }
+var g_huntingLocations = <%==
+    @hunting_plot.locations.collect do |hunting_location|
+      {
+        name: hunting_location.name,
+        coordinates: {
+          lat: hunting_location.coordinates.y(),
+          lng: hunting_location.coordinates.x()
+        }
+      }
+    end.to_json
+  %>;
 </script>
 <% end %>
 <% content_for :panels do %>
 <div data-role="panel" data-display="overlay" data-position="right" id="map-options-panel" class="right-align-panel">
   <ul data-role="listview">
     <li>
-      <input name="satellite-checkbox" id="satellite-checkbox" type="checkbox" data-role="flipswitch">
-      Satellite Imagery
+      <label>
+        <input name="satellite-checkbox" id="satellite-checkbox" type="checkbox" data-role="flipswitch"> Satellite Imagery
+      </label>
     </li>
     <li>
-      <input name="members-checkbox" id="members-checkbox" type="checkbox" data-role="flipswitch">
-      Show Members
+      <label>
+        <input name="members-checkbox" id="members-checkbox" type="checkbox" data-role="flipswitch"> Members <%= image_tag 'user_pin.png', size:'24x24' %>
+      </label>
     </li>
     <li>
-      <input name="stands-checkbox" id="stands-checkbox" type="checkbox" data-role="flipswitch">
-      Show Stands
+      <label>
+        <input name="stands-checkbox" id="stands-checkbox" type="checkbox" data-role="flipswitch"> Stands <%= image_tag 'hunting_plot_location.png', size:'16x16' %>
+      </label>
     </li>
-    <li>??</li>
+    <li>
+      <label>
+        <input name="wind-forecast-checkbox" id="wind-forecast-checkbox" type="checkbox" data-role="flipswitch"> Wind Forecast
+      </label>
+    </li>
   </ul>
-  <br/>
   <a href="#header" data-rel="close" class="ui-btn ui-icon-delete ui-btn-icon-left" id="map-options-close-button">Close</a>
 </div>
 <% end %>

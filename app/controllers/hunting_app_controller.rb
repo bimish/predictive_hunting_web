@@ -9,7 +9,7 @@ class HuntingAppController < ApplicationController
   end
 
   def map
-
+    @member_locations = HuntingModeUserLocation.where(hunting_plot_id: params[:hunting_plot_id]).where('updated_at > ?', 1.days.ago).preload(:user).preload(:hunting_location)
   end
 
   def activity
@@ -53,12 +53,17 @@ class HuntingAppController < ApplicationController
   end
 
   def check_in
-    location_coordinates = "POINT(#{params[:position][:lng]} #{params[:position][:lat]})"
+    is_at_plot = (params[:is_at_plot] == 'true')
     locationRecord = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
-    if locationRecord.nil?
-      HuntingModeUserLocation.create!(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], location_coordinates: location_coordinates)
-    else
-      locationRecord.update_attribute(:location_coordinates, location_coordinates)
+    if (is_at_plot)
+      location_coordinates = "POINT(#{params[:position_longitude]} #{params[:position_latitude]})"
+      if locationRecord.nil?
+        HuntingModeUserLocation.create!(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: params[:hunting_location_id], location_coordinates: location_coordinates)
+      else
+        locationRecord.update(location_coordinates: location_coordinates, hunting_location_id: params[:hunting_location_id])
+      end
+    elsif !locationRecord.nil?
+      locationRecord.destroy
     end
   end
 

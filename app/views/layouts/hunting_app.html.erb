@@ -8,11 +8,14 @@
   <%= javascript_include_tag "hunting_app" %>
   <%= csrf_meta_tag %>
   <%= yield :head %>
+  <script type="text/javascript">
+  $(document).on("pagecreate", function(event, ui) { callPageInitializers(event); } );
+  </script>
 </head>
 
 <body data-no-turbolink="true">
 
-  <div data-role="page">
+  <div data-role="page" id="mainPage">
 
     <%= yield :panels %>
 
@@ -30,3 +33,4 @@
 
 </body>
 </html>
+

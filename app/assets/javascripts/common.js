@@ -51,3 +51,4 @@ function formatWKTPolygon(vertices, precision) {
 	polygonWKT += "))";
 	return polygonWKT;
 }
+

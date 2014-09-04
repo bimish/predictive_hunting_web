@@ -30,6 +30,8 @@ function MapsHelper(mapCanvas, options)
 	this.getMode = function() { return getModeImpl(); };
 	this.getBoundaryVertices = function() { return getBoundaryVerticesImpl(); };
 	this.setMapType = function(mapType) { setMapTypeImpl(mapType); }
+	this.clearMarkers = function(tag) { clearMarkersImpl(tag); }
+	this.addMarker = function(marker, tag) { addMarkerImpl(marker, tag); }
 
 	function initOptions(options) {
 		// default to center of US
@@ -39,7 +41,8 @@ function MapsHelper(mapCanvas, options)
 				lng: -95.712891
 			},
 			zoom: MapsHelper.DEFAULT_ZOOM,
-			markerTitle: 'US'
+			markerTitle: 'US',
+			showCenterMarker: true
 		};
 		_mode = MapsHelper.Mode.View;
 
@@ -50,6 +53,8 @@ function MapsHelper(mapCanvas, options)
 				_mapOptions.center = options.center;
 			if (isDefinedAndNonNull(options.zoom))
 				_mapOptions.zoom = options.zoom;
+			if (isDefinedAndNonNull(options.showCenterMarker))
+				_mapOptions.showCenterMarker = options.showCenterMarker;
 			if (isDefinedAndNonNull(options.markerTitle))
 				_mapOptions.markerTitle = options.markerTitle;
 			if (isDefinedAndNonNull(options.boundary))
@@ -78,7 +83,11 @@ function MapsHelper(mapCanvas, options)
 			_map.fitBounds(_mapOptions.view_window);
 		}
 
-		if ((_mode == MapsHelper.Mode.View) || (_mode == MapsHelper.Mode.SetLocation)) {
+		if (
+				( (_mode == MapsHelper.Mode.View) && (_mapOptions.showCenterMarker) )
+				||
+				(_mode == MapsHelper.Mode.SetLocation)
+			) {
 			setMarkerLocationImpl(_mapOptions.center);
 		}
 		if ((_mode == MapsHelper.Mode.View) || (_mode == MapsHelper.Mode.SetBoundary)) {
@@ -89,7 +98,7 @@ function MapsHelper(mapCanvas, options)
 		if ((_mode == MapsHelper.Mode.View) && (isDefinedAndNonNull(_mapOptions.additional_markers))) {
 			for (var i = 0; i < _mapOptions.additional_markers.length; i++) {
 				var marker = _mapOptions.additional_markers[i];
-				addMarker(new google.maps.LatLng(marker.coordinates.lat, marker.coordinates.lng), marker.name);
+				addMarkerImpl(marker);
 			}
 		}
 	}
@@ -140,30 +149,49 @@ function MapsHelper(mapCanvas, options)
 		setMarkerLocationImpl(location);
 	}
 
-	function addMarker(location, title) {
+	function createMarker(location, title, icon, zIndex) {
+		var markerOptions = {
+			position: location,
+			map: _map,
+			draggable: false,
+			title: title,
+			zIndex: 2
+		};
+		if (isDefinedAndNonNull(icon)) markerOptions.icon = icon;
+		if (isDefinedAndNonNull(zIndex)) markerOptions.zIndex = zIndex;
+		return new google.maps.Marker(markerOptions);
+	}
+
+	function clearMarkersImpl(tag) {
+		if (_additionalMarkers != null) {
+			for (var index = _additionalMarkers.length - 1; index >= 0; index--) {
+				if (_additionalMarkers[index].tag == tag) {
+					_additionalMarkers[index].marker.setMap(null);
+					_additionalMarkers.splice(index, 1);
+				}
+			}
+		}
+	}
+
+	function addMarkerImpl(markerDef, tag) {
 		if (_additionalMarkers == null) {
 			_additionalMarkers = new Array();
 		}
-		var marker =
-			new google.maps.Marker(
-				{
-					position: location,
-					map: _map,
-					draggable: false,
-					title: title,
-					zIndex: 1000,
-					icon: {
-						path: google.maps.SymbolPath.CIRCLE,
-						scale: 5,
-						strokeWeight: 1,
-						strokeColor: 'black',
-						fillColor: 'green',
-						fillOpacity: 0.8
-					}
+		var mapMarker = createMarker(new google.maps.LatLng(markerDef.coordinates.lat, markerDef.coordinates.lng), markerDef.title, markerDef.icon, markerDef.zIndex);
+
+		if (isDefinedAndNonNull(markerDef.infoWindowContent)) {
+			var infoWindow = new google.maps.InfoWindow( { content: markerDef.infoWindowContent } );
+			google.maps.event.addListener(
+				mapMarker,
+				'click',
+				function() {
+					infoWindow.open(_map, mapMarker);
 				}
 			);
-		_additionalMarkers.push(marker);
+		}
+		_additionalMarkers.push( { marker: mapMarker, tag: tag } );
 	}
+
 	function createDrawingManagerImpl(options) {
 		var drawingManager = new google.maps.drawing.DrawingManager(options);
 		drawingManager.setMap(_map);
@@ -197,7 +225,16 @@ function MapsHelper(mapCanvas, options)
 		var polygonPaths = new Array();
 		for (var i = 0; i < vertices.length; i++)
 			polygonPaths.push(new google.maps.LatLng(vertices[i].lat, vertices[i].lng));
-		var boundary = new google.maps.Polygon ( { paths: polygonPaths } );
+		var boundary = new google.maps.Polygon (
+			{
+				paths: polygonPaths,
+				strokeColor: '#000000',
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: '#8FBC8F',
+				fillOpacity: 0.35
+			}
+		);
 		boundary.setMap(_map);
 		boundary.setEditable(editable);
 		return boundary;
@@ -314,3 +351,14 @@ MapsHelper.getLocationAddress = function(latitude, longitude, resultHandler) {
 }
 MapsHelper.Mode = { View: 1, SetLocation: 2, SetBoundary: 3 };
 MapsHelper.MapTypes = { Roadmap: google.maps.MapTypeId.ROADMAP, Satellite: google.maps.MapTypeId.SATELLITE };
+MapIcons = {
+	HuntingPlotLocation:
+	{
+		path: google.maps.SymbolPath.CIRCLE,
+		scale: 5,
+		strokeWeight: 1,
+		strokeColor: 'black',
+		fillColor: 'green',
+		fillOpacity: 0.8
+	}
+};

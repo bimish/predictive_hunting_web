@@ -1,1 +1,1 @@
-{ msg: 'Hi there!'}
+{ msg: 'Hi there!' }

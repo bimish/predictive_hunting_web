@@ -1,15 +1,77 @@
+<% content_for :head do %>
+<script type="text/javascript">
+var g_geolocationWatchId = null;
+pageInit(
+  function(event) {
+    $('#checkin-form #is-at-plot').click(
+      function() {
+        if ($(this).is(':checked')) {
+          $('#checkin-form #hunting_location_id').selectmenu('enable');
+        }
+        else {
+          $('#checkin-form #hunting_location_id').selectmenu('disable');
+        }
+        $('#checkin-form #checkin-submit').button('enable');
+      }
+    );
+    $('#checkin-form #hunting_location_id').change(
+      function() {
+        $('#checkin-form #checkin-submit').button('enable');
+      }
+    );
+    $('#checkin-form').submit(
+      function() {
+        $.mobile.loading(
+          "show",
+          {
+            text: "Updating...",
+            textVisible: true,
+            theme: "z",
+            html: ""
+          }
+        );
+      }
+    );
+
+    // setup geolocation tracking
+    if (navigator.geolocation) {
+      g_geolocationWatchId = navigator.geolocation.watchPosition(
+        function(position) {
+          $('#checkin-form input[name="position_latitude"]').val(position.coords.latitude);
+          $('#checkin-form input[name="position_longitude"]').val(position.coords.longitude);
+        },
+        function(error) {
+          alert('Unable to retrieve current location.  Please allow this application to access current location for accurate information');
+        }
+      );
+    }
+  }
+
+);
+</script>
+<% end %>
+
 <div data-role="collapsibleset" data-mini="true" data-theme="a" data-content-theme="a">
   <div data-role="collapsible" data-collapsed="false">
-    <h3>My Status</h3>
-    <p>I'm the collapsible content for section 1</p>
-  </div>
-  <div data-role="collapsible">
-    <h3>Plot Members</h3>
-    <p>I'm the collapsible content for section 2</p>
-  </div>
-  <div data-role="collapsible">
-    <h3>Forecast</h3>
-    <p>I'm the collapsible content for section 3</p>
+    <h3>Check-in</h3>
+    <%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkin-form' do %>
+    <%= hidden_field_tag("position_longitude", "") %>
+    <%= hidden_field_tag("position_latitude", "") %>
+    <label>
+      <input id="is-at-plot" name="is_at_plot" type="checkbox" value="true">I'm at the hunting plot
+    </label>
+    <label>
+      <select name="hunting_location_id" id="hunting_location_id" data-native-menu="false" disabled="disabled">
+        <option data-placeholder="true" value="">Choose Stand...</option>
+        <option value="">[Not in a stand]</option>
+        <% @hunting_plot.locations.find_all { |location| location.location_type_stand? }.each do |location| %>
+          <option value="<%= location.id%>"><%= location.name%></option>
+        <% end %>
+      </select>
+    </label>
+    <hr/>
+    <input id="checkin-submit" type="submit" value="Update" data-icon="check" disabled="disabled" style="background-color:green;">
+    <% end %>
   </div>
   <div data-role="collapsible">
     <h3>Deer Sighting</h3>
@@ -22,6 +84,14 @@
         <option value="4">??</option>
       </select>
     </div>
+  </div>
+  <div data-role="collapsible">
+    <h3>Plot Members</h3>
+    <p>I'm the collapsible content for section 2</p>
+  </div>
+  <div data-role="collapsible">
+    <h3>Forecast</h3>
+    <p>I'm the collapsible content for section 3</p>
   </div>
 </div>
 

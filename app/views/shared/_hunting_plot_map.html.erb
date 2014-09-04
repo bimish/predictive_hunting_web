@@ -1,5 +1,4 @@
 <% content_for :head do %>
-	<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnowDHg-PA5lxfTdQnwZMOht-iUjIjaIg&sensor=false"/></script>-->
 	<script type="text/javascript">
 	var g_map = null;
 	var g_marker = null;
@@ -21,7 +20,7 @@ if hunting_plot.locations.size > 0
 			additional_markers: [
 <%
 	hunting_plot.locations.each_with_index  do |hunting_location, index|
-		if index > 0 %>,<% end %>{ name: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>} }
+		if index > 0 %>,<% end %>{ title: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>} }
 <%
 	end
 %>
