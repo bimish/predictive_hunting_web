@@ -78,7 +78,7 @@ function showMap() {
                     {
                       title: hunting_location.name,
                       coordinates: hunting_location.coordinates,
-                      icon: new google.maps.MarkerImage('/assets/hunting_plot_location.png', null, null, null, new google.maps.Size(16,16)),
+                      icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)),
                       zIndex: 2
                     },
                     markerTag

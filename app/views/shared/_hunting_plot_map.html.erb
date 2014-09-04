@@ -20,7 +20,7 @@ if hunting_plot.locations.size > 0
 			additional_markers: [
 <%
 	hunting_plot.locations.each_with_index  do |hunting_location, index|
-		if index > 0 %>,<% end %>{ title: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>}, icon: new google.maps.MarkerImage('/assets/hunting_plot_location.png', null, null, null, new google.maps.Size(16,16)) }
+		if index > 0 %>,<% end %>{ title: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>}, icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)) }
 <%
 	end
 %>
