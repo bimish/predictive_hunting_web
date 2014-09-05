@@ -112,6 +112,15 @@ var g_huntingLocations = <%==
       }
     end.to_json
   %>;
+var g_windConditions = <%==
+  current_conditions = get_current_conditions(@hunting_plot)
+  wind_conditions = {
+    wind_string: current_conditions[:conditions]['wind_string'],
+    wind_dir: current_conditions[:conditions]['wind_dir'],
+    wind_degrees: current_conditions[:conditions]['wind_degrees'],
+    wind_mph: current_conditions[:conditions]['wind_mph']
+  }
+  wind_conditions.to_json %>;
 </script>
 <% end %>
 <% content_for :panels do %>
@@ -134,7 +143,7 @@ var g_huntingLocations = <%==
     </li>
     <li>
       <label>
-        <input name="wind-forecast-checkbox" id="wind-forecast-checkbox" type="checkbox" data-role="flipswitch"> Wind Forecast
+        <input name="wind-forecast-checkbox" id="wind-forecast-checkbox" type="checkbox" data-role="flipswitch"> Wind Conditions
       </label>
     </li>
   </ul>

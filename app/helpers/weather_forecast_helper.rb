@@ -49,18 +49,9 @@ module WeatherForecastHelper
 
   def get_current_conditions(hunting_plot)
 
-    location_result = get_location(hunting_plot)
-
-    conditions_url = get_request_url(location_result, 'conditions')
-    conditions_request = Net::HTTP::Get.new(conditions_url.path)
-    conditions_response = Net::HTTP.start(forecast_url.host, forecast_url.port) do |http|
-      http.request(forecast_request)
-    end
-    forecast_result = JSON.parse(forecast_response.body)
-
+    conditions_results = execute_request(hunting_plot, 'conditions')
     return {
-      details_url: location_result['location']['wuiurl'],
-      forecast: forecast_result['forecast']
+      conditions: conditions_results['current_observation']
     }
 
   end
@@ -87,7 +78,7 @@ module WeatherForecastHelper
     response = Net::HTTP.start(request_url.host, request_url.port) do |http|
       http.request(request)
     end
-    JSON.parse(forecast_response.body)
+    JSON.parse(response.body)
 
   end
 
