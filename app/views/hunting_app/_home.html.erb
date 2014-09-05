@@ -57,20 +57,24 @@ pageInit(
     <%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkin-form' do %>
     <%= hidden_field_tag("position_longitude", "") %>
     <%= hidden_field_tag("position_latitude", "") %>
+
+    <%= label_tag(
+      nil,
+      check_box_tag('is_at_plot', 'true', !@last_checkin.nil?, id:'is-at-plot') + 'I\'m at the hunting plot'
+    ) %>
+
     <label>
-      <input id="is-at-plot" name="is_at_plot" type="checkbox" value="true">I'm at the hunting plot
-    </label>
-    <label>
-      <select name="hunting_location_id" id="hunting_location_id" data-native-menu="false" disabled="disabled">
+      <select name="hunting_location_id" id="hunting_location_id" data-native-menu="false" <%= @last_checkin.nil? ? "disabled" : nil %>>
         <option data-placeholder="true" value="">Choose Stand...</option>
         <option value="">[Not in a stand]</option>
         <% @hunting_plot.locations.find_all { |location| location.location_type_stand? }.each do |location| %>
-          <option value="<%= location.id%>"><%= location.name%></option>
+          <option value="<%= location.id%>"<%= ((!@last_checkin.nil? && @last_checkin.hunting_location_id == location.id) ? "selected" : nil) %>><%= location.name%></option>
         <% end %>
       </select>
     </label>
     <hr/>
     <input id="checkin-submit" type="submit" value="Update" data-icon="check" disabled="disabled" style="background-color:green;">
+    <p class='check-in-msg'>Last check-in at <%= (@last_checkin.nil?) ? '' : date_time_to_s(@last_checkin.updated_at, :short) %></p>
     <% end %>
   </div>
   <div data-role="collapsible">

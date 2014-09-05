@@ -5,7 +5,7 @@ class HuntingAppController < ApplicationController
   layout 'hunting_app'
 
   def landing_page
-
+    @last_checkin = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
   end
 
   def map
