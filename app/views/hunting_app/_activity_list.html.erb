@@ -4,7 +4,7 @@
 <ul data-role="listview" data-inset="true" class="animal-activity-list">
 <%
   last_observation_date = nil
-  animal_activity_observations.order(created_at: :desc).each do |observation|
+  animal_activity_observations.order(observation_date_time: :desc).each do |observation|
     observation_date = observation.observation_date_time.to_date
     if (last_observation_date.nil? || last_observation_date != observation_date)
 %>
