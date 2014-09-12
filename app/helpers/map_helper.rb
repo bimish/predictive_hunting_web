@@ -1,11 +1,16 @@
 module MapHelper
 
+  class MapHelperUtils
+    include ActionView::Helpers::JavaScriptHelper
+  end
+
   Modes = {
     'View' => 'MapsHelper.Mode.View',
     'SetLocation' => 'MapsHelper.Mode.SetLocation',
     'SetBoundary' => 'MapsHelper.Mode.SetBoundary'
   }
 
+  @@utils = MapHelperUtils.new
   def self.create_map_helper_script(hunting_plot, canvas_id, options = {})
 
     if options.key?(:function_name)
@@ -16,7 +21,8 @@ module MapHelper
       raise ArgumentError, 'Either a function name or variable name must be provided'
     end
 
-    script << "var mapOptions = { markerTitle: '#{hunting_plot.name}' };\n"
+    escaped_name = @@utils.escape_javascript(hunting_plot.name)
+    script << "var mapOptions = { markerTitle: '#{escaped_name}' };\n"
 
     if !hunting_plot.boundary.nil?
       view_window = RgeoHelper.get_bounds(hunting_plot.boundary)
