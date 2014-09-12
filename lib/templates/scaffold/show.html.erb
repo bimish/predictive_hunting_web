@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12">
 
-    <%- model_attributes.reject(&:password_digest?).each do |attribute| -%>
+    <%- model_attributes.reject { |attribute| attribute.password_digest? || attribute.is_system? }.each do |attribute| -%>
     <p>
       <strong><%= attribute.human_name %>:</strong>
     <%- if (attribute.reference?) -%>

@@ -1,1 +1,4 @@
-$('tr[data-id="<%=@hunting_plot_named_animal.id%>"]').remove();
+HuntingPlotNamedAnimalTableHelper.delete(<%= @hunting_plot_named_animal.id%>);
+if (isDefined(g_huntingPlotNamedAnimalAjaxNotifications)) {
+  g_huntingPlotNamedAnimalAjaxNotifications.notify('delete', <%== @hunting_plot_named_animal.to_json%>);
+}

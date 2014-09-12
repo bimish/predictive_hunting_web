@@ -1,1 +1,4 @@
-$('#items-tbody').append('<%= j render(:partial => 'index_item', :locals => { :hunting_plot_user_access => @hunting_plot_user_access })%>');
+HuntingPlotUserAccessTableHelper.add(<%= @hunting_plot_user_access.id%>, '<%= j render(:partial => 'index_item', :locals => { :hunting_plot_user_access => @hunting_plot_user_access })%>');
+if (isDefined(g_huntingPlotUserAccessAjaxNotifications)) {
+  g_huntingPlotUserAccessAjaxNotifications.notify('create', <%== @hunting_plot_user_access.to_json%>);
+}

@@ -10,6 +10,8 @@ function MapsHelper(mapCanvas, options)
 	var _additionalMarkers;
 	var _drawingManager;
 	var _markerAddress;
+	var _dragEventHandler;
+	var _markerDragEventListener;
 
 	initOptions(options);
 
@@ -32,6 +34,7 @@ function MapsHelper(mapCanvas, options)
 	this.setMapType = function(mapType) { setMapTypeImpl(mapType); }
 	this.clearMarkers = function(tag) { clearMarkersImpl(tag); }
 	this.addMarker = function(marker, tag) { addMarkerImpl(marker, tag); }
+	this.setDragEventHandler = function(handler) { setDragEventHandlerImpl(handler); }
 
 	function initOptions(options) {
 		// default to center of US
@@ -42,7 +45,7 @@ function MapsHelper(mapCanvas, options)
 			},
 			zoom: MapsHelper.DEFAULT_ZOOM,
 			markerTitle: 'US',
-			showCenterMarker: true
+			showCenterMarker: false
 		};
 		_mode = MapsHelper.Mode.View;
 
@@ -132,6 +135,7 @@ function MapsHelper(mapCanvas, options)
 				title: isDefinedAndNonNull(_mapOptions.markerTitle) ? _mapOptions.markerTitle : 'location'
 			}
 		);
+		initMarkerDragEvent();
 	}
 
 	function getMarkerLocationImpl() {
@@ -327,30 +331,24 @@ function MapsHelper(mapCanvas, options)
 	function setMapTypeImpl(mapType) {
 		_map.setMapTypeId(mapType);
 	}
+	function setDragEventHandlerImpl(handler) {
+		_dragEventHandler = handler;
+		initMarkerDragEvent();
+	}
+	function initMarkerDragEvent() {
+		if (_markerDragEventListener != null) google.maps.event.removeListener(_markerDragEventListener);
+		_markerDragEventListener = null;
+		if ((_marker != null) && (_dragEventHandler != null)) {
+			var marker = _marker;
+			_markerDragEventListener = google.maps.event.addListener(
+				_marker,
+				'dragend',
+				function() { _dragEventHandler(marker); }
+			);
+		}
+	}
 }
 
 MapsHelper.DEFAULT_ZOOM = 10;
-MapsHelper.getLocationAddress = function(latitude, longitude, resultHandler) {
-	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode(
-		{ 'latLng': new google.maps.LatLng(latitude, longitude) },
-		function(results, status) {
-			var resultAddress = null;
-			if (status != google.maps.GeocoderStatus.OK)
-				resultAddress = "Could not get address for location, status code = " + status;
-			else
-				resultAddress = results[1].formatted_address;
-			if (typeof resultHandler == 'function')
-				resultHandler(resultAddress);
-			else if (typeof resultHandler == 'object')
-				resultHandler.innerHTML = resultAddress;
-			else
-				$('#' + resultHandler).text(resultAddress);
-		}
-	);
-}
 MapsHelper.Mode = { View: 1, SetLocation: 2, SetBoundary: 3 };
 MapsHelper.MapTypes = { Roadmap: google.maps.MapTypeId.ROADMAP, Satellite: google.maps.MapTypeId.SATELLITE };
-MapIcons = {
-	HuntingPlotLocation: new google.maps.MarkerImage('/assets/hunting_plot_location.png', null, null, null, new google.maps.Size(16,16))
-};

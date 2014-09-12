@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
 
   validates :admin, inclusion: [true,false]
 
-  enum authentication_method:  { authentication_method_direct: 1, authentication_method_facebook: 2, authentication_method_google: 3 }
+  enum authentication_method: { authentication_method_direct: 1, authentication_method_facebook: 2, authentication_method_google: 3 }
 
   attr_readonly :admin
 
@@ -46,12 +46,16 @@ class User < ActiveRecord::Base
 
   has_many :network_subscriptions, class_name:'UserNetworkSubscription'
 
-  component_assigned_attribute :password_digest, :remember_token
-
+  system_attribute :remember_token
+  component_assigned_attribute :password_digest, :remember_token, :authentication_method, :admin
   write_once_attribute :email
 
   def get_display_name
-    self.alias
+    if self.alias.nil?
+      "#{self.first_name} #{self.last_name}"
+    else
+      "#{self.first_name} #{self.last_name} (#{self.alias})"
+    end
   end
 
   def self.from_related_users(user)
@@ -86,7 +90,7 @@ class User < ActiveRecord::Base
     when :read
       self.id == user.id
     when :create
-      true
+      user.nil? || user.admin? # user is not currently signed in or user is an admin
     when :update
       self.id == user.id
     when :destroy
@@ -94,6 +98,11 @@ class User < ActiveRecord::Base
     else
       raise ArgumentError, 'The specified action is not supported'
     end
+  end
+
+  def init_new(signed_in_user)
+    super
+    self.authentication_method = User.authentication_methods[:authentication_method_direct]
   end
 
 private

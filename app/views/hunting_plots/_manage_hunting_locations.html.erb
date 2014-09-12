@@ -1,0 +1,92 @@
+<% content_for :head do %>
+<script type="text/javascript">
+
+var g_huntingLocationsMapHelper;
+initTab(
+  'locations',
+  function() {
+    $('table[data-component="HuntingLocation"] > tbody > tr').each(
+      function(index, item) {
+        initializeHuntingLocationRow(item);
+      }
+    );
+    g_huntingLocationsMapHelper = initHuntingLocationsMap();
+    initializeSetLocationDialog();
+    HuntingLocationTableHelper.initRow(
+      function(row) {
+        initializeHuntingLocationRow(row)
+      }
+    );
+  }
+);
+function initializeHuntingLocationRow(row) {
+  $(row).hover(
+    function(e) {
+      $(this).addClass('bg-info');
+      var location_id = parseInt($(this).data('id'));
+      for (var i = 0; i < g_huntingLocationCoordinates.length; i++) {
+        if (g_huntingLocationCoordinates[i].id == location_id) {
+          g_huntingLocationsMapHelper.setMarkerLocation(g_huntingLocationCoordinates[i].lat, g_huntingLocationCoordinates[i].lng);
+          g_huntingLocationsMapHelper.showMarker();
+          break;
+        }
+      }
+    },
+    function(e) {
+      $(this).removeClass('bg-info');
+      g_huntingLocationsMapHelper.hideMarker();
+    }
+  );
+}
+<%== MapHelper.create_map_helper_script(@hunting_plot, 'hunting_locations_map', :function_name => 'initHuntingLocationsMap') %>
+var g_huntingLocationCoordinates = <%==
+  @hunting_plot.locations.collect do |location|
+    {
+      id: location.id,
+      lat: location.coordinates.y(),
+      lng: location.coordinates.x()
+    }
+  end.to_json
+%>;
+var g_huntingLocationAjaxNotifications = new AjaxNotifications();
+g_huntingLocationAjaxNotifications.addListener(
+  null,
+  function(action, json) {
+    switch (action) {
+      case 'create':
+      case 'update':
+        var coordinates = parseWKTPoint(json.coordinates);
+        var arrayItem = { id: json.id, lat: coordinates.lat, lng: coordinates.lng };
+        if (action == 'update') {
+          var itemIndex = findItemIndex(json.id);
+          g_huntingLocationCoordinates[itemIndex] = arrayItem;
+        }
+        else {
+          g_huntingLocationCoordinates.push(arrayItem);
+        }
+        break;
+      case 'delete':
+        g_huntingLocationCoordinates.slice(findItemIndex(json.id), 1);
+        break;
+    }
+    function findItemIndex(id) {
+      for (var i = 0; i < g_huntingLocationCoordinates.length; i++) {
+        if (g_huntingLocationCoordinates[i].id == id) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  }
+);
+</script>
+<% end %>
+<div class="row">
+  <div class="col-md-6">
+    <%= render partial:'hunting_locations/index_table', :locals => { :hunting_locations => @hunting_plot.locations } %>
+    <%= link_to 'New Location', new_hunting_plot_hunting_location_path(@hunting_plot), { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+  <div class="col-md-6">
+    <div id="hunting_locations_map" style="width:100%;height:600px;">Hunting locations map</div>
+  </div>
+</div>

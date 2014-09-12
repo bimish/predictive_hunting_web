@@ -22,3 +22,13 @@
 .dropdown-menu-sm {
   font-size: $font-size-small;
 }
+
+.tab-pane {
+  border-left-style: solid;
+  border-right-style: solid;
+  border-bottom-style: solid;
+  border-color: $nav-tabs-border-color;
+  border-width: 1px;
+  border-radius: 0 0 $nav-pills-border-radius $nav-pills-border-radius;
+  padding-top: 10px;
+}

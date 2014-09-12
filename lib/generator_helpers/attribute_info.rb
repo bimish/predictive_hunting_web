@@ -68,12 +68,16 @@ module GeneratorHelpers
       @source_model.is_flags?(self.name)
     end
 
+    def is_system?
+      @source_model.is_system?(self.name)
+    end
+
     def is_updateable?
-      self.is_assignable? && !self.is_write_once?
+      self.is_assignable? && !self.is_write_once? && !self.is_system?
     end
 
     def is_assignable?
-      !self.is_component_assigned? && !self.is_controller_assigned?
+      !self.is_component_assigned? && !self.is_controller_assigned? && !self.is_system?
     end
 
     def flags
@@ -100,6 +104,10 @@ module GeneratorHelpers
       self.flags[:values].collect do |flag_value, flag_name|
         self.flag_attribute_name(flag_value)
       end
+    end
+
+    def password_digest?
+      name == 'password_digest' && type == :string
     end
 
     private

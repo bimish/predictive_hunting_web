@@ -1,3 +1,8 @@
+<%%= content_for :head do %>
+<script type="text/javascript">
+var <%= class_name %>TableHelper = new TableHelper('table[data-component="<%= class_name %>"]');
+</script>
+<%% end %>
 <%%
 # initialize any undefined local variables
 attribute_list ||= nil
@@ -5,15 +10,15 @@ unless defined?(editable)
   editable = true
 end
 %>
-<table class="table">
+<table class="table" data-component="<%= class_name%>">
   <thead>
     <tr>
-<%- model_attributes.reject(&:password_digest?).each do |attribute| -%>
+<%- model_attributes.reject { |attribute| attribute.password_digest? || attribute.is_system? }.each do |attribute| -%>
       <%% if (attribute_list.nil? || attribute_list.include?(:<%= attribute.name%>)) %>
         <th><%= attribute.human_name %></th>
       <%% end %>
 <%- end -%>
-      <th colspan="3"></th>
+      <th></th>
     </tr>
   </thead>
 

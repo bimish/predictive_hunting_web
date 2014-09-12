@@ -1,25 +1,18 @@
-class HuntingPlotsController < ApplicationController
+class HuntingPlotsController < ComponentController
 
-  helper HuntingPlotUserAccessesHelper
-
-  before_action :set_hunting_plot, only: [:show, :edit, :update, :destroy]
+  include HuntingPlotsControllerExtensions
 
   # GET /hunting_plots
-  # GET /hunting_plots.json
   def index
-    #@hunting_plots = HuntingPlot.all
-    @hunting_plots = current_user.hunting_plots
+    @hunting_plots ||= HuntingPlot.all
   end
 
   # GET /hunting_plots/1
-  # GET /hunting_plots/1.json
   def show
-    #render 'manage'
   end
 
   # GET /hunting_plots/new
   def new
-    @hunting_plot = HuntingPlot.new
   end
 
   # GET /hunting_plots/1/edit
@@ -27,11 +20,7 @@ class HuntingPlotsController < ApplicationController
   end
 
   # POST /hunting_plots
-  # POST /hunting_plots.json
   def create
-
-    @hunting_plot = HuntingPlot.new(hunting_plot_params)
-
     respond_to do |format|
       if @hunting_plot.save
         format.html { redirect_to @hunting_plot, notice: 'Hunting plot was successfully created.' }
@@ -40,16 +29,15 @@ class HuntingPlotsController < ApplicationController
       else
         format.html { render action: 'new' }
         format.json { render json: @hunting_plot.errors, status: :unprocessable_entity }
-        format.js
+        format.js { render action: 'new' }
       end
     end
   end
 
   # PATCH/PUT /hunting_plots/1
-  # PATCH/PUT /hunting_plots/1.json
   def update
     respond_to do |format|
-      if @hunting_plot.update(hunting_plot_params)
+      if @hunting_plot.update(update_params)
         format.html { redirect_to @hunting_plot, notice: 'Hunting plot was successfully updated.' }
         format.json { head :no_content }
         format.js
@@ -62,28 +50,30 @@ class HuntingPlotsController < ApplicationController
   end
 
   # DELETE /hunting_plots/1
-  # DELETE /hunting_plots/1.json
   def destroy
     @hunting_plot.destroy
     respond_to do |format|
-      format.html { redirect_to hunting_plots_url }
+      format.html { redirect_to hunting_plots_url, notice: 'Hunting plot was successfully destroyed.' }
       format.json { head :no_content }
+      format.js
     end
-  end
-
-  def edit_location
-    set_hunting_plot
-    render 'hunting_plots/edit_location', layout: 'no-header'
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_hunting_plot
+    def get_component
       @hunting_plot = HuntingPlot.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def hunting_plot_params
+    def new_component(params = nil)
+      @hunting_plot = HuntingPlot.new(params)
+    end
+
+    def update_params
       params.require(:hunting_plot).permit(:name, :location_address, :location_coordinates, :boundary)
     end
+
+    def create_params
+      params.require(:hunting_plot).permit(:name, :location_address, :location_coordinates, :boundary)
+    end
+
 end

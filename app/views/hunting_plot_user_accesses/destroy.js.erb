@@ -1,1 +1,4 @@
-$('tr[data-id="<%=@hunting_plot_user_access.id%>"]').remove();
+HuntingPlotUserAccessTableHelper.delete(<%= @hunting_plot_user_access.id%>);
+if (isDefined(g_huntingPlotUserAccessAjaxNotifications)) {
+  g_huntingPlotUserAccessAjaxNotifications.notify('delete', <%== @hunting_plot_user_access.to_json%>);
+}

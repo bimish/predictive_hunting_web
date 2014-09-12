@@ -1,0 +1,7 @@
+<% provide(:title, 'Hunting Plot') %>
+<%= bootstrap_form_for @hunting_plot, remote: true do |f| %>
+  <% if @hunting_plot.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_plot } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

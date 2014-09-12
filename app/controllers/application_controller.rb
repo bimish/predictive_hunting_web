@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   helper :bootstrap
   helper :enums
   helper :nested_urls
+  helper :map
   helper ConfigData
 
 #disable caching

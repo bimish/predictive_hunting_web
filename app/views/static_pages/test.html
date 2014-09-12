@@ -1,27 +1,99 @@
 <% content_for :head do %>
 <style>
-.form-datetime-select input {
+table.calendar {
+  table-layout: fixed;
+  width: 100%;
+}
+table.calendar td {
+  height: 50px;
+  border: 1px solid black;
+  vertical-align: top;
+}
+table.calendar td span.date {
   display: inline-block;
-  width: auto;
 }
 </style>
+<script type="text/javascript">
+$(document).ready(
+  function () {
+    var today = new Date();
+    var startDate = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0);
+    var startDayOffset = startDate.getDay();
+    var tbody = document.getElementById('calendar').tBodies[0];
+    var currentDate = startDate;
+    var startMonth = startDate.getMonth();
+    while (currentDate.getMonth() == startMonth) {
+      var dayOfMonth = currentDate.getDate();
+      var dayOfWeek = currentDate.getDay();
+      var week = Math.floor((startDayOffset + dayOfMonth - 1) / 7);
+      var column = (startDayOffset + dayOfMonth) % 7;
+      $(tbody.rows[week].cells[dayOfWeek]).find('span[class="date"]').text(dayOfMonth);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  }
+);
+</script>
 <% end %>
 <div class="row">
   <div class="col-md-12">
-    <%= bootstrap_form_tag url: animal_activity_observations_path do |form| %>
-      <%= _number_field(form, :hunting_plot_id, 'Hunting Plot') %>
-      <%= _search_field(form, :name, 'Name', 100) %>
-      <%#= _select_field(form, :animal_category_id, 'Animal Category', @view_data.animal_categories) %>
-      <%= _submit_button(form, nil, 'Search', { name: nil } ) %>
-
-      <div class="form-group">
-        <label class="control-label">Observation Date/Time</label>
-        <div class="form-datetime-select">
-          <input type="date" class="form-control date-picker" id="observation_datetime_date">
-          <input type="time" class="form-control time-picker" id="observation_datetime_time">
-        </div>
-      </div>
-    <% end %>
+    <table id="calendar" class="calendar">
+      <thead>
+        <th>Sunday</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+        </tr>
+        <tr>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+        </tr>
+        <tr>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+        </tr>
+        <tr>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+        </tr>
+        <tr>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+          <td><span class="date"></span></td>
+        </tr>
+      </tbody>
+    <table>
   </div>
 </div>
 

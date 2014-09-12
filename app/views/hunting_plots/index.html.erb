@@ -1,42 +1,15 @@
-<%
-  page_title = "Listing Hunting Plots"
-  provide(:title, page_title)
-%>
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
 <div class="row">
-
   <div class="col-md-12">
+    <h3>Listing Hunting Plots</h3>
 
-    <h3><%= page_title%></h3>
+    <%= render :partial => 'index_table', locals: { hunting_plots: @hunting_plots } %>
 
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Location</th>
-          <th></th>
-        </tr>
-      </thead>
+    <div id="inline-form"></div>
 
-      <tbody>
-        <% @hunting_plots.each do |hunting_plot| %>
-          <tr>
-            <td><%= hunting_plot.name %></td>
-            <td><%= hunting_plot.location_address %></td>
-            <td>
-              <%= item_command 'Manage', hunting_plot %>
-              <%= item_command 'Check-in', hunting_app_path(hunting_plot), :target => '_blank' %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-
-    <br>
-
-    <!--
-    <%= link_to 'New Hunting plot', new_hunting_plot_path, class:'btn btn-default' %>
-    -->
-
+    <%= link_to 'New Hunting Plot', new_hunting_plot_path, { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
   </div>
-
 </div>

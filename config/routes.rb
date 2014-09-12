@@ -8,17 +8,24 @@ Web::Application.routes.draw do
   resources :hunting_plots, shallow: true do
     member do
       get 'edit_location'
+      get 'manage'
     end
     resources :named_animals, as: 'named_animals', controller: 'hunting_plot_named_animals', :only => [:index, :create, :new] do
     end
-    resources :hunting_locations do
-    end
     resources :user_accesses, as: 'user_accesses', controller: 'hunting_plot_user_accesses', :only => [:index, :create, :new] do
+    end
+    resources :locations, as: 'locations', controller:'hunting_locations', :only => [:index, :create, :new] do
     end
   end
 
   resources :hunting_plot_named_animals, :except => [:index, :create, :new]
   resources :hunting_plot_user_accesses, :except => [:index, :create, :new]
+  resources :hunting_locations, shallow: true, :except => [:index, :create, :new] do
+    resources :schedules, as: 'schedules', controller:'hunting_location_schedules', :only => [:index, :create, :new] do
+    end
+  end
+
+  resources :hunting_location_schedules, :except => [:index, :create, :new]
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :users

@@ -5,7 +5,7 @@ function showAjaxForm(formContainerId, formHtml, idsToHide) {
 
   if (g_currentAjaxForm != null) closeAjaxForm();
 
-  if (idsToHide != null) {
+  if (isDefinedAndNonNull(idsToHide)) {
     for (var i = 0; i < idsToHide.length; i++)
       $('#' + idsToHide[i]).hide();
   }
@@ -20,7 +20,7 @@ function showAjaxForm(formContainerId, formHtml, idsToHide) {
 
 function closeAjaxForm() {
   $('#' + g_currentAjaxForm.formContainerId).empty().hide();
-  if (g_currentAjaxForm.idsToHide != null) {
+  if (isDefinedAndNonNull(g_currentAjaxForm.idsToHide)) {
     for (var i = 0; i < g_currentAjaxForm.idsToHide.length; i++)
       $('#' + g_currentAjaxForm.idsToHide[i]).show();
   }

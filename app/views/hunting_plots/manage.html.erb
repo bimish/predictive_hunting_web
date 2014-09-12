@@ -1,30 +1,234 @@
 <% provide(:title, "Manage Hunting Plot (#{@hunting_plot.name})") %>
 
-<div id="navigation-tabs" class="well well-sm" role="tablist">
-  <ul class="nav nav-pills">
-    <li class="active"><a href="#name-location" role="tab" data-toggle="pill">Name &amp; Location</a></li>
-    <li><a href="#locations" role="tab" data-toggle="pill">Locations</a></li>
-    <li><a href="#members" role="tab" data-toggle="pill">Members</a></li>
-    <li><a href="#named-animals" role="tab" data-toggle="pill">Named Animals</a></li>
-  </ul>
-</div>
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
 
-<div id="content-tabs" class="tab-content row">
+<% content_for :head do %>
+<script type="text/javascript">
+var DIALOG_MODE_LOCATION = 1;
+var DIALOG_MODE_BOUNDARY = 2;
+
+var g_plotLocationMapHelper = null;
+var g_dialogInitialized = false;
+var g_dialogMode = DIALOG_MODE_LOCATION;
+var g_mapDialogCallback = null;
+
+function showLocationPopup(resultsHandler) {
+  try {
+    initializeSetLocationDialog(resultsHandler);
+    $('#setLocationDialog').dialog('option', 'title', 'Set Plot Location');
+    $('#setLocationDialog').dialog('open');
+    g_dialogMode = DIALOG_MODE_LOCATION;
+    initializeMapHelper();
+    g_plotLocationMapHelper.setMode(MapsHelper.Mode.SetLocation);
+    $('#addressSearch').show();
+  }
+  catch (e) {
+    alert('The following error occurred: ' + e);
+  }
+  return false;
+}
+
+function showBoundaryPopup(resultsHandler) {
+  try {
+    initializeSetLocationDialog(resultsHandler);
+    $('#addressSearch').hide();
+    $('#setLocationDialog').dialog('option', 'title', 'Set Plot Boundary');
+    $('#setLocationDialog').dialog('open');
+    g_dialogMode = DIALOG_MODE_BOUNDARY;
+    initializeMapHelper();
+    g_plotLocationMapHelper.hideMarker();
+    g_plotLocationMapHelper.setMode(MapsHelper.Mode.SetBoundary);
+    g_plotLocationMapHelper.editBoundary();
+  }
+  catch (e) {
+    alert('The following error occurred: ' + e);
+  }
+  return false;
+}
+
+function mapDialogSaveHandler() {
+  if (g_plotLocationMapHelper.getMode() == MapsHelper.Mode.SetLocation) {
+    var markerLocation = g_plotLocationMapHelper.getMarkerLocation();
+    if (isDefinedAndNonNull(g_mapDialogCallback)) g_mapDialogCallback(markerLocation);
+
+    $('#plot_location').val(formatWKTPoint( { lng: markerLocation.lng(), lat: markerLocation.lat() } ));
+    $('#locationAddress').text('updating...');
+    MapsHelper.getLocationAddress(
+      markerLocation.lat(),
+      markerLocation.lng(),
+      function(resultAddress) {
+        $('#plot_address').val(resultAddress);
+        submitEditLocationForm();
+      }
+    );
+    //setTimeout(submitEditLocationForm, 1000);
+  }
+  else {
+    var boundaryVertices = g_plotLocationMapHelper.getBoundaryVertices();
+    if (isDefinedAndNonNull(g_mapDialogCallback)) g_mapDialogCallback(boundaryVertices);
+  }
+}
+
+function submitEditLocationForm() {
+  $('#edit-location-form > form').submit();
+}
+
+function initializeSetLocationDialog(resultsHandler) {
+  if (!g_dialogInitialized) {
+    $('#setLocationDialog').dialog(
+      {
+        bgiframe    : true,
+        position    : 'center',
+        draggable   : false,
+        autoOpen    : false,
+        modal       : true,
+        //autoResize  : true,
+        width       : $(window).width(),
+        height      : $(window).height(),
+        stack       : true,
+        zIndex      : 99999,
+        resizable   : false,
+        dialogClass : "no-close",
+        //close       : function(event, ui) { closeAjaxForm(); },
+        open        : function(event, ui) { setLocationMapSize(); },
+        //resize      : function(event, ui) { setLocationDialogResize(event, ui); },
+        buttons     : [
+                      { text: "Ok", class:'btn btn-primary btn-sm dialog-btn', click: function() { mapDialogSaveHandler(); $(this).dialog("close"); } },
+                      { text: "Cancel", class:'btn btn-default btn-sm dialog-btn', click: function() { $(this).dialog("close");  } }
+                    ]
+      }
+    );
+    $(window).resize(
+      function() {
+        $('#setLocationDialog').dialog('option', 'width', $(window).width());
+        $('#setLocationDialog').dialog('option', 'height', $(window).height());
+        setLocationMapSize();
+      }
+    );
+    g_dialogInitialized = true;
+  }
+  g_mapDialogCallback = resultsHandler;
+  //setLocationMapSize();
+}
+
+function setLocationMapSize() {
+  $('#setLocationDialogMapCanvas').height($('#setLocationDialog').height() - $('#setLocationDialogAddressSearch').outerHeight());
+  $('#setLocationDialogMapCanvas').width($('#setLocationDialog').width());
+}
+
+function initializeMapHelper() {
+
+  if (g_plotLocationMapHelper != null) return;
+  try {
+    var mapOptions = {
+      <%
+      if !@hunting_plot.boundary.nil?
+        view_window = rgeo_get_bounds(@hunting_plot.boundary)
+      %>
+      view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+      <% else %>
+      zoom: 12,
+      <% end %>
+      markerTitle: '<%=@hunting_plot.name%>'
+    };
+
+    var currentLocationCoordinates = $('#plot_location').val();
+    if (!isNullOrEmpty(currentLocationCoordinates)) {
+      mapOptions.center = parseWKTPoint(currentLocationCoordinates);
+    }
+    else if (!isDefinedAndNonNull(mapOptions.view_window)) {
+      mapOptions.zoom = 5;
+    }
+
+    var currentBoundary = $('#plot_boundary').val();
+    if (!isNullOrEmpty(currentBoundary)) {
+      mapOptions.boundary = parseWKTPolygon(currentBoundary);
+    }
+
+    g_plotLocationMapHelper = new MapsHelper(document.getElementById("setLocationDialogMapCanvas"), mapOptions);
+
+    // if this is a new plot by virtue of the fact we don't have coordinates, attempt to center the map on the user's current location
+    if ((currentLocationCoordinates == null) && (navigator.geolocation))
+    {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          g_plotLocationMapHelper.setCenter(position.coords.latitude, position.coords.longitude);
+        }
+      );
+    }
+  }
+  catch (e) {
+    alert('The following error occurred: ' + e);
+  }
+}
+
+function showAddress(address) {
+  g_plotLocationMapHelper.setLocationByAddress(address);
+}
+
+/* tab initializers abstraction for the partials */
+var g_tabInitializers = [];
+function initTab(tabId, handler) {
+  g_tabInitializers.push( { id: tabId, initializer: handler} );
+}
+$(document).ready(
+  function() {
+    $('#main_tabs a[data-toggle="tab"]').on(
+      'shown.bs.tab',
+      function (e) {
+        $.each(
+          g_tabInitializers,
+          function(index, item) {
+            if (e.target.href.match(new RegExp("#" + item.id + "$"))) {
+              item.initializer();
+            }
+          }
+        );
+      }
+    );
+  }
+);
+</script>
+<% end %>
+
+<ul class="nav nav-tabs" id="main_tabs">
+  <li class="active"><a href="#name-location" role="tab" data-toggle="tab">Name &amp; Location</a></li>
+  <li><a href="#locations" role="tab" data-toggle="tab">Locations</a></li>
+  <li><a href="#members" role="tab" data-toggle="tab">Members</a></li>
+  <li><a href="#named-animals" role="tab" data-toggle="tab">Named Animals</a></li>
+</ul>
+
+<div id="content-tabs" class="tab-content">
   <div id="name-location" class="col-md-12 tab-pane active">
-    <strong>Name:</strong>
-    <span id="hunting_plot_name"><%= @hunting_plot.name %></span>
-    <div id="edit-name-form" style="display:none;"></div>
-    <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :name), { remote: true, class:'btn btn-default btn-sm', id:'change_name_button', title:'Edit name' } do |link| %>
-    <span class="glyphicon glyphicon-edit"></span>
-    <% end %>
+    <%= render partial:'manage_name_location' %>
   </div>
   <div id="locations" class="col-md-12 tab-pane">
-    <%= render partial:'/hunting_locations/index_table', :locals => { :hunting_locations => @hunting_plot.locations, :attribute_list => [:name, :location_type], :editable => false } %>
+    <%= render partial:'manage_hunting_locations', :locals => { :command_list => [:edit, :delete, :schedule ] } %>
   </div>
   <div id="members" class="col-md-12 tab-pane">
-    <%= render partial:'/hunting_plot_user_accesses/index_table', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses, :attribute_list => [:user_id, :alias, :permissions], :editable => false } %>
+    <%= render partial:'/hunting_plot_user_accesses/index_table', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses, :attribute_list => [:user_id, :alias, :permissions] } %>
   </div>
   <div id="named-animals" class="col-md-12 tab-pane">
-    <%= render partial:'/hunting_plot_named_animals/index_table', :locals => { :hunting_plot_named_animals => @hunting_plot.named_animals, :attribute_list => [:name, :animal_category_id], :editable => false } %>
+    <%= render partial:'/hunting_plot_named_animals/index_table', :locals => { :hunting_plot_named_animals => @hunting_plot.named_animals, :attribute_list => [:name, :animal_category_id] } %>
   </div>
 </div>
+
+<div id="setLocationDialog" title="Set Plot Location" style="background-color:white;display:none;">
+  <div id="setLocationDialogAddressSearch" style="padding:5px;">
+    <form action="#" onsubmit="showAddress($('#searchValue').val()); return false;" role="form" class="form-inline">
+      <div class="form-group">
+        <label class="sr-only" for="searchValue">Search Address</label>
+        <div class="input-group-sm">
+          <input type="text" size="50" class="form-control" id="searchValue" placeholder="Address, zip code, etc...">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-default btn-sm">Search</button>
+    </form>
+  </div>
+  <div id="setLocationDialogMapCanvas" style="text-align:center;">
+    Initializing map...
+  </div>
+</div>
+

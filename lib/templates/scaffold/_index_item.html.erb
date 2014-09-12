@@ -1,12 +1,13 @@
 <%%
 # initialize any undefined local variables
 attribute_list ||= nil
+command_list ||= nil
 unless defined?(editable)
   editable = true
 end
 %>
 <tr data-id="<%%=<%=singular_table_name%>.id%>">
-<%- model_attributes.reject(&:password_digest?).each do |attribute| -%>
+<%- model_attributes.reject { |attribute| attribute.password_digest? || attribute.is_system? }.each do |attribute| -%>
   <%% if (attribute_list.nil? || attribute_list.include?(:<%= attribute.name%>)) %>
   <%- if (attribute.reference?) -%>
     <td><%%= (<%= singular_table_name %>.<%= attribute.name%>.nil?) ? nil : <%= singular_table_name %>.<%= attribute.reference.name %>.get_display_name %></td>
@@ -16,14 +17,18 @@ end
     <td><%%= @view_data.get_<%= attribute.name %>_description(<%= singular_table_name %>.<%=attribute.name%>) %></td>
   <%- elsif attribute.type == :datetime -%>
     <td><%%= date_time_to_s(<%= singular_table_name %>.<%=attribute.name%>) %></td>
+  <%- elsif attribute.is_flags? -%>
+    <td><%%= <%= class_name.pluralize %>Helper.get_<%= attribute.name %>_description(<%= singular_table_name %>) %></td>
   <%- else -%>
     <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
   <%- end -%>
   <%% end %>
 <%- end -%>
   <%% if editable %>
-    <td><%%= item_show_command(<%= singular_table_name %>_path(<%= singular_table_name %>)) %></td>
-    <td><%%= item_edit_command(edit_<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true }) %></td>
-    <td><%%= item_delete_command(<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+    <td>
+      <%%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(<%= singular_table_name %>_path(<%= singular_table_name %>)) : nil %>
+      <%%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true }) : nil %>
+      <%%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    </td>
   <%% end %>
 </tr>

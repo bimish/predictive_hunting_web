@@ -31,16 +31,16 @@ module FormsHelper
     form.datetime_select instance_method, options
   end
   def _email_field(form, instance_method, label, options = {})
-    form.email_field instance_method
+    form.email_field instance_method, options
   end
   def _file_field(form, instance_method, label, options = {})
-    form.file_field instance_method
+    form.file_field instance_method, options
   end
   def _hidden_field(form, instance_method, label, options = {})
-    form.hidden_field instance_method
+    form.hidden_field instance_method, options
   end
   def _month_field(form, instance_method, label, options = {})
-    form.month_field instance_method
+    form.month_field instance_method, options
   end
   def _number_field(form, instance_method, label, options = {})
     if (!label.nil?)

@@ -1,0 +1,28 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<tr data-id="<%=hunting_plot.id%>">
+  <% if (attribute_list.nil? || attribute_list.include?(:name)) %>
+    <td><%= hunting_plot.name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:location_address)) %>
+    <td><%= hunting_plot.location_address %></td>
+  <% end %>
+  <% if (!attribute_list.nil? && attribute_list.include?(:location_coordinates)) %>
+    <td><%= hunting_plot.location_coordinates %></td>
+  <% end %>
+  <% if (!attribute_list.nil? && attribute_list.include?(:boundary)) %>
+    <td><%= hunting_plot.boundary %></td>
+  <% end %>
+  <% if editable %>
+    <td>
+      <%= item_show_command(hunting_plot_path(hunting_plot)) %>
+      <%= item_command 'Manage', manage_hunting_plot_path(hunting_plot) %>
+      <%= item_command 'Check-in', hunting_app_path(hunting_plot), :target => '_blank' %>
+    </td>
+  <% end %>
+</tr>

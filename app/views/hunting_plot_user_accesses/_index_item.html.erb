@@ -1,6 +1,7 @@
 <%
 # initialize any undefined local variables
 attribute_list ||= nil
+command_list ||= nil
 unless defined?(editable)
   editable = true
 end
@@ -19,8 +20,10 @@ end
     <td><%= HuntingPlotUserAccessesHelper.get_permissions_description(hunting_plot_user_access) %></td>
   <% end %>
   <% if editable %>
-    <td><%= item_show_command(hunting_plot_user_access_path(hunting_plot_user_access)) %></td>
-    <td><%= item_edit_command(edit_hunting_plot_user_access_path(hunting_plot_user_access), { remote: true }) %></td>
-    <td><%= item_delete_command(hunting_plot_user_access_path(hunting_plot_user_access), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+    <td>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_plot_user_access_path(hunting_plot_user_access)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_hunting_plot_user_access_path(hunting_plot_user_access), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_plot_user_access_path(hunting_plot_user_access), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    </td>
   <% end %>
 </tr>

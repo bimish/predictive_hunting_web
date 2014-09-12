@@ -1,1 +1,4 @@
-$('tr[data-id="<%=@hunting_plot_named_animal.id%>"]').replaceWith('<%= j render(:partial => 'index_item', :locals => { :hunting_plot_named_animal => @hunting_plot_named_animal })%>');
+HuntingPlotNamedAnimalTableHelper.update(<%= @hunting_plot_named_animal.id%>, '<%= j render(:partial => 'index_item', :locals => { :hunting_plot_named_animal => @hunting_plot_named_animal })%>');
+if (isDefined(g_huntingPlotNamedAnimalAjaxNotifications)) {
+  g_huntingPlotNamedAnimalAjaxNotifications.notify('update', <%== @hunting_plot_named_animal.to_json%>);
+}

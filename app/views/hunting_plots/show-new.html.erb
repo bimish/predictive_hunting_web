@@ -1,71 +1,186 @@
 <% provide(:title, "View Hunting Plot (#{@hunting_plot.name})") %>
 <% content_for :head do %>
-<script>
-
-var g_setLocationDialogMap = null;
-
-$(document).ready(function() {
-
-  MapsHelper.getLocationAddress(
-    <%=@hunting_plot.location_coordinates.y()%>,
-    <%=@hunting_plot.location_coordinates.x()%>,
-    $('#locationAddress').get(0)
-  );
-
-  //g_map1 = initializeMapHelper('map1', 'Map #1', { lat: 33.4458, lng: -82.6025 });
-
-  $('#setLocationDialog').dialog(
-    {
-      autoOpen: false,
-      modal: true,
-      resizable: false,
-      autoResize: true,
-      height: 'auto',
-      width: 800,
-      buttons: [
-        { text: "Ok", class:'btn btn-primary  btn-sm', click: function() { $(this).dialog("close"); } },
-        { text: "Cancel", class:'btn btn-default btn-sm',  click: function() { $(this).dialog("close"); } }
-      ],
-      dialogClass: "no-close"
+  <script type="text/javascript">
+  $(document).ready(
+    function() {
+      $('#hunting-locations > tbody > tr').hover(
+        function(e) { $(this).addClass('bg-info'); },
+        function(e) { $(this).removeClass('bg-info'); }
+      );
+      initializeSetLocationDiaog();
     }
   );
 
-  //showLocationPopup();
+  var DIALOG_MODE_LOCATION = 1;
+  var DIALOG_MODE_BOUNDARY = 2;
 
-});
+  var g_mapHelper = null;
+  var g_dialogInitialized = false;
+  var g_dialogMode = DIALOG_MODE_LOCATION;
 
-function showLocationPopup() {
-  $('#setLocationDialog').dialog('open');
-  if (g_setLocationDialogMap == null) {
-    g_setLocationDialogMap = initializeMapHelper('set-location-map-canvas', 'Map #2', { lat: 34.0328, lng: -84.4731 });
+  function showLocationPopup() {
+    try {
+      initializeSetLocationDiaog();
+      $('#setLocationDialog').dialog('option', 'title', 'Set Plot Location');
+      $('#setLocationDialog').dialog('open');
+      g_dialogMode = DIALOG_MODE_LOCATION;
+      initializeMapHelper();
+      g_mapHelper.setMode(MapsHelper.Mode.SetLocation);
+      $('#addressSearch').show();
+    }
+    catch (e) {
+      alert('The following error occurred: ' + e);
+    }
+    return false;
   }
-}
 
-function initializeMapHelper(canvasId, title, center) {
-  try {
-    var mapOptions = {
-      zoom: 5,
-      markerTitle: title,
-      center: center
-    };
-    return new MapsHelper(document.getElementById(canvasId), mapOptions);
+  function showBoundaryPopup() {
+    try {
+      initializeSetLocationDiaog();
+      $('#addressSearch').hide();
+      $('#setLocationDialog').dialog('option', 'title', 'Set Plot Boundary');
+      $('#setLocationDialog').dialog('open');
+      g_dialogMode = DIALOG_MODE_BOUNDARY;
+      initializeMapHelper();
+      g_mapHelper.hideMarker();
+      g_mapHelper.setMode(MapsHelper.Mode.SetBoundary);
+      g_mapHelper.editBoundary();
+    }
+    catch (e) {
+      alert('The following error occurred: ' + e);
+    }
+    return false;
   }
-  catch (e) {
-    alert('The following error occurred: ' + e);
+
+  function mapDialogSaveHandler() {
+    if (g_mapHelper.getMode() == MapsHelper.Mode.SetLocation) {
+      var markerLocation = g_mapHelper.getMarkerLocation();
+      $('#plot_location').val(formatWKTPoint( { lng: markerLocation.lng(), lat: markerLocation.lat() } ));
+      $('#locationAddress').text('updating...');
+      MapsHelper.getLocationAddress(
+        markerLocation.lat(),
+        markerLocation.lng(),
+        function(resultAddress) {
+          $('#plot_address').val(resultAddress);
+          submitEditLocationForm();
+        }
+      );
+      setTimeout(submitEditLocationForm, 1000);
+    }
+    else {
+      var boundaryVertices = g_mapHelper.getBoundaryVertices();
+      $('#plot_boundary').val(formatWKTPolygon(boundaryVertices));
+      submitEditLocationForm();
+    }
   }
-}
-</script>
+
+  function submitEditLocationForm() {
+    $('#edit-location-form > form').submit();
+  }
+
+  function initializeSetLocationDiaog() {
+    if (!g_dialogInitialized) {
+      $('#setLocationDialog').dialog(
+        {
+          bgiframe    : true,
+          position    : 'center',
+          draggable   : false,
+          autoOpen    : false,
+          modal       : true,
+          //autoResize  : true,
+          width       : $(window).width(),
+          height      : $(window).height(),
+          stack       : true,
+          zIndex      : 99999,
+          resizable   : false,
+          dialogClass : "no-close",
+          //close       : function(event, ui) { closeAjaxForm(); },
+          open        : function(event, ui) { setLocationMapSize(); },
+          //resize      : function(event, ui) { setLocationDialogResize(event, ui); },
+          buttons     : [
+                        { text: "Ok", class:'btn btn-primary btn-sm dialog-btn', click: function() { mapDialogSaveHandler(); $(this).dialog("close"); } },
+                        { text: "Cancel", class:'btn btn-default btn-sm dialog-btn', click: function() { $(this).dialog("close");  } }
+                      ]
+        }
+      );
+      $(window).resize(
+        function() {
+          $('#setLocationDialog').dialog('option', 'width', $(window).width());
+          $('#setLocationDialog').dialog('option', 'height', $(window).height());
+          setLocationMapSize();
+        }
+      );
+      g_dialogInitialized = true;
+    }
+    //setLocationMapSize();
+  }
+
+  function setLocationMapSize() {
+    $('#setLocationDialogMapCanvas').height($('#setLocationDialog').height() - $('#setLocationDialogAddressSearch').outerHeight());
+    $('#setLocationDialogMapCanvas').width($('#setLocationDialog').width());
+  }
+
+  function initializeMapHelper() {
+
+    if (g_mapHelper != null) return;
+    try {
+      var mapOptions = {
+        <%
+        if !@hunting_plot.boundary.nil?
+          view_window = rgeo_get_bounds(@hunting_plot.boundary)
+        %>
+        view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+        <% else %>
+        zoom: 12,
+        <% end %>
+        markerTitle: '<%=@hunting_plot.name%>'
+      };
+
+      var currentLocationCoordinates = $('#plot_location').val();
+      if (!isNullOrEmpty(currentLocationCoordinates)) {
+        mapOptions.center = parseWKTPoint(currentLocationCoordinates);
+      }
+      else if (!isDefinedAndNonNull(mapOptions.view_window)) {
+        mapOptions.zoom = 5;
+      }
+
+      var currentBoundary = $('#plot_boundary').val();
+      if (!isNullOrEmpty(currentBoundary)) {
+        mapOptions.boundary = parseWKTPolygon(currentBoundary);
+      }
+
+      g_mapHelper = new MapsHelper(document.getElementById("setLocationDialogMapCanvas"), mapOptions);
+
+      // if this is a new plot by virtue of the fact we don't have coordinates, attempt to center the map on the user's current location
+      if ((currentLocationCoordinates == null) && (navigator.geolocation))
+      {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            g_mapHelper.setCenter(position.coords.latitude, position.coords.longitude);
+          }
+        );
+      }
+    }
+    catch (e) {
+      alert('The following error occurred: ' + e);
+    }
+  }
+
+  function showAddress(address) {
+    g_mapHelper.setLocationByAddress(address);
+  }
+  </script>
 <% end %>
 
 <div class="row">
 
-  <div class="col-md-4">
+  <div class="col-md-6">
 
     <div class="row">
       <div class="col-md-12">
         <strong>Name:</strong>
         <span id="hunting_plot_name"><%= @hunting_plot.name %></span>
-        <div id="inline-form" style="display:none;"></div>
+        <div id="edit-name-form" style="display:none;"></div>
         <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :name), { remote: true, class:'btn btn-default btn-sm', id:'change_name_button', title:'Edit name' } do |link| %>
         <span class="glyphicon glyphicon-edit"></span>
         <% end %>
@@ -75,17 +190,38 @@ function initializeMapHelper(canvasId, title, center) {
     <div class="row">
       <div class="col-md-12">
         <strong>Location:</strong>
-        <span id="locationAddress">resolving...</span>
+        <span id="locationAddress"><%= @hunting_plot.location_address %></span>
+        <div id="edit-location-form" style="display:none;"></div>
         <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :location_coordinates), { remote: true, class:'btn btn-default btn-sm', id:'set_location_button', title:'Set location' } do |link| %>
-        <span class="glyphicon glyphicon-edit"></span>
+        <span class="glyphicon glyphicon-map-marker"></span>
         <% end %>
-        <% #= content_tag(:a, content_tag(:span, '', class:'glyphicon glyphicon-edit'), { :onclick => 'showLocationPopup(); return false;', class:'btn btn-default btn-sm', id:'set_location_button', title:'Set location' }) %>
+        <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :boundary), { remote: true, class:'btn btn-default btn-sm', id:'set_boundary_button', title:'Set boundary' } do |link| %>
+          <%= image_tag 'glyphicons_099_vector_path_all.png' %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">Locations</div>
+          <div class="panel-body">
+            <%= render partial:'/hunting_locations/index_table', :locals => { :hunting_locations => @hunting_plot.locations, :attribute_list => [:name, :location_type], :editable => false } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <%= link_to 'View Activity Log', animal_activity_observations_path( hunting_plot_id: @hunting_plot.id), { class:'btn btn-default btn-sm' } %>
       </div>
     </div>
 
   </div>
 
-  <div style="height:600px;" class="col-md-8">
+
+  <div id="plotMap" style="height:600px;" class="col-md-6">
     <%=
     renderLocals = {
       :hunting_plot => @hunting_plot,
@@ -107,13 +243,18 @@ function initializeMapHelper(canvasId, title, center) {
 </div>
 
 <div id="setLocationDialog" title="Set Plot Location" style="background-color:white;display:none;">
-  <div id="addressSearch" style="padding:5px;">
-    <form action="#" onsubmit="showAddress($('#locationDialog_address').val()); return false;">
-      <input type="text" size="40" id="locationDialog_address" name="locationDialog_address" value="" />
-      <input type="submit" value="Search"/>
+  <div id="setLocationDialogAddressSearch" style="padding:5px;">
+    <form action="#" onsubmit="showAddress($('#searchValue').val()); return false;" role="form" class="form-inline">
+      <div class="form-group">
+        <label class="sr-only" for="searchValue">Search Address</label>
+        <div class="input-group-sm">
+          <input type="text" size="50" class="form-control" id="searchValue" placeholder="Address, zip code, etc...">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-default btn-sm">Search</button>
     </form>
   </div>
-  <div id="set-location-map-canvas" style="width:800px;height:500px;text-align:center;padding-top:100px;">
+  <div id="setLocationDialogMapCanvas" style="text-align:center;">
     Initializing map...
   </div>
 </div>

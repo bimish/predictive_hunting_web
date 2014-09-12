@@ -1,1 +1,4 @@
-$('tr[data-id="<%%=@<%= singular_table_name%>.id%>"]').remove();
+<%= class_name %>TableHelper.delete(<%%= @<%= singular_table_name%>.id%>);
+if (isDefined(g_<%= class_name.camelize(:lower) %>AjaxNotifications)) {
+  g_<%= class_name.camelize(:lower) %>AjaxNotifications.notify('delete', <%%== @<%= singular_table_name %>.to_json%>);
+}

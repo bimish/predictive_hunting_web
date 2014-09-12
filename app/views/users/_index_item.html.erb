@@ -18,12 +18,6 @@ end
   <% if (attribute_list.nil? || attribute_list.include?(:email)) %>
     <td><%= user.email %></td>
   <% end %>
-  <% if (attribute_list.nil? || attribute_list.include?(:password_digest)) %>
-    <td><%= user.password_digest %></td>
-  <% end %>
-  <% if (attribute_list.nil? || attribute_list.include?(:remember_token)) %>
-    <td><%= user.remember_token %></td>
-  <% end %>
   <% if (attribute_list.nil? || attribute_list.include?(:authentication_method)) %>
     <td><%= EnumsHelper::UserEnums::get_authentication_method_description(user.authentication_method) %></td>
   <% end %>

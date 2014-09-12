@@ -1,0 +1,4 @@
+HuntingLocationScheduleTableHelper.add(<%= @hunting_location_schedule.id%>, '<%= j render(:partial => 'index_item', :locals => { :hunting_location_schedule => @hunting_location_schedule })%>');
+if (isDefined(g_huntingLocationScheduleAjaxNotifications)) {
+  g_huntingLocationScheduleAjaxNotifications.notify('create', <%== @hunting_location_schedule.to_json%>);
+}

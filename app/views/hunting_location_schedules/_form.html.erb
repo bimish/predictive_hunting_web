@@ -1,0 +1,7 @@
+<%= bootstrap_form_for(@hunting_location_schedule) do |f| %>
+  <% if @hunting_location_schedule.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location_schedule } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @hunting_location_schedule, 'Hunting Location Schedule') %>
+<% end %>

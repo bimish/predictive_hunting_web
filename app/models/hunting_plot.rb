@@ -14,4 +14,17 @@ class HuntingPlot < ActiveRecord::Base
     self.name
   end
 
+  def authorize_action?(user, action)
+    case action
+    when :read
+      HuntingPlotUserAccess.can_access? self.id, user.id
+    when :create, :destroy
+      user.admin?
+    when :update
+      HuntingPlotUserAccess.can_administrate? self.id, user.id
+    else
+      raise ArgumentError, 'The specified action is not supported'
+    end
+  end
+
 end

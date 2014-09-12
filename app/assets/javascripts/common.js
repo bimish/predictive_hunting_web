@@ -19,11 +19,11 @@ function roundNumber(number, places) {
 	return Math.round(number * Math.pow(10,places)) / Math.pow(10, places);
 }
 function parseWKTPoint(wktPoint) {
-		var currentLocationCoordinates = /POINT\s*\((-?\d+(?:\.\d*)?)\s+(-?\d+(?:\.\d*)?)\)/g.exec(wktPoint);
-		if (currentLocationCoordinates == null)
-			return null;
-		else
-			return { lat: parseFloat(currentLocationCoordinates[2]), lng: parseFloat(currentLocationCoordinates[1]) };
+	var currentLocationCoordinates = /POINT\s*\((-?\d+(?:\.\d*)?)\s+(-?\d+(?:\.\d*)?)\)/g.exec(wktPoint);
+	if (currentLocationCoordinates == null)
+		return null;
+	else
+		return { lat: parseFloat(currentLocationCoordinates[2]), lng: parseFloat(currentLocationCoordinates[1]) };
 }
 function formatWKTPoint(point, precision) {
 	if (!isDefinedAndNonNull(precision)) precision = 4;

@@ -1,3 +1,8 @@
+<%= content_for :head do %>
+<script type="text/javascript">
+var HuntingPlotNamedAnimalTableHelper = new TableHelper('table[data-component="HuntingPlotNamedAnimal"]');
+</script>
+<% end %>
 <%
 # initialize any undefined local variables
 attribute_list ||= nil
@@ -5,7 +10,7 @@ unless defined?(editable)
   editable = true
 end
 %>
-<table class="table">
+<table class="table" data-component="HuntingPlotNamedAnimal">
   <thead>
     <tr>
       <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
@@ -17,7 +22,7 @@ end
       <% if (attribute_list.nil? || attribute_list.include?(:animal_category_id)) %>
         <th>Animal category</th>
       <% end %>
-      <th colspan="3"></th>
+      <th></th>
     </tr>
   </thead>
 

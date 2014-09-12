@@ -1,7 +1,55 @@
 <% provide(:title, 'Hunting Location') %>
-<%= bootstrap_form_for @hunting_location, remote: true do |f| %>
-  <% if @hunting_location.errors.any? %>
-    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location } %>
-  <% end %>
-  <%= render :partial => 'form_fields', :locals => { :form => f } %>
-<% end %>
+
+<script type="text/javascript">
+var g_editHuntingLocationCoordinatesMap = null;
+$('#huntingLocationFormAccordion').on(
+  'shown.bs.collapse',
+  function (e) {
+    if ((e.target.id == 'huntingLocationCoordinates') && (g_editHuntingLocationCoordinatesMap == null)) {
+      g_editHuntingLocationCoordinatesMap = createEditHuntingLocationCoordinatesMap();
+      var coordinates = parseWKTPoint($('#hunting_location_coordinates').val());
+      g_editHuntingLocationCoordinatesMap.setMarkerLocation(coordinates.lat, coordinates.lng);
+      g_editHuntingLocationCoordinatesMap.showMarker();
+      g_editHuntingLocationCoordinatesMap.setDragEventHandler(
+        function(marker) {
+          var position = marker.getPosition();
+          $('#hunting_location_coordinates').val(formatWKTPoint({ lat: position.lat(), lng: position.lng() }))
+        }
+      );
+    }
+  }
+);
+<%== MapHelper.create_map_helper_script(@hunting_plot, 'editHuntingLocationCoordinatesMap', { :function_name => 'createEditHuntingLocationCoordinatesMap', :mode => MapHelper::Modes['SetLocation'] } ) %>
+</script>
+
+<div class="panel-group" id="huntingLocationFormAccordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#huntingLocationFormAccordion" href="#huntingLocationProperties">Properties</a>
+      </h4>
+    </div>
+    <div id="huntingLocationProperties" class="panel-collapse collapse in">
+      <div class="panel-body">
+        <%= bootstrap_form_for @hunting_location, remote: true do |f| %>
+          <% if @hunting_location.errors.any? %>
+            <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location } %>
+          <% end %>
+          <%= render :partial => 'form_fields', :locals => { :form => f } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#huntingLocationFormAccordion" href="#huntingLocationCoordinates">Location</a>
+      </h4>
+    </div>
+    <div id="huntingLocationCoordinates" class="panel-collapse collapse">
+      <div class="panel-body">
+        <div id="editHuntingLocationCoordinatesMap" style="width:400px;height:400px;">Map placeholder</div>
+      </div>
+    </div>
+  </div>
+</div>

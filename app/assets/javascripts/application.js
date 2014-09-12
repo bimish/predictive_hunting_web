@@ -18,3 +18,6 @@
 //= require ajax_form_helper
 //= require common
 //= require google_maps_api
+//= require map_helper
+//= require table_helper
+//= require ajax_notifications

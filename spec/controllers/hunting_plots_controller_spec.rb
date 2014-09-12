@@ -23,7 +23,7 @@ describe HuntingPlotsController do
   # This should return the minimal set of attributes required to create a valid
   # HuntingPlot. As you add validations to HuntingPlot, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "name" => "MyString" } }
+  let(:valid_attributes) { {  } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
@@ -34,7 +34,7 @@ describe HuntingPlotsController do
     it "assigns all hunting_plots as @hunting_plots" do
       hunting_plot = HuntingPlot.create! valid_attributes
       get :index, {}, valid_session
-      assigns(:hunting_plots).should eq([hunting_plot])
+      assigns(:hunting_plot).should eq([hunting_plot])
     end
   end
 
@@ -85,14 +85,14 @@ describe HuntingPlotsController do
       it "assigns a newly created but unsaved hunting_plot as @hunting_plot" do
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlot.any_instance.stub(:save).and_return(false)
-        post :create, {:hunting_plot => { "name" => "invalid value" }}, valid_session
+        post :create, {:hunting_plot => {  }}, valid_session
         assigns(:hunting_plot).should be_a_new(HuntingPlot)
       end
 
       it "re-renders the 'new' template" do
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlot.any_instance.stub(:save).and_return(false)
-        post :create, {:hunting_plot => { "name" => "invalid value" }}, valid_session
+        post :create, {:hunting_plot => {  }}, valid_session
         response.should render_template("new")
       end
     end
@@ -102,12 +102,12 @@ describe HuntingPlotsController do
     describe "with valid params" do
       it "updates the requested hunting_plot" do
         hunting_plot = HuntingPlot.create! valid_attributes
-        # Assuming there are no other hunting_plots in the database, this
+        # Assuming there are no other hunting_plot in the database, this
         # specifies that the HuntingPlot created on the previous line
         # receives the :update_attributes message with whatever params are
         # submitted in the request.
-        HuntingPlot.any_instance.should_receive(:update).with({ "name" => "MyString" })
-        put :update, {:id => hunting_plot.to_param, :hunting_plot => { "name" => "MyString" }}, valid_session
+        HuntingPlot.any_instance.should_receive(:update).with({ "these" => "params" })
+        put :update, {:id => hunting_plot.to_param, :hunting_plot => { "these" => "params" }}, valid_session
       end
 
       it "assigns the requested hunting_plot as @hunting_plot" do
@@ -128,7 +128,7 @@ describe HuntingPlotsController do
         hunting_plot = HuntingPlot.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlot.any_instance.stub(:save).and_return(false)
-        put :update, {:id => hunting_plot.to_param, :hunting_plot => { "name" => "invalid value" }}, valid_session
+        put :update, {:id => hunting_plot.to_param, :hunting_plot => {  }}, valid_session
         assigns(:hunting_plot).should eq(hunting_plot)
       end
 
@@ -136,7 +136,7 @@ describe HuntingPlotsController do
         hunting_plot = HuntingPlot.create! valid_attributes
         # Trigger the behavior that occurs when invalid params are submitted
         HuntingPlot.any_instance.stub(:save).and_return(false)
-        put :update, {:id => hunting_plot.to_param, :hunting_plot => { "name" => "invalid value" }}, valid_session
+        put :update, {:id => hunting_plot.to_param, :hunting_plot => {  }}, valid_session
         response.should render_template("edit")
       end
     end
@@ -150,7 +150,7 @@ describe HuntingPlotsController do
       }.to change(HuntingPlot, :count).by(-1)
     end
 
-    it "redirects to the hunting_plots list" do
+    it "redirects to the hunting_plot list" do
       hunting_plot = HuntingPlot.create! valid_attributes
       delete :destroy, {:id => hunting_plot.to_param}, valid_session
       response.should redirect_to(hunting_plots_url)

@@ -1,0 +1,78 @@
+<% content_for :head do %>
+<script type="text/javascript">
+function showEditPlotLocation() {
+  showLocationPopup(
+    function(location) {
+      $('#plot_location').val(formatWKTPoint( { lng: location.lng(), lat: location.lat() } ));
+      $('#locationAddress').text('updating...');
+      MapsHelper.getLocationAddress(
+        location.lat(),
+        location.lng(),
+        function(resultAddress) {
+          $('#plot_address').val(resultAddress);
+          submitEditLocationForm();
+        }
+      );
+    }
+  );
+}
+function showEditPlotBoundary() {
+  showBoundaryPopup(
+    function(boundary) {
+      $('#plot_boundary').val(formatWKTPolygon(boundary));
+      submitEditLocationForm();
+    }
+  );
+}
+function submitEditLocationForm() {
+  $('#edit-location-form > form').submit();
+}
+</script>
+<% end %>
+<div class="row">
+
+  <div class="col-md-6">
+    <strong>Name:</strong>
+    <span id="hunting_plot_name"><%= @hunting_plot.name %></span>
+    <div id="edit-name-form" style="display:none;"></div>
+    <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :name), { remote: true, class:'btn btn-default btn-sm', id:'change_name_button', title:'Edit name' } do |link| %>
+    <span class="glyphicon glyphicon-edit"></span>
+    <% end %>
+  </div>
+
+  <div class="col-md-6">
+    <strong>Location:</strong>
+    <span id="locationAddress"><%= @hunting_plot.location_address %></span>
+    <div id="edit-location-form" style="display:none;"></div>
+    <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :location_coordinates), { remote: true, class:'btn btn-default btn-sm', id:'set_location_button', title:'Set location' } do |link| %>
+    <span class="glyphicon glyphicon-map-marker"></span>
+    <% end %>
+    <%= link_to edit_hunting_plot_path(@hunting_plot, field_id: :boundary), { remote: true, class:'btn btn-default btn-sm', id:'set_boundary_button', title:'Set boundary' } do |link| %>
+      <%= image_tag 'glyphicons_099_vector_path_all.png' %>
+    <% end %>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div id="plotMap" style="height:600px;width:100%;">
+      <%=
+      renderLocals = {
+        :hunting_plot => @hunting_plot,
+        :location_name => @hunting_plot.name,
+        :coordinates =>
+        {
+          :lng => @hunting_plot.location_coordinates.x(),
+          :lat => @hunting_plot.location_coordinates.y()
+        }
+      }
+      if !@hunting_plot.boundary.nil?
+        renderLocals[:boundary] = @hunting_plot.boundary.to_s
+        renderLocals[:view_window] = rgeo_get_bounds(@hunting_plot.boundary)
+      end
+      render partial:'/shared/hunting_plot_map', :locals => renderLocals
+      %>
+    </div>
+  </div>
+</div>

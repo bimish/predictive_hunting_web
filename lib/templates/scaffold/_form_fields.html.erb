@@ -1,6 +1,6 @@
 <%-
 model_attributes.each do |attribute|
-  if attribute.name == 'password_digest' -%>
+  if attribute.password_digest? -%>
   <%%= _password_field(form, :password, 'Password') %>
   <%%= _password_field(form, :password_confirmation, 'Confirmation') %>
 <%-

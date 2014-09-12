@@ -29,4 +29,12 @@ module EnumsHelper
       @@authentication_methods_map ||= User.authentication_methods.collect { |item| [get_authentication_method_description(item[0]), item[0]] }
     end
   end
+  module HuntingLocationScheduleEnums
+    def self.entry_types
+      @@entry_types_map ||= HuntingLocationSchedule.entry_types.collect { |item| [get_entry_type_description(item[0]), item[0]] }
+    end
+    def self.get_entry_type_description(entry_type)
+      entry_type.sub("entry_type_", "").humanize
+    end
+  end
 end

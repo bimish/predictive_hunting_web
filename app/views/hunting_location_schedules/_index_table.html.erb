@@ -1,0 +1,38 @@
+<%= content_for :head do %>
+<script type="text/javascript">
+var HuntingLocationScheduleTableHelper = new TableHelper('table[data-component="HuntingLocationSchedule"]');
+</script>
+<% end %>
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<table class="table" data-component="HuntingLocationSchedule">
+  <thead>
+    <tr>
+      <% if (attribute_list.nil? || attribute_list.include?(:created_by_id)) %>
+        <th>Created by</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:hunting_location_id)) %>
+        <th>Hunting location</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:start_date_time)) %>
+        <th>Start date time</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:end_date_time)) %>
+        <th>End date time</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:entry_type)) %>
+        <th>Entry type</th>
+      <% end %>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'hunting_location_schedules/index_item', :collection => hunting_location_schedules, :as => :hunting_location_schedule, locals: { attribute_list: attribute_list, editable: editable } %>
+  </tbody>
+</table>

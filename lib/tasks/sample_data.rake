@@ -97,9 +97,9 @@ def make_hunting_plot_named_animals
 end
 
 def make_user_plot_accesses
-  @todds_plot.user_accesses.create!(user_id: @mike_user.id)
-  @todds_plot.user_accesses.create!(user_id: @todd_user.id, :alias => 'Warrenton')
-  @todds_plot.user_accesses.create!(user_id: @don_user.id)
+  @todds_plot.user_accesses.create!(user_id: @mike_user.id, permissions_can_administrate: true)
+  @todds_plot.user_accesses.create!(user_id: @todd_user.id, permissions_can_administrate: true, :alias => 'Warrenton')
+  @todds_plot.user_accesses.create!(user_id: @don_user.id, permissions_can_administrate: true)
 
   @mikes_plot.user_accesses.create!(user_id: @mike_user.id)
 end

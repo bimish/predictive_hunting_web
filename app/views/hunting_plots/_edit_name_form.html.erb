@@ -1,0 +1,18 @@
+<%= bootstrap_form_for @hunting_plot, remote: true do |f| %>
+
+  <% if @hunting_plot.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@hunting_plot.errors.count, "error") %> prohibited this hunting plot from being saved:</h2>
+    <ul>
+      <% @hunting_plot.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <%= f.text_field :name, hide_label: true %>
+  <%= f.submit 'OK', class:'btn btn-primary btn-sm' %>
+  <%= link_to "Cancel", "#", onclick: 'javascript: closeAjaxForm(); return false;', class: "btn btn-default btn-sm" %>
+
+<% end %>

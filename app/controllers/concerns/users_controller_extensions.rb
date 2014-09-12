@@ -16,8 +16,20 @@ module UsersControllerExtensions
 
   extend ActiveSupport::Concern
 
+  def set_users
+    if (!current_user.admin?)
+      @users = User.where(id: current_user.id)
+    end
+  end
+
+  def sign_in_user
+    sign_in(@user)
+  end
+
   included do
     before_action :set_view_data
+    before_action :set_users, only: [:index]
+    after_action :sign_in_user, only: [:create]
   end
 
 private

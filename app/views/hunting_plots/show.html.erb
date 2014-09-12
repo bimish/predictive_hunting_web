@@ -27,7 +27,6 @@
       initializeMapHelper();
       g_mapHelper.setMode(MapsHelper.Mode.SetLocation);
       $('#addressSearch').show();
-      $('#plotMap').hide();
     }
     catch (e) {
       alert('The following error occurred: ' + e);
@@ -46,7 +45,6 @@
       g_mapHelper.hideMarker();
       g_mapHelper.setMode(MapsHelper.Mode.SetBoundary);
       g_mapHelper.editBoundary();
-      $('#plotMap').hide();
     }
     catch (e) {
       alert('The following error occurred: ' + e);
@@ -176,7 +174,7 @@
 
 <div class="row">
 
-  <div class="col-md-4">
+  <div class="col-md-6">
 
     <div class="row">
       <div class="col-md-12">
@@ -216,14 +214,14 @@
 
     <div class="row">
       <div class="col-md-12">
-        <%= link_to 'View Activity Log', animal_activity_observations_path( hunting_plot_id: @hunting_plot.id), { class:'btn btn-default btn-sm' } %>
+        <%= link_to 'View Activity Log', animal_activity_observations_path(hunting_plot_id: @hunting_plot.id), { class:'btn btn-default btn-sm' } %>
       </div>
     </div>
 
   </div>
 
 
-  <div id="plotMap" style="height:600px;" class="col-md-8">
+  <div id="plotMap" style="height:600px;" class="col-md-6">
     <%=
     renderLocals = {
       :hunting_plot => @hunting_plot,

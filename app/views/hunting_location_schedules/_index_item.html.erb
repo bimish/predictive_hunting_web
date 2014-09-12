@@ -1,0 +1,32 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+command_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<tr data-id="<%=hunting_location_schedule.id%>">
+  <% if (attribute_list.nil? || attribute_list.include?(:created_by_id)) %>
+    <td><%= (hunting_location_schedule.created_by_id.nil?) ? nil : hunting_location_schedule.created_by.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_location_id)) %>
+    <td><%= (hunting_location_schedule.hunting_location_id.nil?) ? nil : hunting_location_schedule.hunting_location.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:start_date_time)) %>
+    <td><%= date_time_to_s(hunting_location_schedule.start_date_time) %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:end_date_time)) %>
+    <td><%= date_time_to_s(hunting_location_schedule.end_date_time) %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:entry_type)) %>
+    <td><%= EnumsHelper::HuntingLocationScheduleEnums::get_entry_type_description(hunting_location_schedule.entry_type) %></td>
+  <% end %>
+  <% if editable %>
+    <td>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_location_schedule_path(hunting_location_schedule)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_hunting_location_schedule_path(hunting_location_schedule), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_location_schedule_path(hunting_location_schedule), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    </td>
+  <% end %>
+</tr>

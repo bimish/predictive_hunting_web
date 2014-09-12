@@ -210,6 +210,16 @@ module GeneratorHelpers
       end
     end
 
+    def is_system?(col_name)
+      if model.system_attributes.nil?
+        false
+      else
+        model.system_attributes.detect do |attribute|
+          attribute == col_name.to_sym
+        end
+      end
+    end
+
     def is_enum?(col_name)
       !get_enum_for(col_name).nil?
     end
@@ -338,7 +348,7 @@ module GeneratorHelpers
           attribute_names.push column.name
         elsif column_attribute.is_flags?
           attribute_names.push *column_attribute.get_flag_attribute_names
-        else
+        elsif !column_attribute.is_system?
           attribute_names.push column_attribute.name
         end
       end

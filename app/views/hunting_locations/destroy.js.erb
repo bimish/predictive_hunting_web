@@ -1,1 +1,4 @@
-$('tr[data-id="<%=@hunting_location.id%>"]').remove();
+HuntingLocationTableHelper.delete(<%=@hunting_location.id%>);
+if (isDefined(g_huntingLocationAjaxNotifications)) {
+  g_huntingLocationAjaxNotifications.notify('delete', <%== @hunting_location.to_json %>);
+}
