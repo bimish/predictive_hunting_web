@@ -7,10 +7,10 @@ module FormsHelper
     form.check_box instance_method, options
   end
   def _color_field(form, instance_method, label, options = {})
-    form.color_field instance_method
+    form.color_field instance_method, options
   end
   def _date_field(form, instance_method, label, options = {})
-    form.date_field instance_method
+    form.date_field instance_method, options
   end
   def _datetime_field(form, instance_method, label, options = {})
     form.datetime_field instance_method, options
@@ -49,19 +49,19 @@ module FormsHelper
     form.number_field instance_method, options
   end
   def _password_field(form, instance_method, label, options = {})
-    form.password_field instance_method
+    form.password_field instance_method, options
   end
   def _phone_field(form, instance_method, label, options = {})
-    form.phone_field instance_method
+    form.phone_field instance_method, options
   end
   def _radio_button(form, instance_method, label, options = {})
-    form.radio_button instance_method
+    form.radio_button instance_method, options
   end
   def _range_field(form, instance_method, label, options = {})
-    form.range_field instance_method
+    form.range_field instance_method, options
   end
   def _search_field(form, instance_method, label, options = {})
-    form.search_field instance_method
+    form.search_field instance_method, options
   end
   def _select_field(form, instance_method, label, choices, options = {}, html_options = {})
     if (!label.nil?)
@@ -71,7 +71,7 @@ module FormsHelper
     form.select instance_method, choices, options, html_options
   end
   def _telephone_field(form, instance_method, label, options = {})
-    form.telephone_field instance_method
+    form.telephone_field instance_method, options
   end
   def _text_area_field(form, instance_method, label, options = {})
     if (!label.nil?)
@@ -92,13 +92,13 @@ module FormsHelper
     end
   end
   def _time_field(form, instance_method, label, options = {})
-    form.time_field instance_method
+    form.time_field instance_method, options
   end
   def _url_field(form, instance_method, label, options = {})
-    form.url_field instance_method
+    form.url_field instance_method, options
   end
   def _week_field(form, instance_method, label, options = {})
-    form.week_field instance_method
+    form.week_field instance_method, options
   end
 
   def _submit_button(form, instance_record, title, options = {})

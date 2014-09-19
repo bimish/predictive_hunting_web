@@ -5,17 +5,14 @@
       <strong>User:</strong>
       <%= (@hunting_plot_user_access.user_id.nil?) ? nil : @hunting_plot_user_access.user.get_display_name %>
     </p>
-
     <p>
       <strong>Hunting plot:</strong>
       <%= (@hunting_plot_user_access.hunting_plot_id.nil?) ? nil : @hunting_plot_user_access.hunting_plot.get_display_name %>
     </p>
-
     <p>
       <strong>Alias:</strong>
       <%= @hunting_plot_user_access.alias %>
     </p>
-
     <p>
       <strong>Permissions:</strong>
       <%= @hunting_plot_user_access.permissions %>

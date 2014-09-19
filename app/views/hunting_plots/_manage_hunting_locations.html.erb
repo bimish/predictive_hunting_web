@@ -11,6 +11,9 @@ initTab(
       }
     );
     g_huntingLocationsMapHelper = initHuntingLocationsMap();
+    for (var i = 0; i < g_huntingLocationCoordinates.length; i++) {
+      g_huntingLocationsMapHelper.addMarker( { coordinates: { lat: g_huntingLocationCoordinates[i].lat, lng: g_huntingLocationCoordinates[i].lng}, icon: MapIcons.HuntingPlotLocation }, g_huntingLocationCoordinates[i].id);
+    }
     initializeSetLocationDialog();
     HuntingLocationTableHelper.initRow(
       function(row) {
@@ -69,6 +72,20 @@ g_huntingLocationAjaxNotifications.addListener(
         g_huntingLocationCoordinates.slice(findItemIndex(json.id), 1);
         break;
     }
+    // clear any updated or deleted markers
+    switch (action) {
+      case 'update':
+      case 'delete':
+        g_huntingLocationsMapHelper.clearMarkers(json.id);
+        break;
+    }
+    // add any new or updated markers
+    switch (action) {
+      case 'update':
+      case 'create':
+        g_huntingLocationsMapHelper.addMarker( { coordinates: coordinates, icon: MapIcons.HuntingPlotLocation }, json.id);
+        break;
+    }
     function findItemIndex(id) {
       for (var i = 0; i < g_huntingLocationCoordinates.length; i++) {
         if (g_huntingLocationCoordinates[i].id == id) {
@@ -84,7 +101,7 @@ g_huntingLocationAjaxNotifications.addListener(
 <div class="row">
   <div class="col-md-6">
     <%= render partial:'hunting_locations/index_table', :locals => { :hunting_locations => @hunting_plot.locations } %>
-    <%= link_to 'New Location', new_hunting_plot_hunting_location_path(@hunting_plot), { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+    <%= link_to 'Add Location', new_hunting_plot_hunting_location_path(@hunting_plot), { remote: true, class: 'btn btn-default btn-sm', id:'add-item-button' } %>
   </div>
   <div class="col-md-6">
     <div id="hunting_locations_map" style="width:100%;height:600px;">Hunting locations map</div>

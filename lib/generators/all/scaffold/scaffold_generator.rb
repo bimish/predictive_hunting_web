@@ -1,6 +1,7 @@
 require 'rails/generators/named_base'
 require 'rails/generators/resource_helpers'
 require File.dirname(__FILE__) + '/../../../generator_helpers/model_info'
+require File.dirname(__FILE__) + '/../../../generator_helpers/template_helpers'
 
 module All # :nodoc:
 
@@ -10,6 +11,7 @@ module All # :nodoc:
 
       include Rails::Generators::ResourceHelpers
       include GeneratorHelpers
+      include TemplateHelpers
 
       def initialize(args, *options)
         super

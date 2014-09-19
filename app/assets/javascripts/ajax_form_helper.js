@@ -28,7 +28,7 @@ function closeAjaxForm() {
 }
 
 var g_currentAjaxModalForm = null;
-function showAjaxModalForm(modalId, formHtml) {
+function showAjaxModalForm(modalId, formHtml, init) {
 
   if (g_currentAjaxModalForm != null) closeAjaxModalForm();
 
@@ -46,6 +46,9 @@ function showAjaxModalForm(modalId, formHtml) {
     }
   );
   $('#' + modalId).modal(modalOptions);
+  if (isDefinedAndNonNull(init)) {
+    $('#' + modalId).on('shown.bs.modal', init);
+  }
   $('#' + modalId).modal('show');
 
   g_currentAjaxModalForm = {

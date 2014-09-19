@@ -1,0 +1,2 @@
+<%= render partial:'hunting_plot_named_animals/index_table', :locals => { :hunting_plot_named_animals => @hunting_plot.named_animals } %>
+<%= link_to 'Add Named Animal', new_hunting_plot_named_animal_path(@hunting_plot), { remote: true, class: 'btn btn-default btn-sm', id:'add-item-button' } %>

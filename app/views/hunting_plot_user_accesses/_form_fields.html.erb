@@ -1,9 +1,14 @@
-<%= _select_field(form, :user_id, 'User', @view_data.users) %>
-<%= _text_field(form, :alias, 'Alias', 255) %>
-<%= _check_box_list(form, 'Permissions') do |check_box_list| %>
-  <%= check_box_list.add_item(:permissions_can_administrate, 'Administrate', inline: true) %>
-  <%= check_box_list.add_item(:permissions_can_manage_locations, 'Manage Locations', inline: true) %>
-  <%= check_box_list.add_item(:permissions_can_manage_members, 'Manage Members', inline: true) %>
-  <%= check_box_list.add_item(:permissions_can_manage_named_animals, 'Manage Named Animals', inline: true) %>
-  <%= check_box_list.add_item(:permissions_can_manage_schedules, 'Manage Schedules', inline: true) %>
+
+<% if form.object.persisted? %>
+  <%= _text_field(form, :user_id, 'User', 255, { value: (form.object.user_id.nil?) ? nil : form.object.user.get_display_name, :readonly => true } ) %>
+<% else %>
+  <%= _select_field(form, :user_id, 'User', @view_data.users) %>
 <% end %>
+  <%= _text_field(form, :alias, 'Alias', 255) %>
+  <%= _check_box_list(form, 'Permissions') do |check_box_list| %>
+    <%= check_box_list.add_item(:permissions_can_administrate, 'Administrate', inline: true) %>
+    <%= check_box_list.add_item(:permissions_can_manage_locations, 'Manage Locations', inline: true) %>
+    <%= check_box_list.add_item(:permissions_can_manage_members, 'Manage Members', inline: true) %>
+    <%= check_box_list.add_item(:permissions_can_manage_named_animals, 'Manage Named Animals', inline: true) %>
+    <%= check_box_list.add_item(:permissions_can_manage_schedules, 'Manage Schedules', inline: true) %>
+  <% end %>

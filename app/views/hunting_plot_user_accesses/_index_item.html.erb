@@ -10,7 +10,7 @@ end
   <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
     <td><%= (hunting_plot_user_access.user_id.nil?) ? nil : hunting_plot_user_access.user.get_display_name %></td>
   <% end %>
-  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+  <% if (!attribute_list.nil? && attribute_list.include?(:hunting_plot_id)) %>
     <td><%= (hunting_plot_user_access.hunting_plot_id.nil?) ? nil : hunting_plot_user_access.hunting_plot.get_display_name %></td>
   <% end %>
   <% if (attribute_list.nil? || attribute_list.include?(:alias)) %>

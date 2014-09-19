@@ -14,7 +14,10 @@ end
   <% if !read_only %>
   <td>
     <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_location_path(hunting_location)) : nil %>
-    <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_hunting_location_path(hunting_location), { remote: true }) : nil %>
+    <% if (command_list.nil? || command_list.include?(:edit)) %>
+      <%= item_edit_command(edit_hunting_location_path(hunting_location, { active_field_group: :properties }), { remote: true }) %>
+      <%= item_command_glyphicon('Change Location', 'map-marker',  edit_hunting_location_path(hunting_location, { active_field_group: :location }), { remote: true }) %>
+    <% end %>
     <%= (command_list.nil? || command_list.include?(:schedule)) ? item_command_glyphicon('Reservations', 'calendar',  hunting_location_schedules_path(hunting_location), { target: '_blank' }) : nil %>
     <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_location_path(hunting_location), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
     <%#= item_edit_command(edit_hunting_location_path(hunting_location), { remote: true }) %>

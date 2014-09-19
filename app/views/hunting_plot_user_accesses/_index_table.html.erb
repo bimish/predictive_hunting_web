@@ -16,7 +16,7 @@ end
       <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
         <th>User</th>
       <% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+      <% if (!attribute_list.nil? && attribute_list.include?(:hunting_plot_id)) %>
         <th>Hunting plot</th>
       <% end %>
       <% if (attribute_list.nil? || attribute_list.include?(:alias)) %>

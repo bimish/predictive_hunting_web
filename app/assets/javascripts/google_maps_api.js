@@ -92,6 +92,9 @@ function MapsHelper(mapCanvas, options)
 				(_mode == MapsHelper.Mode.SetLocation)
 			) {
 			setMarkerLocationImpl(_mapOptions.center);
+			if (isDefinedAndNonNull(_mapOptions.boundary)) {
+				_boundary = addBoundary(_mapOptions.boundary, (_mode == MapsHelper.Mode.SetBoundary));
+			}
 		}
 		if ((_mode == MapsHelper.Mode.View) || (_mode == MapsHelper.Mode.SetBoundary)) {
 			if (isDefinedAndNonNull(_mapOptions.boundary)) {
@@ -232,7 +235,7 @@ function MapsHelper(mapCanvas, options)
 		var boundary = new google.maps.Polygon (
 			{
 				paths: polygonPaths,
-				strokeColor: '#000000',
+				strokeColor: (editable ? '#000000' : '#8FBC8F'),
 				strokeOpacity: 0.8,
 				strokeWeight: 2,
 				fillColor: '#8FBC8F',
@@ -309,6 +312,7 @@ function MapsHelper(mapCanvas, options)
 				}
 				if (isDefinedAndNonNull(_boundary)) {
 					_boundary.setEditable(true);
+					_boundary.setOptions({ strokeColor: '#000000' });
 					_boundary.setVisible(true);
 				}
 				break;

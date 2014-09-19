@@ -4,20 +4,10 @@
     <%- model_attributes.reject { |attribute| attribute.password_digest? || attribute.is_system? }.each do |attribute| -%>
     <p>
       <strong><%= attribute.human_name %>:</strong>
-    <%- if (attribute.reference?) -%>
-      <%%= (@<%= singular_table_name %>.<%= attribute.name%>.nil?) ? nil : @<%= singular_table_name %>.<%= attribute.reference.name %>.get_display_name %>
-    <%- elsif attribute.is_enum? -%>
-      <%%= EnumsHelper::<%=singular_table_name.camelize%>Enums::get_<%= attribute.name %>_description(@<%= singular_table_name %>.<%=attribute.name%>) %>
-    <%- elsif attribute.has_value_list? -%>
-      <%%= @view_data.get_<%= attribute.name %>_description(@<%= singular_table_name %>.<%=attribute.name%>) %>
-    <%- elsif attribute.type == :datetime -%>
-      <%%= date_time_to_s(@<%= singular_table_name %>.<%=attribute.name%>) %>
-    <%- else -%>
-      <%%= @<%= singular_table_name %>.<%= attribute.name %> %>
-    <%- end -%>
+      <%%= <%= get_attribute_display_value_string("@#{singular_table_name}", attribute) %> %>
     </p>
-
     <%- end -%>
+
     <%%= link_to 'Edit', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>) %> |
     <%%= link_to 'Back', <%= index_helper %>_path %>
 

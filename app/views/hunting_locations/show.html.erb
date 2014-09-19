@@ -20,7 +20,7 @@
 
     <p>
       <strong>Location type:</strong>
-      <%= @view_data.get_location_type_description(@hunting_location.location_type) %>
+      <%= EnumsHelper::HuntingLocationEnums::get_location_type_description(@hunting_location.location_type) %>
     </p>
 
     <%= link_to 'Edit', edit_hunting_location_path(@hunting_location) %> |

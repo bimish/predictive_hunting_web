@@ -110,6 +110,10 @@ module GeneratorHelpers
       name == 'password_digest' && type == :string
     end
 
+    def display_value_string
+
+    end
+
     private
 
   end

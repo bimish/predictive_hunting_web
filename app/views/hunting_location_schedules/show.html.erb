@@ -5,22 +5,18 @@
       <strong>Created by:</strong>
       <%= (@hunting_location_schedule.created_by_id.nil?) ? nil : @hunting_location_schedule.created_by.get_display_name %>
     </p>
-
     <p>
       <strong>Hunting location:</strong>
       <%= (@hunting_location_schedule.hunting_location_id.nil?) ? nil : @hunting_location_schedule.hunting_location.get_display_name %>
     </p>
-
     <p>
       <strong>Start date time:</strong>
       <%= date_time_to_s(@hunting_location_schedule.start_date_time) %>
     </p>
-
     <p>
       <strong>End date time:</strong>
       <%= date_time_to_s(@hunting_location_schedule.end_date_time) %>
     </p>
-
     <p>
       <strong>Entry type:</strong>
       <%= EnumsHelper::HuntingLocationScheduleEnums::get_entry_type_description(@hunting_location_schedule.entry_type) %>

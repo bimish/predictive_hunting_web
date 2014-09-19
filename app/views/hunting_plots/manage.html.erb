@@ -63,7 +63,6 @@ function mapDialogSaveHandler() {
         submitEditLocationForm();
       }
     );
-    //setTimeout(submitEditLocationForm, 1000);
   }
   else {
     var boundaryVertices = g_plotLocationMapHelper.getBoundaryVertices();
@@ -208,10 +207,10 @@ $(document).ready(
     <%= render partial:'manage_hunting_locations', :locals => { :command_list => [:edit, :delete, :schedule ] } %>
   </div>
   <div id="members" class="col-md-12 tab-pane">
-    <%= render partial:'/hunting_plot_user_accesses/index_table', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses, :attribute_list => [:user_id, :alias, :permissions] } %>
+    <%= render partial:'manage_user_accesses', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses } %>
   </div>
   <div id="named-animals" class="col-md-12 tab-pane">
-    <%= render partial:'/hunting_plot_named_animals/index_table', :locals => { :hunting_plot_named_animals => @hunting_plot.named_animals, :attribute_list => [:name, :animal_category_id] } %>
+    <%= render partial:'manage_named_animals', :locals => { :hunting_plot_named_animals => @hunting_plot.named_animals } %>
   </div>
 </div>
 

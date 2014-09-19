@@ -5,38 +5,52 @@ model_attributes.each do |attribute|
   <%%= _password_field(form, :password_confirmation, 'Confirmation') %>
 <%-
   elsif !attribute.is_component_assigned? && !attribute.is_controller_assigned?
+
+    if attribute.is_write_once?
+%>
+<%% if form.object.persisted? %>
+  <%%= _text_field(form, :user_id, 'User', 255, { value: <%= get_attribute_display_value_string("form.object", attribute)%>, :readonly => true } ) %>
+<%% else %>
+<%
+    end
+
     if attribute.reference?
 -%>
-<%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.reference.name.to_s.pluralize %>) %>
+  <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.reference.name.to_s.pluralize %>) %>
 <%-
     elsif attribute.is_enum?
 -%>
-<%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', EnumsHelper::<%=singular_table_name.camelize%>Enums::<%= attribute.name.to_s.pluralize %>) %>
+  <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', EnumsHelper::<%=singular_table_name.camelize%>Enums::<%= attribute.name.to_s.pluralize %>) %>
 <%-
     elsif (attribute.type != :boolean) && (attribute.has_value_list?)
 -%>
-<%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.name.to_s.pluralize %>) %>
+  <%%= _select_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', @view_data.<%= attribute.name.to_s.pluralize %>) %>
 <%-
     elsif attribute.is_flags?
 -%>
-<%%= _check_box_list(form, '<%= attribute.human_name.titleize %>') do |check_box_list| %>
+  <%%= _check_box_list(form, '<%= attribute.human_name.titleize %>') do |check_box_list| %>
   <%-
       attribute.flags[:values].each do |flag_value, flag_name|
   -%>
-  <%%= check_box_list.add_item(:<%= attribute.flag_attribute_name(flag_value) %>, '<%= flag_name.to_s.titleize %>', inline: true) %>
+    <%%= check_box_list.add_item(:<%= attribute.flag_attribute_name(flag_value) %>, '<%= flag_name.to_s.titleize %>', inline: true) %>
   <%-
       end
   -%>
-<%% end %>
+  <%% end %>
 <%-
     elsif (attribute.type == :string)
 -%>
-<%%= _text_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', <%=attribute.length%>) %>
+  <%%= _text_field(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>', <%=attribute.length%>) %>
 <%-
     else
 -%>
-<%%= _<%= attribute.field_type %>(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>') %>
+  <%%= _<%= attribute.field_type %>(form, :<%= attribute.name %>, '<%= attribute.human_name.titleize %>') %>
 <%-
+    end
+    if attribute.is_write_once?
+    -%>
+<%% end %>
+    <%-
     end
   end
 end
