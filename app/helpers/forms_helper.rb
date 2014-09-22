@@ -10,7 +10,7 @@ module FormsHelper
     form.color_field instance_method, options
   end
   def _date_field(form, instance_method, label, options = {})
-    form.date_field instance_method, options
+    form.date_field instance_method, options.merge({ size: 15, style:'width:auto;' })
   end
   def _datetime_field(form, instance_method, label, options = {})
     form.datetime_field instance_method, options

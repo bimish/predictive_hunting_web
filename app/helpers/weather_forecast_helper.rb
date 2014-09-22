@@ -33,7 +33,7 @@ module WeatherForecastHelper
 
   def get_current_conditions(hunting_plot)
 
-    conditions_results = execute_request(hunting_plot, 'conditions', 1.hours)
+    conditions_results = execute_request(hunting_plot, 'conditions', 15.minutes)
     return {
       conditions: conditions_results['current_observation']
     }
@@ -68,6 +68,7 @@ module WeatherForecastHelper
     Rails.cache.fetch(cache_key, :expires_in => expiration) do |key|
       request_url = get_request_url(geolookup_result, request_data)
       request = Net::HTTP::Get.new(request_url.path)
+      puts "making request for #{request_url.to_s}"
       response = Net::HTTP.start(request_url.host, request_url.port) do |http|
         http.request(request)
       end

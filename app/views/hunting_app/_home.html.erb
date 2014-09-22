@@ -58,17 +58,19 @@ pageInit(
     <%= hidden_field_tag("position_longitude", "") %>
     <%= hidden_field_tag("position_latitude", "") %>
 
+    <% current_checkin = (@last_checkin.nil? || @last_checkin.updated_at < 1.days.ago) ? nil : @last_checkin %>
+
     <%= label_tag(
       nil,
-      check_box_tag('is_at_plot', 'true', !@last_checkin.nil?, id:'is-at-plot') + 'I\'m at the hunting plot'
+      check_box_tag('is_at_plot', 'true', !current_checkin.nil?, id:'is-at-plot') + 'I\'m at the hunting plot'
     ) %>
 
     <label>
-      <select name="hunting_location_id" id="hunting_location_id" data-native-menu="false" <%= @last_checkin.nil? ? "disabled" : nil %>>
+      <select name="hunting_location_id" id="hunting_location_id" data-native-menu="false" <%= current_checkin.nil? ? "disabled" : nil %>>
         <option data-placeholder="true" value="">Choose Stand...</option>
         <option value="">[Not in a stand]</option>
         <% @hunting_plot.locations.find_all { |location| location.location_type_stand? }.each do |location| %>
-          <option value="<%= location.id%>"<%= ((!@last_checkin.nil? && @last_checkin.hunting_location_id == location.id) ? "selected" : nil) %>><%= location.name%></option>
+          <option value="<%= location.id%>"<%= ((!current_checkin.nil? && current_checkin.hunting_location_id == location.id) ? "selected" : nil) %>><%= location.name%></option>
         <% end %>
       </select>
     </label>

@@ -33,6 +33,9 @@ function showMap() {
       }
     );
     */
+    PlotMapHelper.showLocations();
+    PlotMapHelper.showMembers();
+    PlotMapHelper.showWindConditions();
     $('#map-options-panel ul li input').change(
       function(event) {
         var isChecked = $(this).is(':checked');
@@ -44,56 +47,32 @@ function showMap() {
           }
           case 'members-checkbox':
           {
-            var markerTag = 'plot-members'
             if (isChecked) {
-              $.each(
-                g_memberLocations,
-                function(index, member_location) {
-                  g_map.addMarker(
-                    {
-                      title: member_location.first_name +  " " + member_location.last_name,
-                      coordinates: member_location.location_coordinates,
-                      icon: new google.maps.MarkerImage('<%= asset_url('user_pin.png') %>', null, null, null, new google.maps.Size(24,24)),
-                      zIndex: 3,
-                      infoWindowContent: member_location.first_name + '&nbsp;' + member_location.last_name + '<br/>' + member_location.location_name
-                    },
-                    markerTag
-                  );
-                }
-              );
+              PlotMapHelper.showMembers();
             }
             else {
-              g_map.clearMarkers(markerTag);
+              PlotMapHelper.hideMembers();
             }
             break;
           }
           case 'stands-checkbox':
           {
-            var markerTag = 'hunting-locations'
             if (isChecked) {
-              $.each(
-                g_huntingLocations,
-                function(index, hunting_location) {
-                  g_map.addMarker(
-                    {
-                      title: hunting_location.name,
-                      coordinates: hunting_location.coordinates,
-                      icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)),
-                      zIndex: 2
-                    },
-                    markerTag
-                  );
-                }
-              );
+              PlotMapHelper.showLocations();
             }
             else {
-              g_map.clearMarkers(markerTag);
+              PlotMapHelper.hideLocations();
             }
             break;
           }
           case 'wind-forecast-checkbox':
           {
-
+            if (isChecked) {
+              PlotMapHelper.showWindConditions();
+            }
+            else {
+              PlotMapHelper.hideWindConditions();
+            }
             break;
           }
         }
@@ -101,6 +80,61 @@ function showMap() {
     );
   }
 }
+var PlotMapHelper = function() {
+  var plotMembersMarkerTag = 'plot-members';
+  var plotLocationsMarkerTag = 'hunting-locations';
+  this.showMembers = function() {
+    $.each(
+      g_memberLocations,
+      function(index, member_location) {
+        g_map.addMarker(
+          {
+            title: member_location.first_name +  " " + member_location.last_name,
+            coordinates: member_location.location_coordinates,
+            icon: new google.maps.MarkerImage('<%= asset_url('user_pin.png') %>', null, null, null, new google.maps.Size(24,24)),
+            zIndex: 3,
+            infoWindowContent: member_location.first_name + '&nbsp;' + member_location.last_name + '<br/>' + member_location.location_name
+          },
+          plotMembersMarkerTag
+        );
+      }
+    );
+  }
+  this.hideMembers = function() {
+    g_map.clearMarkers(plotMembersMarkerTag);
+  }
+  this.showLocations = function() {
+    $.each(
+      g_huntingLocations,
+      function(index, hunting_location) {
+        g_map.addMarker(
+          {
+            title: hunting_location.name,
+            coordinates: hunting_location.coordinates,
+            icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)),
+            zIndex: 2
+          },
+          plotLocationsMarkerTag
+        );
+      }
+    );
+  }
+  this.hideLocations = function() {
+    g_map.clearMarkers(plotLocationsMarkerTag);
+  }
+  this.showWindConditions = function() {
+    var svgDoc = $("#windIndicatorSvg");
+    var windSpeedNode = svgDoc.find("#windSpeed");
+    var windDirectionNode = svgDoc.find("#windDirection");
+    windSpeedNode.text(g_windForecast.wind_mph);
+    windDirectionNode.attr("transform", "rotate(" + g_windForecast.wind_degrees + " 35 35)");
+    $('#map-wind-indicator').show();
+  }
+  this.hideWindConditions = function() {
+    $('#map-wind-indicator').hide();
+  }
+  return this;
+}();
 var g_huntingLocations = <%==
     @hunting_plot.locations.collect do |hunting_location|
       {
@@ -112,15 +146,14 @@ var g_huntingLocations = <%==
       }
     end.to_json
   %>;
-var g_windConditions = <%==
-  current_conditions = get_current_conditions(@hunting_plot)
-  wind_conditions = {
-    wind_string: current_conditions[:conditions]['wind_string'],
-    wind_dir: current_conditions[:conditions]['wind_dir'],
-    wind_degrees: current_conditions[:conditions]['wind_degrees'],
-    wind_mph: current_conditions[:conditions]['wind_mph']
+var g_windForecast = <%==
+  hourly_forecast = get_hourly_weather_forecast(@hunting_plot)
+  forecast = {
+    wind_dir: hourly_forecast[:forecast][0]['wdir']['dir'],
+    wind_degrees: hourly_forecast[:forecast][0]['wdir']['degrees'],
+    wind_mph: hourly_forecast[:forecast][0]['wspd']['english']
   }
-  wind_conditions.to_json %>;
+  forecast.to_json %>;
 </script>
 <% end %>
 <% content_for :panels do %>
@@ -133,17 +166,17 @@ var g_windConditions = <%==
     </li>
     <li>
       <label>
-        <input name="members-checkbox" id="members-checkbox" type="checkbox" data-role="flipswitch"> Members <%= image_tag 'user_pin.png', size:'24x24' %>
+        <input name="members-checkbox" id="members-checkbox" type="checkbox" data-role="flipswitch" checked="true"> Members <%= image_tag 'user_pin.png', size:'24x24' %>
       </label>
     </li>
     <li>
       <label>
-        <input name="stands-checkbox" id="stands-checkbox" type="checkbox" data-role="flipswitch"> Stands <%= image_tag 'hunting_plot_location.png', size:'16x16' %>
+        <input name="stands-checkbox" id="stands-checkbox" type="checkbox" data-role="flipswitch" checked="true"> Stands <%= image_tag 'hunting_plot_location.png', size:'16x16' %>
       </label>
     </li>
     <li>
       <label>
-        <input name="wind-forecast-checkbox" id="wind-forecast-checkbox" type="checkbox" data-role="flipswitch"> Wind Conditions
+        <input name="wind-forecast-checkbox" id="wind-forecast-checkbox" type="checkbox" data-role="flipswitch" checked="true"> Wind Conditions
       </label>
     </li>
   </ul>
@@ -153,4 +186,17 @@ var g_windConditions = <%==
 <div id="map-canvas" style="width:100%;height:100%;">Loading, please wait...</div>
 <div id="map-options-popup" style="position:absolute; right: 0px;top: 100px;">
   <a class="ui-btn ui-btn-inline" href="#map-options-panel" title="Display Options" data-role="button"><%= image_tag 'layers.svg' %></a>
+</div>
+<div id="map-wind-indicator" style="position: absolute; right: 10px; bottom: 25px; display:none; background-color:white; text-align: center;">
+  Wind<br/>
+  <svg id="windIndicatorSvg" xmlns="http://www.w3.org/2000/svg" width="70" height="70" viewBox="0 0 70 70">
+    <defs>
+      <marker id="Arrow" markerWidth="10" markerHeight="10" viewBox="-6 -6 12 12" refX="-2" refY="0" markerUnits="strokeWidth" orient="auto">
+        <polygon points="-4,0 -5,5 5,0 -5,-5" fill="black" stroke="none" stroke-width="1px"/>
+      </marker>
+    </defs>
+    <circle id="mycircle" fill="none" stroke="black" cx="35" cy="35" r="25" stroke-width="3px" />
+    <text id="windSpeed" x="35" y="42" fill="black" font-size="16" font-weight="bold" text-anchor="middle">12</text>
+    <line id="windDirection" x1="35" y1="8" x2="35" y2="9" stroke="black" stroke-width="2px" marker-end="url(#Arrow)" transform="rotate(0 35 35)" />
+  </svg>
 </div>
