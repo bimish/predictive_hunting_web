@@ -21,8 +21,8 @@ Web::Application.configure do
     :address              => 'smtp.gmail.com',
     :port                 => 587,
     :domain               => 'gmail.com',
-    :user_name            => 'predictive.hunting.development@gmail.com',
-    :password             => 'Pr3dictive!',
+    :user_name            => ENV['SMTP_USERNAME'],
+    :password             => ENV['SMTP_PASSWORD'],
     :authentication       => 'plain',
     :enable_starttls_auto => true
   }
