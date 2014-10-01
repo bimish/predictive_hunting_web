@@ -1,0 +1,4 @@
+UserInvitationTableHelper.update(<%= @user_invitation.id%>, '<%= j render(:partial => 'index_item', :locals => { :user_invitation => @user_invitation })%>');
+if (isDefined(g_userInvitationAjaxNotifications)) {
+  g_userInvitationAjaxNotifications.notify('update', <%== @user_invitation.to_json%>);
+}

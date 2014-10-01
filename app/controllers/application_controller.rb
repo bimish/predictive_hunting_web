@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   helper :enums
   helper :nested_urls
   helper :map
+  helper :mail
   helper ConfigData
 
 #disable caching

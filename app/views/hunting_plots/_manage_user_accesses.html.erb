@@ -1,2 +1,2 @@
 <%= render partial:'hunting_plot_user_accesses/index_table', :locals => { :hunting_plot_user_accesses => @hunting_plot.user_accesses } %>
-<%= link_to 'Add User', new_hunting_plot_user_access_path(@hunting_plot), { remote: true, class: 'btn btn-default btn-sm', id:'add-item-button' } %>
+<%= link_to 'Add Member', new_hunting_plot_user_access_request_path(@hunting_plot), { class: 'btn btn-default btn-sm' } %>

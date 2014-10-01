@@ -77,7 +77,7 @@ module ActiveModel
             end
 
             def #{field_name}
-              (self.#{attribute_name} & self.class.#{field_name}_bit) != 0
+              (self.#{attribute_name} & self.class.#{field_name}_bit) == self.class.#{field_name}_bit
             end
 
             alias #{field_name}? #{field_name}

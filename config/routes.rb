@@ -16,10 +16,20 @@ Web::Application.routes.draw do
     end
     resources :locations, as: 'locations', controller:'hunting_locations', :only => [:index, :create, :new] do
     end
+    resources :user_access_requests, as: 'user_access_requests', controller:'hunting_plot_user_access_requests', :only => [:index, :create, :new] do
+    end
   end
 
   resources :hunting_plot_named_animals, :except => [:index, :create, :new]
   resources :hunting_plot_user_accesses, :except => [:index, :create, :new]
+  resources :hunting_plot_user_access_requests, :except => [:index, :create, :new] do
+    member do
+      get 'confirm'
+      patch 'accept'
+      patch 'decline'
+    end
+  end
+
   resources :hunting_locations, shallow: true, :except => [:index, :create, :new] do
     resources :schedules, as: 'schedules', controller:'hunting_location_schedules', :only => [:index, :create, :new] do
     end
@@ -29,6 +39,7 @@ Web::Application.routes.draw do
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :users
+  resources :user_invitations
 
   resources :user_network_categories
 

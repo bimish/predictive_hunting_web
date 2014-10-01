@@ -1,14 +1,6 @@
 module UsersControllerExtensions
 
   class ViewData
-    def authentication_methods
-      @authentication_methods_map ||= User.authentication_methods.collect { |item| [get_authentication_method_description(item[0]), item[0]] }
-    end
-
-    def get_authentication_method_description(authentication_method)
-      authentication_method.sub("authentication_method_", "").humanize
-    end
-
     def get_admin_description(admin_value)
       admin_value.to_s
     end
@@ -22,14 +14,38 @@ module UsersControllerExtensions
     end
   end
 
-  def sign_in_user
-    sign_in(@user)
+  def after_user_created
+    unless signed_in?
+      sign_in(@user)
+    end
+    unless params[:invite_id].blank?
+      user_invitation = UserInvitation.find(params[:invite_id])
+      user_invitation.accepted(@user)
+    end
+  end
+
+  def initialize_new_instance
+    unless params[:invite_id].blank?
+      user_invitation = UserInvitation.find(params[:invite_id])
+      unless user_invitation.blank?
+        @user.email = user_invitation.email
+      end
+    end
+  end
+
+  def ensure_not_logged_in
+    if signed_in? && !current_user.admin?
+      store_location
+      render 'confirm_signout'
+    end
   end
 
   included do
     before_action :set_view_data
+    prepend_before_action :ensure_not_logged_in, only: [:new, :create]
     before_action :set_users, only: [:index]
-    after_action :sign_in_user, only: [:create]
+    after_action :after_user_created, only: [:create]
+    after_initialize_new_instance :initialize_new_instance
   end
 
 private

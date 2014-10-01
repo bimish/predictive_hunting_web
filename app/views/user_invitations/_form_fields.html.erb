@@ -1,0 +1,7 @@
+
+<% if form.object.persisted? %>
+  <%= _text_field(form, :user_id, 'User', 255, { value: form.object.email, :readonly => true } ) %>
+<% else %>
+  <%= _text_field(form, :email, 'Email', 100) %>
+<% end %>
+  <%= _text_field(form, :message, 'Message', 1000) %>

@@ -1,0 +1,7 @@
+<div class="row">
+  <div class="col-md-12">
+    <p>You are currently signed in as <%= current_user.get_display_name %></p>
+    <p>Sign out to perform this action?</p>
+    <%= link_to "Sign out", signout_path, method:"delete" %>
+  </div>
+</div>

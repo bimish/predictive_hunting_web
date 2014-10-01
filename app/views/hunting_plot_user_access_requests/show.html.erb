@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p>
+      <strong>User:</strong>
+      <%= (@hunting_plot_user_access_request.user_id.nil?) ? nil : @hunting_plot_user_access_request.user.get_display_name %>
+    </p>
+    <p>
+      <strong>User invitation:</strong>
+      <%= (@hunting_plot_user_access_request.user_invitation_id.nil?) ? nil : @hunting_plot_user_access_request.user_invitation.get_display_name %>
+    </p>
+    <p>
+      <strong>Hunting plot:</strong>
+      <%= (@hunting_plot_user_access_request.hunting_plot_id.nil?) ? nil : @hunting_plot_user_access_request.hunting_plot.get_display_name %>
+    </p>
+    <p>
+      <strong>Message:</strong>
+      <%= @hunting_plot_user_access_request.message %>
+    </p>
+    <p>
+      <strong>Alias:</strong>
+      <%= @hunting_plot_user_access_request.alias %>
+    </p>
+    <p>
+      <strong>Initial permissions:</strong>
+      <%= @hunting_plot_user_access_request.initial_permissions %>
+    </p>
+    <p>
+      <strong>Created by user:</strong>
+      <%= (@hunting_plot_user_access_request.created_by_user_id.nil?) ? nil : @hunting_plot_user_access_request.created_by_user.get_display_name %>
+    </p>
+
+    <%= link_to 'Edit', edit_hunting_plot_user_access_request_path(@hunting_plot_user_access_request) %> |
+
+  </div>
+</div>

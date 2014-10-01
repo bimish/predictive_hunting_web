@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>You have been invited by <%= @invite_from %> to use the Predictive Hunting application.</p>
+    <p>Please click this link to register and start using the application</p>
+    <p><%= signup_url(only_path: false, invite_id: @invite_id) %></p>
+  </body>
+</html>

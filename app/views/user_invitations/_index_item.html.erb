@@ -1,0 +1,29 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+command_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<tr data-id="<%=user_invitation.id%>">
+  <% if (attribute_list.nil? || attribute_list.include?(:email)) %>
+    <td><%= user_invitation.email %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:created_by_id)) %>
+    <td><%= (user_invitation.created_by_id.nil?) ? nil : user_invitation.created_by_user.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:message)) %>
+    <td><%= user_invitation.message %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:status)) %>
+    <td><%= EnumsHelper::UserInvitationEnums::get_status_description(user_invitation.status) %></td>
+  <% end %>
+  <% if editable %>
+    <td>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(user_invitation_path(user_invitation)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_user_invitation_path(user_invitation), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(user_invitation_path(user_invitation), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    </td>
+  <% end %>
+</tr>

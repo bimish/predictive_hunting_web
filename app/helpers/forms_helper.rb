@@ -31,6 +31,9 @@ module FormsHelper
     form.datetime_select instance_method, options
   end
   def _email_field(form, instance_method, label, options = {})
+    if (!label.nil?)
+      options[:label] = label
+    end
     form.email_field instance_method, options
   end
   def _file_field(form, instance_method, label, options = {})
@@ -61,6 +64,9 @@ module FormsHelper
     form.range_field instance_method, options
   end
   def _search_field(form, instance_method, label, options = {})
+    if (!label.nil?)
+      options[:label] = label
+    end
     form.search_field instance_method, options
   end
   def _select_field(form, instance_method, label, choices, options = {}, html_options = {})
@@ -82,7 +88,7 @@ module FormsHelper
   end
   def _text_field(form, instance_method, label, max_length = 255, options = {})
     if (max_length > 255)
-      _text_area(form, instance_method, label, options)
+      _text_area_field(form, instance_method, label, options)
     else
       if (!label.nil?)
         options[:label] = label

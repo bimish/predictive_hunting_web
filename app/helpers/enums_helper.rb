@@ -37,4 +37,12 @@ module EnumsHelper
       entry_type.sub("entry_type_", "").humanize
     end
   end
+  module UserInvitationEnums
+    def self.statuses
+      @@statuses_map ||= UserInvitation.statuses.collect { |item| [get_status_description(item[0]), item[0]] }
+    end
+    def self.get_status_description(status)
+      status.sub("status_", "").humanize
+    end
+  end
 end

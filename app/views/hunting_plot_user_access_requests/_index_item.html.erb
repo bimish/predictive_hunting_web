@@ -1,0 +1,38 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+command_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<tr data-id="<%=hunting_plot_user_access_request.id%>">
+  <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+    <td><%= (hunting_plot_user_access_request.user_id.nil?) ? nil : hunting_plot_user_access_request.user.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:user_invitation_id)) %>
+    <td><%= (hunting_plot_user_access_request.user_invitation_id.nil?) ? nil : hunting_plot_user_access_request.user_invitation.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+    <td><%= (hunting_plot_user_access_request.hunting_plot_id.nil?) ? nil : hunting_plot_user_access_request.hunting_plot.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:message)) %>
+    <td><%= hunting_plot_user_access_request.message %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:alias)) %>
+    <td><%= hunting_plot_user_access_request.alias %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:initial_permissions)) %>
+    <td><%= HuntingPlotUserAccessRequestsHelper.get_initial_permissions_description(hunting_plot_user_access_request) %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:created_by_user_id)) %>
+    <td><%= (hunting_plot_user_access_request.created_by_user_id.nil?) ? nil : hunting_plot_user_access_request.created_by_user.get_display_name %></td>
+  <% end %>
+  <% if editable %>
+    <td>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_plot_user_access_request_path(hunting_plot_user_access_request)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_hunting_plot_user_access_request_path(hunting_plot_user_access_request), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_plot_user_access_request_path(hunting_plot_user_access_request), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    </td>
+  <% end %>
+</tr>

@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p>
+      <strong>Email:</strong>
+      <%= @user_invitation.email %>
+    </p>
+    <p>
+      <strong>Created by:</strong>
+      <%= (@user_invitation.created_by_id.nil?) ? nil : @user_invitation.created_by_user.get_display_name %>
+    </p>
+    <p>
+      <strong>Message:</strong>
+      <%= @user_invitation.message %>
+    </p>
+    <p>
+      <strong>Status:</strong>
+      <%= EnumsHelper::UserInvitationEnums::get_status_description(@user_invitation.status) %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_invitation_path(@user_invitation) %> |
+    <%= link_to 'Back', user_invitations_path %>
+
+  </div>
+</div>

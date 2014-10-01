@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140905193728) do
+ActiveRecord::Schema.define(version: 20140923183349) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -152,6 +152,21 @@ ActiveRecord::Schema.define(version: 20140905193728) do
   add_index "hunting_plot_user_access", ["user_id", "hunting_plot_id"], :name => "index_hunting_plot_user_access_on_user_id_and_hunting_plot_id", :unique => true
   add_index "hunting_plot_user_access", ["user_id"], :name => "index_hunting_plot_user_access_on_user_id"
 
+  create_table "hunting_plot_user_access_request", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "user_invitation_id"
+    t.integer  "hunting_plot_id",                  null: false
+    t.string   "message",             limit: 1000
+    t.string   "alias",               limit: 100
+    t.integer  "initial_permissions"
+    t.integer  "created_by_user_id",               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hunting_plot_user_access_request", ["user_id"], :name => "index_hunting_plot_user_access_request_on_user_id"
+  add_index "hunting_plot_user_access_request", ["user_invitation_id"], :name => "index_hunting_plot_user_access_request_on_user_invitation_id"
+
   create_table "relationship_request", force: true do |t|
     t.integer  "created_by_id",   null: false
     t.integer  "related_user_id", null: false
@@ -173,6 +188,15 @@ ActiveRecord::Schema.define(version: 20140905193728) do
     t.string   "remember_token"
     t.integer  "authentication_method",             default: 1,     null: false
     t.boolean  "admin",                             default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_invitation", force: true do |t|
+    t.string   "email",         limit: 254,  null: false
+    t.integer  "created_by_id",              null: false
+    t.string   "message",       limit: 1000
+    t.integer  "status",        limit: 2,    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -26,13 +26,6 @@ function showMap() {
     catch (e) {
       alert("The following error occurred: " + e);
     }
-    /*
-    $('#map-options-close-button').click(
-      function (eventObject) {
-        g_map.setMapType( $('#satellite-checkbox').prop('checked') ? MapsHelper.MapTypes.Satellite : MapsHelper.MapTypes.Roadmap);
-      }
-    );
-    */
     PlotMapHelper.showLocations();
     PlotMapHelper.showMembers();
     PlotMapHelper.showWindConditions();

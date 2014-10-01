@@ -2,5 +2,8 @@
 <%= _text_field(form, :last_name, 'Last Name', 100) %>
 <%= _text_field(form, :alias, 'Alias', 255) %>
 <%= _text_field(form, :email, 'Email', 254) %>
-  <%= _password_field(form, :password, 'Password') %>
-  <%= _password_field(form, :password_confirmation, 'Confirmation') %>
+<%= _password_field(form, :password, 'Password') %>
+<%= _password_field(form, :password_confirmation, 'Confirmation') %>
+<% unless params[:invite_id].blank? %>
+<%= hidden_field_tag(:invite_id, params[:invite_id]) %>
+<% end %>

@@ -1,0 +1,15 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing User Invitations</h3>
+
+    <%= render :partial => 'index_table', locals: { user_invitations: @user_invitations } %>
+
+    <div id="inline-form"></div>
+
+    <%= link_to 'New User Invitation', new_user_invitation_path, { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

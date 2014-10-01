@@ -1,8 +1,11 @@
 module HuntingPlotUserAccessesControllerExtensions
 
   class ViewData
+    def initialize(current_user)
+      @current_user = current_user
+    end
     def users
-      @users_map ||= User.all.map { |m| [m.get_display_name(), m.id] }
+      @users_map ||= User.from_related_users(@current_user).all.map { |m| [m.get_display_name(), m.id] }
     end
   end
 
@@ -26,7 +29,7 @@ module HuntingPlotUserAccessesControllerExtensions
 private
 
   def set_view_data
-    @view_data = ViewData.new()
+    @view_data = ViewData.new(current_user)
   end
 
 end
