@@ -65,7 +65,7 @@ Web::Application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { host: 'predictive-hunting.herokuapp.com' }
-  config.action_mailer.default_options = { from: 'notifications@predictivehunting.com' }
+  config.action_mailer.default_options = { from: '"Predictive Hunting" <notifications@predictivehunting.com>' }
   ActionMailer::Base.smtp_settings = {
     :address              => 'smtp.sendgrid.net',
     :port                 => '587',

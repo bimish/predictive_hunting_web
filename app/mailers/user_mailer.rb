@@ -1,7 +1,5 @@
 class UserMailer < ActionMailer::Base
 
-  default from: "mjshutt@gmail.com"
-
   def user_invite(invite_id, email_address, invite_from)
     @invite_id = invite_id
     @email_address = email_address
