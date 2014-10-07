@@ -1,5 +1,15 @@
 <% content_for :head do %>
 <script type="text/javascript">
+// constants for map icons
+MapIcons = {
+  HuntingPlotLocation: {
+    url: '<%= asset_path('map_marker_blue.png')%>',
+    size: new google.maps.Size(16,16),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(8, 8),
+    scaledSize: new google.maps.Size(16,16)
+  }
+};
 
 var g_huntingLocationsMapHelper;
 initTab(
