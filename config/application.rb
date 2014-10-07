@@ -44,6 +44,8 @@ module Web
     #config.action_view.default_form_builder = "ApplicationHelper::AppFormBuilder"
     config.active_record.pluralize_table_names = false
 
+    config.assets.version = '20141007' # used to force recompile
+
     #config.generators do |g|
     #  g.orm             :active_record
     #  g.template_engine :erb
