@@ -1,4 +1,4 @@
 HuntingPlotUserAccessRequestTableHelper.delete(<%= @hunting_plot_user_access_request.id%>);
-if (isDefined(g_huntingPlotUserAccessRequestAjaxNotifications)) {
+if (typeof g_huntingPlotUserAccessRequestAjaxNotifications != 'undefined') {
   g_huntingPlotUserAccessRequestAjaxNotifications.notify('delete', <%== @hunting_plot_user_access_request.to_json%>);
 }

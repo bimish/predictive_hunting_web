@@ -6,20 +6,7 @@
   <div class="col-md-12">
     <h3>Listing User Posts</h3>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Created by</th>
-          <th>Post content</th>
-          <th>Visibility</th>
-          <th colspan="3"></th>
-        </tr>
-      </thead>
-
-      <tbody id='items-tbody'>
-        <%= render :partial => 'index_item', :collection => @user_posts, :as => :user_post %>
-      </tbody>
-    </table>
+    <%= render :partial => 'index_table', locals: { user_posts: @user_posts } %>
 
     <div id="inline-form"></div>
 

@@ -1,65 +1,25 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
 <% content_for :head do %>
 <script type="text/javascript">
 $(document).ready(
   function() {
-    $('#visibility-dropdown-menu a').click(
-      function () {
-        var newValue = $(this).data('formvalue');
-        $('#user_status_post_form input[id="user_post_visibility"]').val($(this).data('formvalue'));
-        $('#visibility-dropdown-menu li a').each(
-          function (index, anchor) {
-            if ($(anchor).data('formvalue') == newValue) {
-              $(anchor).children('span').removeClass('glyphicon-none');
-              $(anchor).children('span').addClass('glyphicon-ok');
-            }
-            else {
-              $(anchor).children('span').removeClass('glyphicon-ok');
-              $(anchor).children('span').addClass('glyphicon-none');
-            }
-          }
-        );
+    $('#post_content_placeholder').focus(
+      function(eventObject) {
+        $.getScript("<%=  new_user_post_path(format:'js') %>")
       }
     );
   }
 );
+
 </script>
 <% end %>
 
-<%= bootstrap_form_tag url: status_user_posts_path, remote: true, :html => { id:'user_status_post_form' } do |f| %>
-  <% if !@user_post.nil? && @user_post.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user_post.errors.count, "error") %> prohibited this user_post from being saved:</h2>
-      <ul>
-      <% @user_post.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="input-group">
-    <%= f.text_field :post_content, hide_label: :true, placeholder: "Status update...", label: { text:'Status Update' }, class:'input-sm' %>
-    <%= f.hidden_field :visibility, id: 'user_post_visibility', value: DataDomains::UserPostVisibility["Public"] %>
-    <div class="input-group-btn">
-      <div class="btn-group">
-        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">Quick Post <span class="caret"></span></button>
-        <ul class="dropdown-menu dropdown-menu-sm pull-right">
-          <li><a href="#">I'm hunting</a></li>
-          <li><a href="#">I saw a trophy buck</a></li>
-          <li><a href="#">Nothing going on out here</a></li>
-          <li class="divider"></li>
-          <li><a href="#">Separated link</a></li>
-        </ul>
-      </div>
-      <div class="btn-group">
-        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-lock"></span></button>
-        <ul id="visibility-dropdown-menu" class="dropdown-menu dropdown-menu-sm pull-right">
-          <li><a href="#" data-formvalue="<%= DataDomains::UserPostVisibility['Public']%>"><span class="glyphicon glyphicon-ok"></span> Public</a></li>
-          <li><a href="#" data-formvalue="<%= DataDomains::UserPostVisibility['Private']%>"><span class="glyphicon glyphicon-none"></span> Private</a></li>
-        </ul>
-      </div>
-      <button class="btn btn-default btn-primary btn-sm" type="submit">Post</button>
-    </div>
+<div class="input-group">
+  <input name="post_content_placeholder" class="form-control input-sm" id="post_content_placeholder" type="text" placeholder="Status update...">
+  <div class="input-group-btn">
+    <button class="btn btn-default btn-primary btn-sm" type="submit">Post</button>
   </div>
-
-<% end %>
+</div>

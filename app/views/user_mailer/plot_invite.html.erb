@@ -6,6 +6,6 @@
   <body>
     <p>You have been invited by <%= @invite_from%> to join the <%= @plot_name %> hunting plot.</p>
     <p>Click on the link below to accept the invitation</p>
-    <p><%= confirm_hunting_plot_user_access_request_path(id: @invite_id, only_path: false) %></p>
+    <p><%= review_hunting_plot_user_access_requests_path(only_path: false) %></p>
   </body>
 </html>

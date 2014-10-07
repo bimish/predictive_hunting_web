@@ -1,2 +1,2 @@
-$('#buttons').hide();
-$('#response').html('<%== j 'Invitation Accepted ' + bootstrap_glyphicon('ok') %>');
+$('#invitation_<%=@hunting_plot_user_access_request.id%>').find('#buttons').hide();
+$('#invitation_<%=@hunting_plot_user_access_request.id%>').find('#response').html('<%== j 'Invitation Accepted ' + bootstrap_glyphicon('ok') %>');

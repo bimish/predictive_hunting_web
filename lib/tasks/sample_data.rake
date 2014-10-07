@@ -3,23 +3,58 @@
 require 'json'
 
 namespace :db do
-  desc 'Populate database with sample data'
-  task populate: :environment do
-    make_users
-    make_user_relationships
-    make_animal_species
-    make_animal_categories
-    make_animal_activity_types
-    make_hunting_plots
-    make_hunting_locations
-    make_hunting_plot_named_animals
-    make_user_plot_accesses
-    make_user_posts
-    make_user_networks
+  namespace :populate do
+
+    desc 'Populate the animal configuration data'
+    task animals: :environment do
+      make_animal_species
+      make_animal_categories
+      make_animal_activity_types
+    end
+
+    desc 'Populate the user networks configuration data'
+    task networks: :environment do
+      make_user_networks
+    end
+
+    desc 'Populate the user profile items configuration data'
+    task user_profile: :environment do
+      make_user_profile_items
+    end
+
+    desc 'Populate all of the configuration data'
+    task config_data: :environment do
+      populate_config_data
+    end
+    desc 'Populate the test data (users, plots, etc)'
+    task test_data: :environment do
+      populate_test_data
+    end
+    desc 'Populate config and test data'
+    task all: :environment do
+      populate_config_data
+      populate_test_data
+    end
   end
-  task populate_networks: :environment do
-    make_user_networks
-  end
+end
+
+def populate_config_data
+  make_animal_species
+  make_animal_categories
+  make_animal_activity_types
+  make_user_networks
+  make_user_profile_items
+end
+
+def populate_test_data
+  make_users
+  make_user_relationships
+  make_hunting_plots
+  make_hunting_locations
+  make_hunting_plot_named_animals
+  make_user_plot_accesses
+  make_user_posts
+  make_user_networks
 end
 
 def make_users
@@ -211,4 +246,147 @@ def create_county_networks()
       county_network.boundaries.create!(boundary: boundary)
     end
   end
+end
+
+def make_user_profile_items
+
+  UserProfileItem.create!(
+    name: 'ageRange',
+    label: 'Your age (years old)',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    flags_is_required: true,
+    value_list: {
+      items: [
+        { value: '7-15', label: '7 - 15' },
+        { value: '16-20', label: '16 - 20' },
+        { value: '21-29', label: '21 - 29' },
+        { value: '30-39', label: '30 - 39' },
+        { value: '40-49', label: '40 - 49' },
+        { value: '50-59', label: '50 - 59' },
+        { value: '60-100', label: '60+' },
+      ]
+    }.to_json
+  )
+
+  UserProfileItem.create!(
+    name: 'gender',
+    label: 'Gender',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    value_list: {
+      items: [
+        { value: 'M', label:'Male' },
+        { value: 'F', label:'Female' }
+      ]
+    }.to_json
+  )
+
+  UserProfileItem.create!(
+    name: 'typeOfHunting',
+    label: 'Type of hunting you do (choose all that apply)',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    flags_is_multi_valued: true,
+    value_list: {
+      items: [
+        { value: 'whiteTailDeer', label:'White Tail Deer' },
+        { value: 'turkey', label:'Turkey' },
+        { value: 'duck', label:'Duck' },
+        { value: 'dove', label:'Dove' },
+        { value: 'quail', label:'Quail' },
+        { value: 'squirrel', label:'Squirrel' },
+        { value: 'bear', label:'Bear' },
+        { value: 'hog', label:'Hog' },
+        { value: 'other', label:'Other' }
+      ]
+    }.to_json
+  )
+
+  UserProfileItem.create!(
+    name: 'huntingFrequency',
+    label: 'How often do you hunt (times per year)',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    #flags_is_required: true,
+    value_list: {
+      items: [
+        { value: '1-10', label: '1 - 10' },
+        { value: '11-20', label: '11 - 20' },
+        { value: '21-30', label: '21 - 30' },
+        { value: '31+', label: '31+' }
+      ]
+    }.to_json
+  )
+
+  UserProfileItem.create!(
+    name: 'useCameras',
+    label: 'Do you use trail cameras?',
+    data_type: UserProfileItem.data_types[:data_type_boolean]
+  )
+
+  UserProfileItem.create!(
+    name: 'useFeeders',
+    label: 'Do you use feeders?',
+    data_type: UserProfileItem.data_types[:data_type_boolean]
+  )
+
+  UserProfileItem.create!(
+    name: 'huntingStationType',
+    label: 'What do you hunt from (choose all that apply)',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    flags_is_multi_valued: true,
+    value_list: {
+      items: [
+        { value: 'stand', label:'Ladder or Box Stand' },
+        { value: 'blind', label:'Ground Blind' },
+        { value: 'slip', label:'Walk/Slip' },
+        { value: 'climber', label:'Climber' }
+      ]
+    }.to_json
+  )
+
+  UserProfileItem.create!(
+    name: 'weaponType',
+    label: 'What type of weapon do you use (choose all that apply)',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    flags_is_multi_valued: true,
+    value_list: {
+      items: [
+        { value: 'rifle', label:'Rifle' },
+        { value: 'shotgun', label:'Shotgun' },
+        { value: 'bow', label:'Bow' },
+        { value: 'muzzle', label:'Muzzleloader' }
+      ]
+    }.to_json
+  )
+
+  UserProfileItem.create!(
+    name: 'outdoorActivities',
+    label: 'What other type of outdoor activities do you enjoy (choose all that apply)',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    flags_is_multi_valued: true,
+    value_list: {
+      items: [
+        { value: 'camping', label:'Camping' },
+        { value: 'fishing', label:'Fishing' },
+        { value: 'hiking', label:'Hiking' },
+        { value: 'skiing', label:'Skiing' },
+        { value: 'climbing', label:'Climbing' }
+      ]
+    }.to_json
+  )
+
+  UserProfileItem.create!(
+    name: 'plotType',
+    label: 'What type of property do you hunt (choose all that apply)',
+    data_type: UserProfileItem.data_types[:data_type_string],
+    flags_is_multi_valued: true,
+    value_list: {
+      items: [
+        { value: 'lease', label:'Hunting Lease' },
+        { value: 'club', label:'Hunting Club' },
+        { value: 'guide', label:'Guided Hunts' },
+        { value: 'public', label:'Public Property' },
+        { value: 'farm', label:'Family/Friend Farm' }
+      ]
+    }.to_json
+  )
+
 end

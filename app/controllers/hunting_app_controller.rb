@@ -1,11 +1,13 @@
 class HuntingAppController < ApplicationController
 
+  before_action :ensure_signed_in
   before_action :set_hunting_plot
 
   layout 'hunting_app'
 
   def landing_page
     @last_checkin = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
+    @hunting_location_schedules = HuntingLocationSchedule.current_schedules_for_plot(@hunting_plot)
   end
 
   def map

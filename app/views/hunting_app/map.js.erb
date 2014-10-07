@@ -5,6 +5,7 @@ g_memberLocations = <%==
       first_name: member_location.user.first_name,
       last_name: member_location.user.last_name,
       alias: member_location.user.alias,
+      location_id: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location_id,
       location_name: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location.name,
       location_coordinates: {
         lat: member_location.hunting_location_id.nil? ? member_location.location_coordinates.y() : member_location.hunting_location.coordinates.y(),
@@ -14,3 +15,4 @@ g_memberLocations = <%==
   end.to_json
 %>;
 showMap();
+updateHuntingLocationStatus();

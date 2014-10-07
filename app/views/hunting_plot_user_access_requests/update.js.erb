@@ -1,4 +1,4 @@
 HuntingPlotUserAccessRequestTableHelper.update(<%= @hunting_plot_user_access_request.id%>, '<%= j render(:partial => 'index_item', :locals => { :hunting_plot_user_access_request => @hunting_plot_user_access_request })%>');
-if (isDefined(g_huntingPlotUserAccessRequestAjaxNotifications)) {
+if (typeof g_huntingPlotUserAccessRequestAjaxNotifications != 'undefined') {
   g_huntingPlotUserAccessRequestAjaxNotifications.notify('update', <%== @hunting_plot_user_access_request.to_json%>);
 }

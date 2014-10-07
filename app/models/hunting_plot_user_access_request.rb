@@ -38,6 +38,10 @@ class HuntingPlotUserAccessRequest < ActiveRecord::Base
     self.destroy!
   end
 
+  def self.user_has_pending_invites?(user)
+    HuntingPlotUserAccessRequest.exists?(user_id: user.id)
+  end
+
   def authorize_action?(user, action)
     case action
     when :read, :create, :update, :delete

@@ -1,1 +1,6 @@
-$('tr[data-id="<%=@user_post.id%>"]').remove();
+if (isDefined(UserPostTableHelper)) {
+  UserPostTableHelper.delete(<%= @user_post.id%>);
+}
+if (typeof g_userPostAjaxNotifications != 'undefined') {
+  g_userPostAjaxNotifications.notify('delete', <%== @user_post.to_json%>);
+}

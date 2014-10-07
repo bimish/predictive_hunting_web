@@ -54,13 +54,13 @@
   </div>
 
   <div id="content-tabs" class="row">
-    <div id="status-feed" class="col-md-6 tab-pane active">
+    <div id="status-feed" class="col-md-6 active">
       <%= render :partial => '/user_posts/status/form' %>
       <div style="height:500px;overflow:auto;">
         <%= render :partial => '/user_posts/feed' %>
       </div>
     </div>
-    <div id="networks" class="col-md-6 tab-pane -hidden-sm -hidden-xs">
+    <div id="networks" class="col-md-6 -hidden-sm -hidden-xs">
       <%= render :partial => '/shared/networks_panel' %>
     </div>
   </div>

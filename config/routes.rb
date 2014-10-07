@@ -24,9 +24,11 @@ Web::Application.routes.draw do
   resources :hunting_plot_user_accesses, :except => [:index, :create, :new]
   resources :hunting_plot_user_access_requests, :except => [:index, :create, :new] do
     member do
-      get 'confirm'
       patch 'accept'
       patch 'decline'
+    end
+    collection do
+      get 'review'
     end
   end
 
@@ -63,7 +65,7 @@ Web::Application.routes.draw do
 
   resources :user_posts do
     collection do
-      post 'status'
+      get 'feed_items'
     end
   end
   resources :user_relationships

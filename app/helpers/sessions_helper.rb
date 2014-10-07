@@ -22,7 +22,7 @@ module SessionsHelper
     user == current_user
   end
 
-  def signed_in_user
+  def ensure_signed_in
     unless signed_in?
       store_location
       redirect_to signin_path, notice: "Please sign in."

@@ -21,7 +21,7 @@
 <% if signed_in? %>
         <li><%= link_to "Friends", friends_path %></li>
         <li><%= link_to "Networks", user_network_subscriptions_path %></li>
-  <% if RelationshipRequest.user_has_pending_requests?(current_user) %>
+  <% if current_user.has_pending_relationship_requests? %>
           <li class="dropdown">
             <%= link_to(bootstrap_glyphicon('info-sign', class:'user-notification-alert'), '#', { class: 'dropdown-toggle', data: { toggle: 'dropdown' } }) %>
             <ul class="dropdown-menu">
@@ -29,19 +29,22 @@
             </ul>
           </li>
   <% end %>
-  <% if current_user.hunting_plot_accesses.count > 0 %>
+  <% if current_user.hunting_plot_accesses.count > 0 || current_user.has_pending_plot_invites? %>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            Hunting Plots <b class="caret"></b>
+            Hunting Plot <b class="caret"></b>
           </a>
           <ul class="dropdown-menu dropdown-menu-sm" role="menu">
-      <% current_user.hunting_plot_accesses.each do |hunting_plot_access| %>
+    <% if current_user.has_pending_plot_invites? %>
+            <li><%= link_to 'Pending Invitations', review_hunting_plot_user_access_requests_path %></li>
+    <% end %>
+    <% current_user.hunting_plot_accesses.each do |hunting_plot_access| %>
           <% if current_user.hunting_plot_accesses.count > 1 %>
             <li class="group-header"><%= hunting_plot_access.hunting_plot.get_display_name %></li>
           <% end %>
             <li><%= link_to 'Check-in', hunting_app_path(hunting_plot_access.hunting_plot_id), { :target => '_blank' } %></li>
             <li><%= link_to 'Manage', manage_hunting_plot_path(hunting_plot_access.hunting_plot_id) %></li>
-      <% end %>
+    <% end %>
           </ul>
         </li>
   <% end %>

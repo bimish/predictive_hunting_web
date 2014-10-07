@@ -11,6 +11,13 @@ module ActiveModel
       # can be overridden in the models to initialize new instances
     end
 
+    def valid_json?(json)
+      JSON.parse(json)
+      true
+    rescue JSON::ParserError
+      false
+    end
+
     module ClassMethods
 
       attr_reader :write_once_attributes
@@ -92,11 +99,6 @@ module ActiveModel
           }
         end
       end
-
-      #include ActiveModel::Decorators::InstanceMethods
-    end
-
-    module InstanceMethods
 
     end
 

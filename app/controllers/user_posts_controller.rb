@@ -1,12 +1,10 @@
-class UserPostsController < ApplicationController
-
-  before_action :set_user_post, only: [:show, :edit, :update, :destroy, :delete]
+class UserPostsController < ComponentController
 
   include UserPostsControllerExtensions
 
   # GET /user_posts
   def index
-    @user_posts = UserPost.all
+    @user_posts ||= UserPost.all
   end
 
   # GET /user_posts/1
@@ -15,8 +13,6 @@ class UserPostsController < ApplicationController
 
   # GET /user_posts/new
   def new
-    @user_post = UserPost.new
-    @user_post.init_new current_user
   end
 
   # GET /user_posts/1/edit
@@ -25,9 +21,6 @@ class UserPostsController < ApplicationController
 
   # POST /user_posts
   def create
-    @user_post = UserPost.new(user_post_create_params)
-    @user_post.init_new current_user
-
     respond_to do |format|
       if @user_post.save
         format.html { redirect_to @user_post, notice: 'User post was successfully created.' }
@@ -44,7 +37,7 @@ class UserPostsController < ApplicationController
   # PATCH/PUT /user_posts/1
   def update
     respond_to do |format|
-      if @user_post.update(user_post_update_params)
+      if @user_post.update(update_params)
         format.html { redirect_to @user_post, notice: 'User post was successfully updated.' }
         format.json { head :no_content }
         format.js
@@ -67,16 +60,19 @@ class UserPostsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user_post
+    def get_component
       @user_post = UserPost.find(params[:id])
     end
 
-    def user_post_update_params
+    def new_component(params = nil)
+      @user_post = UserPost.new(params)
+    end
+
+    def update_params
       params.require(:user_post).permit(:post_content, :visibility)
     end
 
-    def user_post_create_params
+    def create_params
       params.require(:user_post).permit(:post_content, :visibility)
     end
 

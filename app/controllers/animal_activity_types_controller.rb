@@ -1,4 +1,5 @@
 class AnimalActivityTypesController < ApplicationController
+
   before_action :set_animal_activity_type, only: [:show, :edit, :update, :destroy]
 
   # GET /animal_activity_types

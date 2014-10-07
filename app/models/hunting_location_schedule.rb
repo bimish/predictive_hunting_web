@@ -29,4 +29,12 @@ class HuntingLocationSchedule < ActiveRecord::Base
     self.created_by_id = signed_in_user.id
   end
 
+  def self.current_schedules_for_plot(hunting_plot, window_size = 12)
+    search_results = HuntingLocationSchedule.joins(:hunting_location).where(hunting_location:{ hunting_plot_id: hunting_plot.id })
+    start_date_time = DateTime.now
+    end_date_time = window_size.hours.from_now
+    search_results = where('((start_date_time BETWEEN ? AND ?) OR (end_date_time BETWEEN ? AND ?) OR (start_date_time < ? AND end_date_time > ?))', start_date_time, end_date_time, start_date_time, end_date_time, start_date_time, end_date_time)
+    search_results
+  end
+
 end

@@ -2,6 +2,7 @@ class ComponentController < ApplicationController
 
   define_callbacks :initialize_new_instance
 
+  before_action :check_signed_in_user
   before_action :prepare_for_action
 
   def get_component
@@ -30,6 +31,11 @@ class ComponentController < ApplicationController
     set_callback :initialize_new_instance, :before, *args, &block
   end
 
+  # this can be overridden in controllers to allow actions without an authenticted user
+  def action_requires_authenticated_user
+    true
+  end
+
 private
 
   def prepare_for_action
@@ -53,6 +59,12 @@ private
 
     authorize_action
 
+  end
+
+  def check_signed_in_user
+    if action_requires_authenticated_user
+      ensure_signed_in
+    end
   end
 
   def crud_action

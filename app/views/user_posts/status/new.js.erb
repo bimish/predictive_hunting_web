@@ -1,1 +1,2 @@
-showError("<%= escape_javascript(@user_post.errors.full_messages.first) %>");
+$('#form-placeholder').html('<%= j render :partial => 'modal_form', :layout => '/layouts/modal_form_dialog', :locals => { title:'User Post' } %>');
+showAjaxModalForm('modal-form-dialog');

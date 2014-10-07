@@ -45,4 +45,12 @@ module EnumsHelper
       status.sub("status_", "").humanize
     end
   end
+  module UserPostEnums
+    def self.visibilities
+      @@visibilities_map ||= UserPost.visibilities.collect { |item| [get_visibility_description(item[0]), item[0]] }
+    end
+    def self.get_visibility_description(visibility)
+      visibility.sub("visibility_", "").humanize
+    end
+  end
 end

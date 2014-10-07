@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <h4>Respond to hunting plot invitation(s)</h4>
+
+    <% @invitations.each_with_index do |invitation, index| %>
+
+    <hr/>
+
+    <div id="invitation_<%= invitation.id%>">
+      <p>
+        You have been invited by <%= invitation.created_by_user.get_display_name %> to join the <%= invitation.hunting_plot.get_display_name %> hunting plot
+      </p>
+      <% unless invitation.message.blank? %>
+      <p><i>"<%= invitation.message %>"</i></p>
+      <% end %>
+
+      <div id="response"></p>
+
+      <div id="buttons">
+        <%= link_to combine_tags(bootstrap_glyphicon('ok', class:'text-success'), content_tag(:span, ' Accept')), accept_hunting_plot_user_access_request_path(invitation), { remote: true, method: 'PATCH', class: 'btn btn-sm btn-default' } %>
+        <%= link_to combine_tags(bootstrap_glyphicon('remove', class:'text-danger'), content_tag(:span, ' Decline')), decline_hunting_plot_user_access_request_path(invitation), { remote: true, method: 'PATCH', class: 'btn btn-sm btn-default' } %>
+      </div>
+    </div>
+    <% end %>
+
+  </div>
+</div>
+<% content_for :head do %>
+<script type="text/javascript">
+$(document).ready(
+  function() {
+    alert($('#invitation_19').find('#buttons').length);
+    alert($('#invitation_19').find('#response').length);
+  }
+);
+</script>
+<% end %>

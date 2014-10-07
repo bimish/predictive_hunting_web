@@ -1,4 +1,4 @@
 HuntingLocationScheduleTableHelper.delete(<%= @hunting_location_schedule.id%>);
-if (isDefined(g_huntingLocationScheduleAjaxNotifications)) {
+if (typeof g_huntingLocationScheduleAjaxNotifications != 'undefined') {
   g_huntingLocationScheduleAjaxNotifications.notify('delete', <%== @hunting_location_schedule.to_json%>);
 }

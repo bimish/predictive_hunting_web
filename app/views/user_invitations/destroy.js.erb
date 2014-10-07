@@ -1,4 +1,4 @@
 UserInvitationTableHelper.delete(<%= @user_invitation.id%>);
-if (isDefined(g_userInvitationAjaxNotifications)) {
+if (typeof g_userInvitationAjaxNotifications != 'undefined') {
   g_userInvitationAjaxNotifications.notify('delete', <%== @user_invitation.to_json%>);
 }

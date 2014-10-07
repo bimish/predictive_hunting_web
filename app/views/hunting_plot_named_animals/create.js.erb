@@ -1,4 +1,4 @@
 HuntingPlotNamedAnimalTableHelper.add(<%= @hunting_plot_named_animal.id%>, '<%= j render(:partial => 'index_item', :locals => { :hunting_plot_named_animal => @hunting_plot_named_animal })%>');
-if (isDefined(g_huntingPlotNamedAnimalAjaxNotifications)) {
+if (typeof g_huntingPlotNamedAnimalAjaxNotifications != 'undefined') {
   g_huntingPlotNamedAnimalAjaxNotifications.notify('create', <%== @hunting_plot_named_animal.to_json%>);
 }

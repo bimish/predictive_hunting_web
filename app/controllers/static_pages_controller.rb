@@ -10,7 +10,7 @@ class StaticPagesController < ApplicationController
   end
 
   def home
-    @user_posts = UserPost.from_related_users(current_user).order(created_at: :desc).limit(10)
+    @user_posts = UserPost.from_related_users(current_user).order(id: :desc).limit(10)
     @user_post = UserPost.new
   end
 

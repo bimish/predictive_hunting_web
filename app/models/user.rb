@@ -35,16 +35,14 @@ class User < ActiveRecord::Base
 
   has_many :hunting_plot_accesses, class_name:'HuntingPlotUserAccess'
   has_many :hunting_plots, through: :hunting_plot_accesses, class_name:'HuntingPlot'
-
-  has_many :relationships, class_name:'UserRelationship', foreign_key:'owning_user_id' #, inverse_of: :owning_user
-  has_many :users_followed, through: :relationships, class_name:'User', source: :related_user
-
-  has_many :reverse_relationships, class_name:'UserRelationship', foreign_key:'related_user_id' # inverse_of: :related_user
-  has_many :users_following, through: :reverse_relationships, class_name:'User', source: :owning_user #, inverse_of: :related_user
-
-  has_many :posts, class_name:'UserPost', foreign_key:'created_by_id'
-
+  has_many :hunting_plot_invitations, class_name:'HuntingPlotUserAccessRequest'
   has_many :network_subscriptions, class_name:'UserNetworkSubscription'
+  has_many :posts, class_name:'UserPost', foreign_key:'created_by_id'
+  has_many :relationships, class_name:'UserRelationship', foreign_key:'owning_user_id' #, inverse_of: :owning_user
+  has_many :reverse_relationships, class_name:'UserRelationship', foreign_key:'related_user_id' # inverse_of: :related_user
+  has_many :users_followed, through: :relationships, class_name:'User', source: :related_user
+  has_many :users_following, through: :reverse_relationships, class_name:'User', source: :owning_user #, inverse_of: :related_user
+  has_many :profile_item_values, class_name:'UserProfileItemValue'
 
   system_attribute :remember_token
   component_assigned_attribute :password_digest, :remember_token, :authentication_method, :admin
@@ -56,6 +54,14 @@ class User < ActiveRecord::Base
     else
       "#{self.first_name} #{self.last_name} (#{self.alias})"
     end
+  end
+
+  def has_pending_relationship_requests?
+    RelationshipRequest.user_has_pending_requests?(self)
+  end
+
+  def has_pending_plot_invites?
+    HuntingPlotUserAccessRequest.user_has_pending_invites?(self)
   end
 
   def self.from_related_users(user)

@@ -1,8 +1,26 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+command_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
 <tr data-id="<%=user_post.id%>">
-  <td><%= (user_post.created_by_id.nil?) ? nil : user_post.user.get_display_name %></td>
-  <td><%= user_post.post_content %></td>
-  <td><%= @view_data.get_visibility_description(user_post.visibility) %></td>
-  <td><%= item_show_command(user_post_path(user_post)) %></td>
-  <td><%= item_edit_command(edit_user_post_path(user_post), { remote: true }) %></td>
-  <td><%= item_delete_command(user_post_path(user_post), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %></td>
+  <% if (attribute_list.nil? || attribute_list.include?(:created_by_id)) %>
+    <td><%= (user_post.created_by_id.nil?) ? nil : user_post.user.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:post_content)) %>
+    <td><%= user_post.post_content %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:visibility)) %>
+    <td><%= EnumsHelper::UserPostEnums::get_visibility_description(user_post.visibility) %></td>
+  <% end %>
+  <% if editable %>
+    <td>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(user_post_path(user_post)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_user_post_path(user_post), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(user_post_path(user_post), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    </td>
+  <% end %>
 </tr>

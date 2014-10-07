@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140923183349) do
+ActiveRecord::Schema.define(version: 20141002141456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,30 @@ ActiveRecord::Schema.define(version: 20140923183349) do
   end
 
   add_index "user_post", ["created_by_id"], :name => "index_user_post_on_created_by_id"
+
+  create_table "user_profile_item", force: true do |t|
+    t.string   "name",                  limit: 100, null: false
+    t.string   "label",                             null: false
+    t.integer  "data_type",             limit: 2,   null: false
+    t.integer  "flags",                             null: false
+    t.string   "validation_expression", limit: 512
+    t.string   "validation_message"
+    t.text     "value_list"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_profile_item_value", force: true do |t|
+    t.integer  "user_id",              null: false
+    t.integer  "user_profile_item_id", null: false
+    t.integer  "value_number"
+    t.string   "value",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_profile_item_value", ["user_id", "user_profile_item_id", "value_number"], :name => "idx_user_item_value_number", :unique => true
+  add_index "user_profile_item_value", ["user_id"], :name => "index_user_profile_item_value_on_user_id"
 
   create_table "user_relationship", force: true do |t|
     t.integer  "owning_user_id",              null: false

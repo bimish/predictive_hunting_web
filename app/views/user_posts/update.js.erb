@@ -1,1 +1,6 @@
-$('tr[data-id="<%=@user_post.id%>"]').replaceWith('<%= j render(:partial => 'index_item', :locals => { :user_post => @user_post })%>');
+if (typeof UserPostTableHelper != 'undefined') {
+  UserPostTableHelper.update(<%= @user_post.id%>, '<%= j render(:partial => 'index_item', :locals => { :user_post => @user_post })%>');
+}
+if (typeof g_userPostAjaxNotifications != "undefined") {
+  g_userPostAjaxNotifications.notify('update', <%== @user_post.to_json%>);
+}

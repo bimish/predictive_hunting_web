@@ -1,4 +1,4 @@
 <%= class_name %>TableHelper.delete(<%%= @<%= singular_table_name%>.id%>);
-if (isDefined(g_<%= class_name.camelize(:lower) %>AjaxNotifications)) {
+if (typeof g_<%= class_name.camelize(:lower) %>AjaxNotifications != 'undefined') {
   g_<%= class_name.camelize(:lower) %>AjaxNotifications.notify('delete', <%%== @<%= singular_table_name %>.to_json%>);
 }

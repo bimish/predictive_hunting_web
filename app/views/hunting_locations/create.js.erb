@@ -1,4 +1,4 @@
 HuntingLocationTableHelper.add(<%= @hunting_location.id%>, '<%= j render(:partial => 'index_item', :locals => { :hunting_location => @hunting_location })%>');
-if (isDefined(g_huntingLocationAjaxNotifications)) {
+if (typeof g_huntingLocationAjaxNotifications != 'undefined') {
   g_huntingLocationAjaxNotifications.notify('create', <%== @hunting_location.to_json %>);
 }

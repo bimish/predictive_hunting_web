@@ -1,4 +1,4 @@
 <%= class_name %>TableHelper.update(<%%= @<%= singular_table_name%>.id%>, '<%%= j render(:partial => 'index_item', :locals => { :<%= singular_table_name%> => @<%= singular_table_name%> })%>');
-if (isDefined(g_<%= class_name.camelize(:lower) %>AjaxNotifications)) {
+if (typeof g_<%= class_name.camelize(:lower) %>AjaxNotifications != 'undefined') {
   g_<%= class_name.camelize(:lower) %>AjaxNotifications.notify('update', <%%== @<%= singular_table_name %>.to_json%>);
 }

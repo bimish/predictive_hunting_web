@@ -6,7 +6,8 @@ module HuntingPlotUserAccessRequestsControllerExtensions
   #  end
   #end
 
-  def confirm
+  def review
+    @invitations = current_user.hunting_plot_invitations
   end
 
   def accept

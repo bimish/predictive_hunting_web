@@ -1,1 +1,6 @@
-$('#items-tbody').append('<%= j render(:partial => 'index_item', :locals => { :user_post => @user_post })%>');
+if (typeof UserPostTableHelper != 'undefined') {
+  UserPostTableHelper.add(<%= @user_post.id%>, '<%= j render(:partial => 'index_item', :locals => { :user_post => @user_post })%>');
+}
+if (typeof g_userPostAjaxNotifications != 'undefined') {
+  g_userPostAjaxNotifications.notify('create', <%== @user_post.to_json%>);
+}

@@ -1,0 +1,7 @@
+<% if @action == 'insert' %>
+$('#user-post-feed').prepend('<%= j render :partial => '/user_posts/feed_item', :collection => @user_posts, :as => :user_post %>');
+<% elsif @action == 'append' %>
+$('#user-post-feed').append('<%= j render :partial => '/user_posts/feed_item', :collection => @user_posts, :as => :user_post %>');
+<% else %>
+$('#user-post-feed').html('<%= j render :partial => '/user_posts/feed_item', :collection => @user_posts, :as => :user_post %>');
+<% end %>

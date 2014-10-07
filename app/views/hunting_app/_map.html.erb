@@ -8,6 +8,7 @@ function showMap() {
       showCenterMarker: false,
       mapTypeControl: false,
       streetViewControl: false,
+      borderFillColor: '#cccccc',
       center: { lat: <%=@hunting_plot.location_coordinates.y()%>, lng: <%=@hunting_plot.location_coordinates.x()%> },
   <%
   if !@hunting_plot.boundary.nil?
@@ -26,6 +27,7 @@ function showMap() {
     catch (e) {
       alert("The following error occurred: " + e);
     }
+    updateHuntingLocationStatus();
     PlotMapHelper.showLocations();
     PlotMapHelper.showMembers();
     PlotMapHelper.showWindConditions();
@@ -100,20 +102,44 @@ var PlotMapHelper = function() {
     $.each(
       g_huntingLocations,
       function(index, hunting_location) {
-        g_map.addMarker(
-          {
-            title: hunting_location.name,
-            coordinates: hunting_location.coordinates,
-            icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)),
-            zIndex: 2
-          },
-          plotLocationsMarkerTag
-        );
+        if (hunting_location.mapMarker == null) {
+          var markerIcon = MapIcons.HuntingLocationAvailable;
+          if (isDefined(hunting_location.status)) {
+            switch (hunting_location.status) {
+              case HuntingLocationStatus.Available:
+                markerIcon = MapIcons.HuntingLocationAvailable;
+                break;
+              case HuntingLocationStatus.Occupied:
+                markerIcon = MapIcons.HuntingLocationOccupied;
+                break;
+              case HuntingLocationStatus.Reserved:
+                markerIcon = MapIcons.HuntingLocationReserved;
+                break;
+            }
+          }
+          hunting_location.mapMarker = g_map.addMarker(
+            {
+              title: hunting_location.name,
+              coordinates: hunting_location.coordinates,
+              icon: markerIcon,
+              zIndex: 2
+            },
+            plotLocationsMarkerTag
+          );
+        }
+        else {
+          hunting_location.mapMarker.show();
+        }
       }
     );
   }
   this.hideLocations = function() {
-    g_map.clearMarkers(plotLocationsMarkerTag);
+    $.each(
+      g_huntingLocations,
+      function(index, hunting_location) {
+        if (hunting_location.mapMarker != null) hunting_location.mapMarker.hide();
+      }
+    );
   }
   this.showWindConditions = function() {
     var svgDoc = $("#windIndicatorSvg");
@@ -131,11 +157,22 @@ var PlotMapHelper = function() {
 var g_huntingLocations = <%==
     @hunting_plot.locations.collect do |hunting_location|
       {
+        id: hunting_location.id,
         name: hunting_location.name,
         coordinates: {
           lat: hunting_location.coordinates.y(),
           lng: hunting_location.coordinates.x()
         }
+      }
+    end.to_json
+  %>;
+var g_huntingLocationReservations = <%==
+  @hunting_location_schedules.collect do |hunting_location_schedule|
+      {
+        location_id: hunting_location_schedule.hunting_location_id,
+        created_by: hunting_location_schedule.created_by.get_display_name,
+        start_date_time: hunting_location_schedule.start_date_time,
+        end_date_time: hunting_location_schedule.end_date_time,
       }
     end.to_json
   %>;
@@ -147,6 +184,43 @@ var g_windForecast = <%==
     wind_mph: hourly_forecast[:forecast][0]['wspd']['english']
   }
   forecast.to_json %>;
+var HuntingLocationStatus = { Available: 1, Occupied: 2, Reserved: 3 };
+function updateHuntingLocationStatus() {
+  $.each(
+    g_huntingLocations,
+    function(index, hunting_location) {
+      for (var i = 0; i < g_memberLocations.length; i++) {
+        if (g_memberLocations[i].location_id == hunting_location.id) {
+          updateHuntingLocationStatus(hunting_location, HuntingLocationStatus.Occupied);
+          return;
+        }
+      }
+      for (var i = 0; i < g_huntingLocationReservations.length; i++) {
+        if (g_huntingLocationReservations[i].location_id == hunting_location.id) {
+          updateHuntingLocationStatus(hunting_location, HuntingLocationStatus.Reserved);
+          return;
+        }
+      }
+    }
+  );
+  function updateHuntingLocationStatus(hunting_location, newStatus) {
+    var statusChanged = (!isDefined(hunting_location.status) || (hunting_location.status != newStatus));
+    hunting_location.status = newStatus;
+    if (isDefined(hunting_location.mapMarker) && (statusChanged)) {
+      switch (newStatus) {
+        case HuntingLocationStatus.Available:
+          hunting_location.mapMarker.setIcon(MapIcons.HuntingLocationAvailable);
+          break;
+        case HuntingLocationStatus.Occupied:
+          hunting_location.mapMarker.setIcon(MapIcons.HuntingLocationOccupied);
+          break;
+        case HuntingLocationStatus.Reserved:
+          hunting_location.mapMarker.setIcon(MapIcons.HuntingLocationReserved);
+          break;
+      }
+    }
+  }
+}
 </script>
 <% end %>
 <% content_for :panels do %>

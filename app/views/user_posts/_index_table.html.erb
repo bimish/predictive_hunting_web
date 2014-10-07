@@ -1,0 +1,32 @@
+<%= content_for :head do %>
+<script type="text/javascript">
+var UserPostTableHelper = new TableHelper('table[data-component="UserPost"]');
+</script>
+<% end %>
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<table class="table" data-component="UserPost">
+  <thead>
+    <tr>
+      <% if (attribute_list.nil? || attribute_list.include?(:created_by_id)) %>
+        <th>Created by</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:post_content)) %>
+        <th>Post content</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:visibility)) %>
+        <th>Visibility</th>
+      <% end %>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'user_posts/index_item', :collection => user_posts, :as => :user_post, locals: { attribute_list: attribute_list, editable: editable } %>
+  </tbody>
+</table>
