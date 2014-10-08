@@ -2,6 +2,7 @@
 <script type="text/javascript">
 
 MapIcons = {
+  /*
   HuntingLocationAvailable : {
     url: '<%= asset_path('map_marker_green.png') %>',
     size: new google.maps.Size(16,16),
@@ -23,15 +24,40 @@ MapIcons = {
     anchor: new google.maps.Point(8, 8),
     scaledSize: new google.maps.Size(16,16)
     }
+  */
+  HuntingLocationAvailable : {
+    url: '<%= asset_path('hunting_location_available.png') %>',
+    size: new google.maps.Size(16,16),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(8, 8),
+    scaledSize: new google.maps.Size(16,16)
+    },
+  HuntingLocationReserved : {
+    url: '<%= asset_path('hunting_location_reserved.png') %>',
+    size: new google.maps.Size(16,16),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(8, 8),
+    scaledSize: new google.maps.Size(16,16)
+    },
+  HuntingLocationOccupied : {
+    url: '<%= asset_path('hunting_location_occupied.png') %>',
+    size: new google.maps.Size(16,16),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(8, 8),
+    scaledSize: new google.maps.Size(16,16)
+    },
+  Hunter : {
+    url: '<%= asset_path('user_pin.png') %>',
+    size: new google.maps.Size(24,24),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(12, 12),
+    scaledSize: new google.maps.Size(24,24)
+  }
+
 };
 
 g_userLocation = null;
 $(document).ready( initializePage );
-pageInit(
-  function(event) {
-    //initializePage();
-  }
-);
 function initializePage() {
   $('div[data-role="navbar"] > ul > li > a').click(
     function (eventObject) {

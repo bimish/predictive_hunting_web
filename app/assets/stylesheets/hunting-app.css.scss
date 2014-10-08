@@ -2,10 +2,6 @@
 // *= require jquery.mobile.datepicker
 
 div.content-panel {
-  /*
-  height: 100%;
-  width: 100%;
-  */
   display: none;
   padding: 1em;
 }
@@ -14,6 +10,14 @@ div.content-panel-active {
 }
 div.ui-content {
   padding:0;
+}
+
+div.map-info-window {
+  p {
+    padding: 0px;
+    margin: 0px;
+    white-space: nowrap;
+  }
 }
 
 .ui-header .ui-title {

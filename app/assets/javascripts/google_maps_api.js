@@ -188,18 +188,11 @@ function MapsHelper(mapCanvas, options)
       _additionalMarkers = new Array();
     }
     var mapMarker = createMarker(new google.maps.LatLng(markerDef.coordinates.lat, markerDef.coordinates.lng), markerDef.title, markerDef.icon, markerDef.zIndex);
+    var marker = new Marker(_map, mapMarker, tag);
 
     if (isDefinedAndNonNull(markerDef.infoWindowContent)) {
-      var infoWindow = new google.maps.InfoWindow( { content: markerDef.infoWindowContent } );
-      google.maps.event.addListener(
-        mapMarker,
-        'click',
-        function() {
-          infoWindow.open(_map, mapMarker);
-        }
-      );
+      marker.setInfoWindow(markerDef.infoWindowContent);
     }
-    var marker = new Marker(mapMarker, tag);
     _additionalMarkers.push(marker);
     return marker;
   }
@@ -357,13 +350,17 @@ function MapsHelper(mapCanvas, options)
     }
   }
 }
-function Marker(googleMarker, tag) {
+function Marker(map, googleMarker, tag) {
+  var _map = map;
   var _googleMarker = googleMarker;
+  var _infoWindow = null;
+  var _clickListener = null;
   this.tag = tag;
   this.remove = function() { removeImpl(); }
   this.hide = function() { hideImpl(); }
   this.show = function() { showImpl(); }
   this.setIcon = function(icon) { setIconImpl(icon); }
+  this.setInfoWindow = function(content) { setInfoWindowImpl(content); }
 
   function removeImpl() {
     _googleMarker.setMap(null);
@@ -376,6 +373,29 @@ function Marker(googleMarker, tag) {
   }
   function setIconImpl(icon) {
     _googleMarker.setIcon(icon);
+  }
+  function setInfoWindowImpl(content) {
+    if (content == null) {
+      if (_infoWindow != null) {
+        google.maps.event.clearListeners(_googleMarker, 'click');
+      }
+      _infoWindow = null;
+    }
+    else {
+      if (_infoWindow == null) {
+        _infoWindow = new google.maps.InfoWindow( { content: content } );
+        google.maps.event.addListener(
+          _googleMarker,
+          'click',
+          function() {
+            _infoWindow.open(_map, _googleMarker);
+          }
+        );
+      }
+      else {
+        _infoWindow.setContent(content);
+      }
+    }
   }
 }
 
