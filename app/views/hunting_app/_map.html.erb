@@ -103,57 +103,17 @@ var PlotMapHelper = function() {
       g_huntingLocations,
       function(index, hunting_location) {
         if (hunting_location.mapMarker == null) {
-          var markerIcon = MapIcons.HuntingLocationAvailable;
-          if (isDefined(hunting_location.status)) {
-            switch (hunting_location.status) {
-              case HuntingLocationStatus.Available:
-                markerIcon = MapIcons.HuntingLocationAvailable;
-                break;
-              case HuntingLocationStatus.Occupied:
-                markerIcon = MapIcons.HuntingLocationOccupied;
-                break;
-              case HuntingLocationStatus.Reserved:
-                markerIcon = MapIcons.HuntingLocationReserved;
-                break;
-            }
-          }
           hunting_location.mapMarker = g_map.addMarker(
             {
               title: hunting_location.name,
               coordinates: hunting_location.coordinates,
-              icon: markerIcon,
+              icon: PlotMapHelper.getLocationIcon(hunting_location),
               zIndex: 2
             },
             plotLocationsMarkerTag
           );
         }
-        var statusDescription = null;
-        var statusDetails = null;
-        switch (hunting_location.status) {
-          case HuntingLocationStatus.Available:
-            statusDescription = 'Available';
-            break;
-          case HuntingLocationStatus.Occupied:
-            statusDescription = 'Occupied';
-            var memberInLocation = getMemberInLocation(hunting_location.id)
-            statusDetails = [ 'By: ' + memberInLocation.user_name ];
-            break;
-          case HuntingLocationStatus.Reserved:
-            statusDescription = 'Reserved';
-            var nextReservation = getNextReservationForLocation(hunting_location.id);
-            statusDetails = [ 'At: ' + nextReservation.start_date_time.toLocaleTimeString(), 'By: ' + nextReservation.created_by ];
-            break;
-        }
-        var infoWindowHtml =
-          '<div class="map-info-window">' +
-          '<p>' + escapeHtml(hunting_location.name) + '</p>' +
-          '<p>Status: ' + statusDescription + '</p>';
-        if (statusDetails != null) {
-          for (var i = 0; i < statusDetails.length; i++)
-            infoWindowHtml += ('<p>' + escapeHtml(statusDetails[i]) + '</p>');
-        }
-        infoWindowHtml += '</div>';
-        hunting_location.mapMarker.setInfoWindow(infoWindowHtml);
+        hunting_location.mapMarker.setInfoWindow(PlotMapHelper.getLocationInfoWindowContent(hunting_location));
         hunting_location.mapMarker.show();
       }
     );
@@ -177,6 +137,51 @@ var PlotMapHelper = function() {
   }
   this.hideWindConditions = function() {
     $('#map-wind-indicator').hide();
+  }
+  this.getLocationIcon = function(hunting_location) {
+    if (!isDefined(hunting_location.status)) {
+      return MapIcons.HuntingLocationAvailable;
+    }
+    else {
+      switch (hunting_location.status) {
+        default:
+        case HuntingLocationStatus.Available:
+          return MapIcons.HuntingLocationAvailable;
+        case HuntingLocationStatus.Occupied:
+          return MapIcons.HuntingLocationOccupied;
+        case HuntingLocationStatus.Reserved:
+          return MapIcons.HuntingLocationReserved;
+      }
+    }
+  }
+  this.getLocationInfoWindowContent = function(hunting_location) {
+    var statusDescription = null;
+    var statusDetails = null;
+    switch (hunting_location.status) {
+      case HuntingLocationStatus.Available:
+        statusDescription = 'Available';
+        break;
+      case HuntingLocationStatus.Occupied:
+        statusDescription = 'Occupied';
+        var memberInLocation = getMemberInLocation(hunting_location.id)
+        statusDetails = [ 'By: ' + memberInLocation.user_name ];
+        break;
+      case HuntingLocationStatus.Reserved:
+        statusDescription = 'Reserved';
+        var nextReservation = getNextReservationForLocation(hunting_location.id);
+        statusDetails = [ 'At: ' + nextReservation.start_date_time.toLocaleTimeString(), 'By: ' + nextReservation.created_by ];
+        break;
+    }
+    var infoWindowHtml =
+      '<div class="map-info-window">' +
+      '<p>' + escapeHtml(hunting_location.name) + '</p>' +
+      '<p>Status: ' + statusDescription + '</p>';
+    if (statusDetails != null) {
+      for (var i = 0; i < statusDetails.length; i++)
+        infoWindowHtml += ('<p>' + escapeHtml(statusDetails[i]) + '</p>');
+    }
+    infoWindowHtml += '</div>';
+    return infoWindowHtml;
   }
   return this;
 }();
@@ -244,34 +249,25 @@ function updateHuntingLocationStatus() {
     function(index, hunting_location) {
       var memberInLocation = getMemberInLocation(hunting_location.id);
       if (memberInLocation != null) {
-        updateHuntingLocationStatus(hunting_location, HuntingLocationStatus.Occupied);
+        setHuntingLocationStatus(hunting_location, HuntingLocationStatus.Occupied);
         return;
       }
       else {
         var nextReservation = getNextReservationForLocation(hunting_location.id);
         if (nextReservation != null) {
-          updateHuntingLocationStatus(hunting_location, HuntingLocationStatus.Reserved);
+          setHuntingLocationStatus(hunting_location, HuntingLocationStatus.Reserved);
           return;
         }
       }
-      updateHuntingLocationStatus(hunting_location, HuntingLocationStatus.Available);
+      setHuntingLocationStatus(hunting_location, HuntingLocationStatus.Available);
     }
   );
-  function updateHuntingLocationStatus(hunting_location, newStatus) {
+  function setHuntingLocationStatus(hunting_location, newStatus) {
     var statusChanged = (!isDefined(hunting_location.status) || (hunting_location.status != newStatus));
     hunting_location.status = newStatus;
     if (isDefined(hunting_location.mapMarker) && (statusChanged)) {
-      switch (newStatus) {
-        case HuntingLocationStatus.Available:
-          hunting_location.mapMarker.setIcon(MapIcons.HuntingLocationAvailable);
-          break;
-        case HuntingLocationStatus.Occupied:
-          hunting_location.mapMarker.setIcon(MapIcons.HuntingLocationOccupied);
-          break;
-        case HuntingLocationStatus.Reserved:
-          hunting_location.mapMarker.setIcon(MapIcons.HuntingLocationReserved);
-          break;
-      }
+      hunting_location.mapMarker.setIcon(PlotMapHelper.getLocationIcon(hunting_location));
+      hunting_location.mapMarker.setInfoWindow(PlotMapHelper.getLocationInfoWindowContent(hunting_location));
     }
   }
 }
