@@ -10,6 +10,7 @@ class HuntingLocation < ActiveRecord::Base
   enum location_type: { location_type_stand: 1, location_type_camera: 2, location_type_feed: 3 }
 
   belongs_to :hunting_plot
+  has_many :schedules, class_name:'HuntingLocationSchedule'
 
   write_once_attribute :hunting_plot_id
   controller_assigned_attribute :hunting_plot_id

@@ -1,0 +1,4 @@
+HuntingModeUserStatusTableHelper.update(<%= @hunting_mode_user_status.id%>, '<%= j render(:partial => 'index_item', :locals => { :hunting_mode_user_status => @hunting_mode_user_status })%>');
+if (typeof g_huntingModeUserStatusAjaxNotifications != 'undefined') {
+  g_huntingModeUserStatusAjaxNotifications.notify('update', <%== @hunting_mode_user_status.to_json%>);
+}

@@ -1,5 +1,5 @@
 <%
-  weather_forecast = get_weather_forecast hunting_plot
+  weather_forecast = WeatherForecastHelper.forecast(hunting_plot)
 %>
 <h5 class="inline-heading">Weather Forecast <%=link_to content_tag(:span, 'details', class:'text-muted small'), weather_forecast[:details_url], target:'_weather_details' %></h5>
 <div class="wf-panel">

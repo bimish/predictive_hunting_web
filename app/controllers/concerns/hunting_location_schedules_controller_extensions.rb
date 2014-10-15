@@ -15,10 +15,15 @@ module HuntingLocationSchedulesControllerExtensions
     @hunting_location_schedule.hunting_location_id = params[:hunting_location_id]
   end
 
+  def set_hunting_location_schedules
+    @hunting_location_schedule = HuntingLocation.find(params[:hunting_location_id]).schedules
+  end
+
   extend ActiveSupport::Concern
 
   included do
     before_action :set_view_data
+    before_action :set_hunting_location_schedules, only: [:index]
     after_initialize_new_instance :initialize_new_instance
   end
 

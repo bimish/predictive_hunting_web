@@ -1,0 +1,5 @@
+<li data-id="<%=chat_item.id%>">
+  <%= content_tag(:p, time_to_s(chat_item.created_at, :short), class:'time') %>
+  <%= content_tag(:p, chat_item.user.get_display_name, class:'user') %>
+  <%= content_tag(:p, chat_item.status_text, class:'content') %>
+</li>

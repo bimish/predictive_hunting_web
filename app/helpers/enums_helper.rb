@@ -53,4 +53,12 @@ module EnumsHelper
       visibility.sub("visibility_", "").humanize
     end
   end
+  module HuntingModeUserStatusEnums
+    def self.status_types
+      @@status_types_map ||= HuntingModeUserStatus.status_types.collect { |item| [get_status_type_description(item[0]), item[0]] }
+    end
+    def self.get_status_type_description(status_type)
+      status_type.sub("status_type_", "").humanize
+    end
+  end
 end

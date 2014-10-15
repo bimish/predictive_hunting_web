@@ -5,7 +5,7 @@ module WeatherForecastHelper
 
   @@api_key = 'be50215583adc47b'
 
-  def get_weather_forecast(hunting_plot)
+  def self.forecast(hunting_plot)
 
     location_result = get_location(hunting_plot)
     forecast_result = execute_request(hunting_plot, 'forecast', 12.hours)
@@ -17,7 +17,19 @@ module WeatherForecastHelper
 
   end
 
-  def get_hourly_weather_forecast(hunting_plot)
+  def self.forecast_10_day(hunting_plot)
+
+    location_result = get_location(hunting_plot)
+    forecast_result = execute_request(hunting_plot, 'forecast10day', 12.hours)
+
+    return {
+      details_url: location_result['location']['wuiurl'],
+      forecast: forecast_result['forecast10day']
+    }
+
+  end
+
+  def self.forecast_hourly(hunting_plot)
 
     location_result = get_location(hunting_plot)
     forecast_result = execute_request(hunting_plot, 'hourly', 1.hours)
@@ -31,7 +43,7 @@ module WeatherForecastHelper
 
   end
 
-  def get_current_conditions(hunting_plot)
+  def self.current_conditions(hunting_plot)
 
     conditions_results = execute_request(hunting_plot, 'conditions', 15.minutes)
     return {
@@ -40,7 +52,8 @@ module WeatherForecastHelper
 
   end
 
-  def get_location(hunting_plot)
+private
+  def self.get_location(hunting_plot)
 
     cache_key = "weather_geolocation_result_#{hunting_plot.id}"
 
@@ -55,11 +68,11 @@ module WeatherForecastHelper
 
   end
 
-  def get_request_url(geolookup_result, request_type)
+  def self.get_request_url(geolookup_result, request_type)
     URI.parse("http://api.wunderground.com/api/#{@@api_key}/#{request_type}/q/#{geolookup_result['location']['state']}/#{geolookup_result['location']['city'].gsub(/ /,'_')}.json")
   end
 
-  def execute_request(hunting_plot, request_data, expiration = 1.hours)
+  def self.execute_request(hunting_plot, request_data, expiration = 1.hours)
 
     geolookup_result = get_location(hunting_plot)
 

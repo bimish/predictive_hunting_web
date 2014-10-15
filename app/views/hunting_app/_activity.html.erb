@@ -1,7 +1,3 @@
-<% content_for :head do %>
-<script type="text/javascript">
-</script>
-<% end %>
 <% content_for :panels do %>
 <div data-role="panel" data-display="overlay" data-position="right" id="activity-filters-panel" class="right-align-panel">
   <%= form_tag hunting_app_activity_path(@hunting_plot.id), remote: true do %>
@@ -52,11 +48,6 @@
   </div>
 </div>
 
-<div id="activity-list" style="clear:both;"></div>
-
-<!-- :hunting_location_id
-:hunting_plot_named_animal_id
-:animal_category_id
-:animal_activity_type_id
-:after_date
-:before_date -->
+<div id="activity-list" style="clear:both;">
+  <%= render :partial => 'activity_list', :locals => { animal_activity_observations: animal_activity_observations } %>
+</div>

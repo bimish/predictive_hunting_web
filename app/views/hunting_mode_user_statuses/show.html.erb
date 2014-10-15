@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p>
+      <strong>User:</strong>
+      <%= (@hunting_mode_user_status.user_id.nil?) ? nil : @hunting_mode_user_status.user.get_display_name %>
+    </p>
+    <p>
+      <strong>Hunting plot:</strong>
+      <%= (@hunting_mode_user_status.hunting_plot_id.nil?) ? nil : @hunting_mode_user_status.hunting_plot.get_display_name %>
+    </p>
+    <p>
+      <strong>Status type:</strong>
+      <%= EnumsHelper::HuntingModeUserStatusEnums::get_status_type_description(@hunting_mode_user_status.status_type) %>
+    </p>
+    <p>
+      <strong>Status text:</strong>
+      <%= @hunting_mode_user_status.status_text %>
+    </p>
+
+    <%= link_to 'Edit', edit_hunting_mode_user_status_path(@hunting_mode_user_status) %> |
+    <%= link_to 'Back', hunting_mode_user_statuses_path %>
+
+  </div>
+</div>

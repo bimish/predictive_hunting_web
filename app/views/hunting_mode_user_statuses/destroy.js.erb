@@ -1,0 +1,4 @@
+HuntingModeUserStatusTableHelper.delete(<%= @hunting_mode_user_status.id%>);
+if (typeof g_huntingModeUserStatusAjaxNotifications != 'undefined') {
+  g_huntingModeUserStatusAjaxNotifications.notify('delete', <%== @hunting_mode_user_status.to_json%>);
+}

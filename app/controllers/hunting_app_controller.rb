@@ -7,14 +7,23 @@ class HuntingAppController < ApplicationController
 
   def landing_page
     @last_checkin = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
-    @hunting_location_schedules = HuntingLocationSchedule.current_schedules_for_plot(@hunting_plot)
+    set_location_schedules
+    set_member_locations
   end
 
   def map
-    @member_locations = HuntingModeUserLocation.where(hunting_plot_id: params[:hunting_plot_id]).where('updated_at > ?', 1.days.ago).preload(:user).preload(:hunting_location)
+    set_location_schedules
+    set_member_locations
+  end
+
+  def stands
+    set_location_schedules
+    set_member_locations
   end
 
   def activity
+    set_location_schedules
+    set_member_locations
     @animal_activity_observations = AnimalActivityObservation.search(@hunting_plot.id, params).preload(:hunting_location).preload(:named_animal)
 
     @filters = Array.new
@@ -50,8 +59,30 @@ class HuntingAppController < ApplicationController
 
   end
 
-  def conditions
+  def chat
+    set_chat_feed
+    @user_status_post = HuntingModeUserStatus.new()
+    set_location_schedules
+    set_member_locations
+  end
 
+  def chat_post
+    @hunting_mode_user_status = HuntingModeUserStatus.new(params.require(:hunting_mode_user_status).permit(:status_text))
+    @hunting_mode_user_status.init_new current_user
+    @hunting_mode_user_status.hunting_plot_id = params[:hunting_plot_id]
+    @hunting_mode_user_status.status_type_chat!
+    @hunting_mode_user_status.save
+    set_chat_feed(params[:last_post_id])
+    render action: 'chat_refresh'
+  end
+
+  def chat_refresh
+    set_chat_feed(params[:since_id])
+  end
+
+  def weather
+    set_location_schedules
+    set_member_locations
   end
 
   def check_in
@@ -74,4 +105,15 @@ private
     @hunting_plot = HuntingPlot.find(params[:hunting_plot_id])
   end
 
+  def set_member_locations
+    @member_locations ||= HuntingModeUserLocation.where(hunting_plot_id: params[:hunting_plot_id]).where('updated_at > ?', 1.days.ago).preload(:user).preload(:hunting_location)
+  end
+
+  def set_location_schedules
+    @hunting_location_schedules = HuntingLocationSchedule.current_schedules_for_plot(@hunting_plot)
+  end
+
+  def set_chat_feed(since_item_id = nil)
+    @chat_items = HuntingModeUserStatus.for_hunting_plot(@hunting_plot.id, since_item_id)
+  end
 end

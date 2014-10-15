@@ -1,0 +1,35 @@
+<%= content_for :head do %>
+<script type="text/javascript">
+var HuntingModeUserStatusTableHelper = new TableHelper('table[data-component="HuntingModeUserStatus"]');
+</script>
+<% end %>
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<table class="table" data-component="HuntingModeUserStatus">
+  <thead>
+    <tr>
+      <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+        <th>User</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+        <th>Hunting plot</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:status_type)) %>
+        <th>Status type</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:status_text)) %>
+        <th>Status text</th>
+      <% end %>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'hunting_mode_user_statuses/index_item', :collection => hunting_mode_user_statuses, :as => :hunting_mode_user_status, locals: { attribute_list: attribute_list, editable: editable } %>
+  </tbody>
+</table>

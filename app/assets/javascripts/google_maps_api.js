@@ -361,6 +361,8 @@ function Marker(map, googleMarker, tag) {
   this.show = function() { showImpl(); }
   this.setIcon = function(icon) { setIconImpl(icon); }
   this.setInfoWindow = function(content) { setInfoWindowImpl(content); }
+  this.setLocation = function(coordinates) { setLocationImpl(coordinates); }
+  this.click = function(handler) { clickImpl(handler); }
 
   function removeImpl() {
     _googleMarker.setMap(null);
@@ -397,8 +399,14 @@ function Marker(map, googleMarker, tag) {
       }
     }
   }
+  function clickImpl(handler) {
+    google.maps.event.clearListeners(_googleMarker, 'click');
+    google.maps.event.addListener(_googleMarker, 'click', function() { handler(null); } );
+  }
+  function setLocationImpl(coordinates) {
+    _googleMarker.setPosition(coordinates);
+  }
 }
-
 
 MapsHelper.DEFAULT_ZOOM = 10;
 MapsHelper.Mode = { View: 1, SetLocation: 2, SetBoundary: 3 };

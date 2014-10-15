@@ -3,19 +3,111 @@
 <head>
   <title>Predictive Hunting</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <%= stylesheet_link_tag "hunting-app", media: "all" %>
+  <script type="text/javascript">
+  // constants and variables that may vary depending on environment or other conditions
+  var AssetPath = {
+    Image: {
+      HuntingLocationAvailable : '<%= asset_path('hunting_location_available_32.png') %>',
+      HuntingLocationReserved : '<%= asset_path('hunting_location_reserved_32.png') %>',
+      HuntingLocationOccupied : '<%= asset_path('hunting_location_occupied_32.png') %>',
+      HuntingLocation : '<%= asset_path('map_marker_blue.png') %>',
+      Hunter : '<%= asset_path('user_pin.png') %>'
+    }
+  };
+  var g_huntingPlotId = <%=@hunting_plot.id%>;
+  var HuntingLocationStatus = {
+    Available : 1,
+    Occupied : 2,
+    Reserved : 3
+  };
+  var g_huntingPlotLocation = {
+    center: { lat: <%=@hunting_plot.location_coordinates.y()%>, lng: <%=@hunting_plot.location_coordinates.x()%> },
+    <%
+    if !@hunting_plot.boundary.nil?
+      view_window = rgeo_get_bounds(@hunting_plot.boundary)
+    %>
+    view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+    <% end %>
+    boundary_wkt: '<%=@hunting_plot.boundary.to_s%>'
+  };
+  var g_standLocations = <%==
+      @hunting_plot.locations.collect do |hunting_location|
+        {
+          id: hunting_location.id,
+          name: hunting_location.name,
+          coordinates: {
+            lat: hunting_location.coordinates.y(),
+            lng: hunting_location.coordinates.x()
+          }
+        }
+      end.to_json %>;
+  var g_standReservations = <%==
+    @hunting_location_schedules.collect do |hunting_location_schedule|
+        {
+          location_id: hunting_location_schedule.hunting_location_id,
+          created_by: hunting_location_schedule.created_by.get_display_name,
+          start_date_time: hunting_location_schedule.start_date_time,
+          end_date_time: hunting_location_schedule.end_date_time,
+        }
+      end.to_json %>;
+  var g_memberLocations = <%==
+    @member_locations.collect do |member_location|
+      {
+        user_id: member_location.user_id,
+        user_name: member_location.user.get_display_name,
+        location_id: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location_id,
+        location_name: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location.name,
+        location_coordinates: {
+          lat: member_location.hunting_location_id.nil? ? member_location.location_coordinates.y() : member_location.hunting_location.coordinates.y(),
+          lng: member_location.hunting_location_id.nil? ? member_location.location_coordinates.x() : member_location.hunting_location.coordinates.x()
+        }
+      }
+    end.to_json %>;
+  var g_windForecast = <%==
+    hourly_forecast = WeatherForecastHelper.forecast_hourly(@hunting_plot)
+    if hourly_forecast[:forecast][0].nil?
+      forecast = {
+        wind_dir: 'Unavailable',
+        wind_degrees: '0',
+        wind_mph: '?'
+      }
+    else
+      forecast = {
+        wind_dir: hourly_forecast[:forecast][0]['wdir']['dir'],
+        wind_degrees: hourly_forecast[:forecast][0]['wdir']['degrees'],
+        wind_mph: hourly_forecast[:forecast][0]['wspd']['english']
+      }
+    end
+    forecast.to_json %>;
+  </script>
   <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?libraries=drawing" %>
   <%= javascript_include_tag "hunting_app" %>
   <%= csrf_meta_tag %>
   <%= yield :head %>
   <script type="text/javascript">
-  $(document).on("pagecreate", function(event, ui) { callPageInitializers(event); } );
+  $(document).on(
+    "pagecontainershow",
+    function(event, ui) {
+      Scripts.Common.callPageInitializers($(ui.toPage).get(0).id);
+    }
+  );
+  g_huntingPlotLocation.boundary = parseWKTPolygon(g_huntingPlotLocation.boundary_wkt);
+  // convert date/time values to javascript dates
+  $.each(
+    g_standReservations,
+    function(index, reservation) {
+      reservation.start_date_time = new Date(reservation.start_date_time);
+      reservation.end_date_time = new Date(reservation.end_date_time);
+    }
+  );
   </script>
 </head>
 
 <body data-no-turbolink="true">
 
-  <div data-role="page" id="mainPage">
+  <div data-role="page" id="<%=yield(:page_id)%>" data-dom-cache="true">
 
     <%= yield :panels %>
 
@@ -27,6 +119,10 @@
 
     <div data-role="content" class="ui-content">
       <%= yield %>
+    </div>
+
+    <div data-role="footer" data-position="fixed" id="footer">
+      <%= yield :footer %>
     </div>
 
   </div>

@@ -1,0 +1,7 @@
+<%= bootstrap_form_for(@hunting_mode_user_status) do |f| %>
+  <% if @hunting_mode_user_status.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_mode_user_status } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @hunting_mode_user_status, 'Hunting Mode User Status') %>
+<% end %>

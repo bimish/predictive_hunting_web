@@ -1,16 +1,23 @@
 <% content_for :head do %>
 <style>
-table.calendar {
-  table-layout: fixed;
+.main {
+  position: relative;
+  border: 1px solid #333;
   width: 100%;
 }
-table.calendar td {
-  height: 50px;
-  border: 1px solid black;
-  vertical-align: top;
+.textbox {
+  background-color:grey;
+  overflow:hidden;
+  position:relative;
 }
-table.calendar td span.date {
-  display: inline-block;
+.textbox input {
+  width: 100%;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
+}
+input[type="submit"] {
+  float:right
 }
 </style>
 <script type="text/javascript">
@@ -36,75 +43,10 @@ $(document).ready(
 */
 </script>
 <% end %>
-<image src="<%= image_path('wind_indicator.svg')%>"></image>
 
-<div style="height:50px;width:50px;">
-  <div style="height:50px;width:50px;padding-top:1.2em;text-align:center;">12</div>
-  <image src="<%= image_path('wind_compass.png')%>" style="position:relative;left:0px;top:-50px;height:50px;width:50px;transform: rotate(90deg); -webkit-transform: rotate(90deg);"></image>
-</div>
-
-
-<!--
-<div class="row">
-  <div class="col-md-12">
-    <table id="calendar" class="calendar">
-      <thead>
-        <th>Sunday</th>
-        <th>Monday</th>
-        <th>Tuesday</th>
-        <th>Wednesday</th>
-        <th>Thursday</th>
-        <th>Friday</th>
-        <th>Saturday</th>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-        </tr>
-        <tr>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-        </tr>
-        <tr>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-        </tr>
-        <tr>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-        </tr>
-        <tr>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-          <td><span class="date"></span></td>
-        </tr>
-      </tbody>
-    <table>
+<div class="main">
+  <input type="submit" value="Go" class="go"/>
+  <div class="textbox">
+    <input type="text" />
   </div>
 </div>
--->

@@ -1,0 +1,29 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+command_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<tr data-id="<%=hunting_mode_user_status.id%>">
+  <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+    <td><%= (hunting_mode_user_status.user_id.nil?) ? nil : hunting_mode_user_status.user.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+    <td><%= (hunting_mode_user_status.hunting_plot_id.nil?) ? nil : hunting_mode_user_status.hunting_plot.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:status_type)) %>
+    <td><%= EnumsHelper::HuntingModeUserStatusEnums::get_status_type_description(hunting_mode_user_status.status_type) %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:status_text)) %>
+    <td><%= hunting_mode_user_status.status_text %></td>
+  <% end %>
+  <% if editable %>
+    <td>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_mode_user_status_path(hunting_mode_user_status)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_hunting_mode_user_status_path(hunting_mode_user_status), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_mode_user_status_path(hunting_mode_user_status), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    </td>
+  <% end %>
+</tr>

@@ -82,11 +82,17 @@ Web::Application.routes.draw do
     end
   end
 
+  resources :hunting_mode_user_statuses, :only => [:new, :create]
+
   get '/hunting_app/:hunting_plot_id', to: 'hunting_app#landing_page', as: :hunting_app
   get '/hunting_app/:hunting_plot_id/home', to: 'hunting_app#home', as: :hunting_app_home
+  get '/hunting_app/:hunting_plot_id/stands', to: 'hunting_app#stands', as: :hunting_app_stands
   get '/hunting_app/:hunting_plot_id/map', to: 'hunting_app#map', as: :hunting_app_map
   post '/hunting_app/:hunting_plot_id/activity', to: 'hunting_app#activity', as: :hunting_app_activity
-  get '/hunting_app/:hunting_plot_id/conditions', to: 'hunting_app#conditions', as: :hunting_app_conditions
+  get '/hunting_app/:hunting_plot_id/weather', to: 'hunting_app#weather', as: :hunting_app_weather
+  get '/hunting_app/:hunting_plot_id/chat', to: 'hunting_app#chat', as: :hunting_app_chat
+  get '/hunting_app/:hunting_plot_id/chat_refresh/:since_id', to: 'hunting_app#chat_refresh', as: :hunting_app_chat_refresh
+  post '/hunting_app/:hunting_plot_id/chat_post', to: 'hunting_app#chat_post', as: :hunting_app_chat_post
   post '/hunting_app/:hunting_plot_id/checkin', to: 'hunting_app#check_in', as: :hunting_app_checkin
 
   get '/signup', to: 'users#new'

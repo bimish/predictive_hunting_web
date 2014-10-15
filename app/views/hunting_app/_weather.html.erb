@@ -1,7 +1,10 @@
 <%
-  weather_forecast = get_hourly_weather_forecast hunting_plot
+  weather_forecast = WeatherForecastHelper.forecast_hourly(@hunting_plot)
 %>
 <h5>Hourly Forecast <%=link_to content_tag(:span, 'details', class:'text-muted small'), weather_forecast[:details_url], target:'_weather_details' %></h5>
+<% if weather_forecast[:forecast][0].nil? %>
+Weather forecast unavailable, please try again later
+<% end %>
 <ul data-role="listview" data-inset="true">
 <%
   previous_day_of_week = ''

@@ -2,6 +2,11 @@
 //= require jquery_ujs
 //= require jquery.mobile
 //= require common
+//= require ajax_notifications
 //= require google_maps_api
 //= require map_helper
 //= require hunting_app_shared
+//= require hunting_app_map
+//= require hunting_app_stands
+//= require hunting_app_chat
+//= require hunting_app_map_helper

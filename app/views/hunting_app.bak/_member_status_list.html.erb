@@ -1,0 +1,25 @@
+<% if member_locations.size() == 0 %>
+<p>No members checked-in</p>
+<% end %>
+<ul data-role="listview" data-inset="true" class="member-status-list">
+<%
+  member_locations.each do |member_location|
+%>
+  <li>
+    <div class="item">
+      <%= content_tag(:p, "Name", class:'label') %>
+      <%= content_tag(:p, member_location.user.get_display_name, class:'value') %>
+    </div>
+    <div class="item">
+      <%= content_tag(:p, "Location", class:'label') %>
+      <%= content_tag(:p, member_location.hunting_location_id.nil? ? 'At hunting plot' : member_location.hunting_location.name, class:'value') %>
+    </div>
+    <div class="item">
+      <%= content_tag(:p, "Last checked-in", class:'label') %>
+      <%= content_tag(:p, time_to_s(member_location.updated_at, :short), class:'value') %>
+    </div>
+  </li>
+<%
+  end
+%>
+</ul>

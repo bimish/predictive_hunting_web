@@ -1,5 +1,6 @@
 // *= require jquery.mobile
 // *= require jquery.mobile.datepicker
+// *= require hunting_app_theme
 
 div.content-panel {
   display: none;
@@ -8,15 +9,56 @@ div.content-panel {
 div.content-panel-active {
   display: block;
 }
-div.ui-content {
+div.ui-content-no-padding {
   padding:0;
 }
 
 div.map-info-window {
+  z-index: 9999;
+  overflow: hidden;
   p {
     padding: 0px;
     margin: 0px;
     white-space: nowrap;
+  }
+}
+
+/* get rid of text shadow */
+.ui-overlay-a, .ui-page-theme-a, .ui-page-theme-a .ui-panel-wrapper {
+    text-shadow: none;
+}
+
+.navigation-panel {
+  height: 140px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  background-color: #cccccc;
+  padding: 0px;
+  margin: 10px;
+  margin-bottom:0px;
+  text-align: center;
+  a {
+    height: 100%;
+    width: 100%;
+    display: block;
+    text-decoration:none;
+    color: black;
+    border-radius: 10px;
+    margin: 0px;
+  }
+  a:hover {
+    background-color: #aaaaaa;
+  }
+  h1 {
+    display: block;
+    font-size: 1em;
+    margin:0px;
+    height: 2.75em;
+    font-weight: bold;
+    color: #666666;
+    background-color: white;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
   }
 }
 
@@ -137,3 +179,54 @@ ul.animal-activity-list {
   font-size:80%;
   text-align:center;
 }
+
+ul.member-status-list {
+  li {
+    div.item {
+      clear: both;
+    }
+    p {
+      margin: 0;
+      padding: 0;
+    }
+    p.label {
+      font-weight: bold;
+      color: #aaaaaa;
+      float: left;
+    }
+    p.value {
+      font-size: 0.75em;
+      float: right;
+    }
+  }
+}
+
+ul.chat-list {
+  li {
+    p {
+      margin: 0;
+      padding: 0;
+    }
+    p.time {
+      float:right;
+      font-weight: bold;
+      color: #aaaaaa;
+    }
+    p.user {
+      float:left;
+      font-weight: bold;
+      color: #aaaaaa;
+    }
+    p.content {
+      clear:both;
+      padding-top: 5px;
+      white-space: normal !important;
+    }
+  }
+}
+
+.controlgroup-textinput{
+  padding-top:.22em;
+  padding-bottom:.22em;
+}
+

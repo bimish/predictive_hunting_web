@@ -1,0 +1,5 @@
+<div style="clear:both;">
+  <ul data-role="listview" data-inset="true" class="chat-list" id="chat-feed">
+    <%= render :partial => 'chat_item', :collection => @chat_items, :as => :chat_item %>
+  </ul>
+</div>
