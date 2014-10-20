@@ -1,0 +1,56 @@
+<% if forecast[:forecast][0].nil? %>
+Weather forecast unavailable, please try again later
+<% end %>
+<ul data-role="listview" data-inset="true">
+<%
+  previous_day_of_week = ''
+  previous_pressure = nil
+  forecast[:forecast].each do |hour_forecast|
+    day_of_week = hour_forecast['FCTTIME']['weekday_name']
+    time_of_day = Integer(hour_forecast['FCTTIME']['hour'])
+    if (time_of_day == 0)
+      time_of_day_text = "12 AM"
+    elsif (time_of_day > 12)
+      time_of_day_text = "#{(time_of_day - 12)} PM"
+    else
+      time_of_day_text = "#{time_of_day} AM"
+    end
+    barometric_pressure = Float(hour_forecast['mslp']['english'])
+    if (previous_pressure.nil?) || (barometric_pressure == previous_pressure)
+      pressure_indicator = nil
+    else
+      pressure_indicator = (barometric_pressure > previous_pressure) ? '↑' : '↓'
+    end
+%>
+<% if (day_of_week != previous_day_of_week) %>
+  <li data-role="list-divider"><%= day_of_week %></li>
+<% end %>
+  <li class="hourly-forecast-item">
+    <div class="hfi-time"><%= time_of_day_text %></div>
+    <div class:'hfi-condition-icon'>
+      <%=image_tag(hour_forecast['icon_url'], class:'hfi-condition-icon')%>
+    </div>
+    <div class="hfi-forecast">
+      <div class="hfi-description">
+        <p class="hfi-temp"><%= hour_forecast['temp']['english']%></p>
+        <p class="hfi-condition-text"><%= hour_forecast['condition']%></p>
+      </div>
+      <div class="hfi-details">
+        <div>
+          <p><span class="hfi-label">Wind</span><%= hour_forecast['wspd']['english']%> mph <%= hour_forecast['wdir']['dir']%></p>
+          <p><span class="hfi-label">Humidity</span><%= hour_forecast['humidity']%>%</p>
+        </div>
+        <div>
+          <p><span class="hfi-label">Precip</span><%= hour_forecast['pop']%>%</p>
+          <p><span class="hfi-label">Press</span><%= hour_forecast['mslp']['english']%> in <span class="hfi-pressure-indicator"><%= pressure_indicator %></span></p>
+        </div>
+      </div>
+    </div>
+  </li>
+<%
+    previous_day_of_week = day_of_week
+    previous_pressure = barometric_pressure
+  end
+%>
+</ul>
+

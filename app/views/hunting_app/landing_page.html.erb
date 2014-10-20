@@ -4,8 +4,7 @@
   <ul data-role="listview">
     <li><a href="#">Login</a></li>
     <li><a href="#">Logout</a></li>
-    <li><a href="#">Change Location</a></li>
-    <li><a href="#">Exit</a></li>
+    <li><a href="#">Change Plot</a></li>
   </ul>
   <br/>
   <a href="#header" data-rel="close" class="ui-btn ui-icon-carat-l ui-btn-icon-left">Close</a>
@@ -16,15 +15,19 @@
   <div class="ui-block-a">
     <div class="navigation-panel">
       <%= link_to(hunting_app_stands_path(@hunting_plot)) do %>
-        <h1>Check-in or Reserve Stand</h1>
+        <h1>Check-in<br/>Check-out</h1>
         <%= image_tag('stand_checkin_icon.png') %>
+        <% current_checkin = (@last_checkin.nil? || @last_checkin.expired?) ? nil : @last_checkin %>
+        <% unless (current_checkin.nil?) %>
+        Currently checked in to stand <%=@last_checkin.hunting_location.get_display_name%>
+        <% end %>
       <% end %>
     </div>
   </div>
   <div class="ui-block-b">
     <div class="navigation-panel">
       <%= link_to(hunting_app_map_path(@hunting_plot)) do %>
-        <h1>Plot Map</h1>
+        <h1>Plot Map<br/>Reservations</h1>
         <%= image_tag('plot_map_icon.png') %>
       <% end %>
     </div>
@@ -32,10 +35,9 @@
   <div class="ui-block-a">
     <div class="navigation-panel">
 <%
-forecast = WeatherForecastHelper.forecast(@hunting_plot)
-today_simple_forecast = forecast[:forecast]['simpleforecast']['forecastday'][0]
-today_text_forecast = forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 0 }
-tonight_text_forecast = forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 1 }
+today_simple_forecast = @forecast[:forecast]['simpleforecast']['forecastday'][0]
+today_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 0 }
+tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 1 }
 %>
       <%= link_to(hunting_app_weather_path(@hunting_plot)) do %>
         <h1>Weather</h1>

@@ -17,11 +17,24 @@
     }
   };
   var g_huntingPlotId = <%=@hunting_plot.id%>;
-  var HuntingLocationStatus = {
-    Available : 1,
-    Occupied : 2,
-    Reserved : 3
-  };
+  var HuntingLocationStatus = function() {
+    this.Available = 1;
+    this.Occupied = 2;
+    this.Reserved = 3;
+    this.getName = function(status) {
+      switch (status) {
+        case this.Available:
+          return "Available";
+        case this.Occupied:
+          return "Occupied";
+        case this.Reserved:
+          return "Reserved";
+        default:
+          return 'Unknown status (' + status + ')';
+      }
+    };
+    return this;
+  }();
   var g_huntingPlotLocation = {
     center: { lat: <%=@hunting_plot.location_coordinates.y()%>, lng: <%=@hunting_plot.location_coordinates.x()%> },
     <%
@@ -54,16 +67,7 @@
       end.to_json %>;
   var g_memberLocations = <%==
     @member_locations.collect do |member_location|
-      {
-        user_id: member_location.user_id,
-        user_name: member_location.user.get_display_name,
-        location_id: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location_id,
-        location_name: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location.name,
-        location_coordinates: {
-          lat: member_location.hunting_location_id.nil? ? member_location.location_coordinates.y() : member_location.hunting_location.coordinates.y(),
-          lng: member_location.hunting_location_id.nil? ? member_location.location_coordinates.x() : member_location.hunting_location.coordinates.x()
-        }
-      }
+      member_location_from_hunting_mode_location(member_location)
     end.to_json %>;
   var g_windForecast = <%==
     hourly_forecast = WeatherForecastHelper.forecast_hourly(@hunting_plot)
@@ -90,6 +94,7 @@
   $(document).on(
     "pagecontainershow",
     function(event, ui) {
+      Scripts.Common.setContentFullHeight();
       Scripts.Common.callPageInitializers($(ui.toPage).get(0).id);
     }
   );

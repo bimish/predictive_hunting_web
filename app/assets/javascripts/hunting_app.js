@@ -9,4 +9,5 @@
 //= require hunting_app_map
 //= require hunting_app_stands
 //= require hunting_app_chat
+//= require hunting_app_weather
 //= require hunting_app_map_helper

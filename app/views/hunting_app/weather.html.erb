@@ -1,3 +1,21 @@
 <% provide(:page_id, 'weather') %>
 
-<%= render partial:'weather' %>
+<div data-role="content" id="weather_today" class="content-panel content-panel-active">
+  <%= render partial:'weather_today', :locals => { :forecast => @forecast } %>
+</div>
+<div data-role="content" id="weather_hourly" class="content-panel">
+  <%= render partial:'weather_hourly', :locals => { :forecast => @hourly_forecast } %>
+</div>
+<div data-role="content" id="weather_week" class="content-panel">
+  <%= render partial:'weather_daily', :locals => { :forecast => @forecast } %>
+</div>
+
+<%= content_for :footer do %>
+<div data-role="navbar" data-mini="true">
+  <ul>
+    <li><a href="#weather_today" data-role="tab" data-icon="cloud" class="ui-btn-active">Today</a></li>
+    <li><a href="#weather_hourly" data-role="tab" data-icon="clock">Hourly</a></li>
+    <li><a href="#weather_week" data-role="tab" data-icon="calendar">Daily</a></li>
+  </ul>
+</div>
+<% end %>

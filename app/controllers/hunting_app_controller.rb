@@ -1,3 +1,5 @@
+require "app/weather_service"
+
 class HuntingAppController < ApplicationController
 
   before_action :ensure_signed_in
@@ -6,7 +8,8 @@ class HuntingAppController < ApplicationController
   layout 'hunting_app'
 
   def landing_page
-    @last_checkin = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
+    @forecast = WeatherService.forecast(@hunting_plot)
+    set_last_checkin
     set_location_schedules
     set_member_locations
   end
@@ -19,6 +22,7 @@ class HuntingAppController < ApplicationController
   def stands
     set_location_schedules
     set_member_locations
+    set_last_checkin
   end
 
   def activity
@@ -73,30 +77,44 @@ class HuntingAppController < ApplicationController
     @hunting_mode_user_status.status_type_chat!
     @hunting_mode_user_status.save
     set_chat_feed(params[:last_post_id])
+    @reset_form = true
     render action: 'chat_refresh'
   end
 
   def chat_refresh
+    @reset_form = false
     set_chat_feed(params[:since_id])
   end
 
   def weather
+    @forecast = WeatherService.forecast(@hunting_plot)
+    @hourly_forecast = WeatherService.forecast_hourly(@hunting_plot)
+
     set_location_schedules
     set_member_locations
   end
 
   def check_in
+    @status = { user_id: current_user.id }
     is_at_plot = (params[:is_at_plot] == 'true')
-    locationRecord = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
+    @location_record = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
     if (is_at_plot)
       location_coordinates = "POINT(#{params[:position_longitude]} #{params[:position_latitude]})"
-      if locationRecord.nil?
-        HuntingModeUserLocation.create!(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: params[:hunting_location_id], location_coordinates: location_coordinates)
+      if @location_record.nil?
+        @location_record = HuntingModeUserLocation.create(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: params[:hunting_location_id], location_coordinates: location_coordinates)
       else
-        locationRecord.update(location_coordinates: location_coordinates, hunting_location_id: params[:hunting_location_id])
+        @location_record.update(location_coordinates: location_coordinates, hunting_location_id: params[:hunting_location_id])
       end
-    elsif !locationRecord.nil?
-      locationRecord.destroy
+    elsif !@location_record.nil?
+      @location_record.destroy
+      @location_record = nil
+    end
+    if @location_record.nil? || @location_record.destroyed?
+      @status[:checked_in] = false
+      @status[:updated_at] = Time.now
+    else
+      @status[:checked_in] = true
+      @status[:updated_at] = @location_record.updated_at
     end
   end
 
@@ -106,7 +124,8 @@ private
   end
 
   def set_member_locations
-    @member_locations ||= HuntingModeUserLocation.where(hunting_plot_id: params[:hunting_plot_id]).where('updated_at > ?', 1.days.ago).preload(:user).preload(:hunting_location)
+    #@member_locations ||= HuntingModeUserLocation.where(hunting_plot_id: params[:hunting_plot_id]).where('updated_at > ?', 1.days.ago).preload(:user).preload(:hunting_location)
+    @member_locations ||= HuntingModeUserLocation.non_expired_for_plot(params[:hunting_plot_id]).preload(:user).preload(:hunting_location)
   end
 
   def set_location_schedules
@@ -115,5 +134,9 @@ private
 
   def set_chat_feed(since_item_id = nil)
     @chat_items = HuntingModeUserStatus.for_hunting_plot(@hunting_plot.id, since_item_id)
+  end
+
+  def set_last_checkin
+    @last_checkin = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
   end
 end

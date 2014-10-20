@@ -1,3 +1,26 @@
 <% provide(:page_id, 'stands_map') %>
 
-<%= render partial:'stands', locals: { hunting_plot: @hunting_plot } %>
+<%= render partial:'stands', locals: { hunting_plot: @hunting_plot, last_checkin: @last_checkin } %>
+
+<%= content_for :footer do %>
+<table class="stands-footer">
+  <tr>
+    <td class="stands-footer-text">
+      <%= render partial: 'stand_checkin_status_description', locals: { last_checkin: @last_checkin } %>
+    </td>
+    <td class="stands-footer-buttons">
+      <%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkout-form' do %>
+        <%= hidden_field_tag("is_at_plot", "false") %>
+        <%
+          submit_button_options = { id:'checkout-submit', data: { icon:'action', iconpos:'top'} }
+          if (@last_checkin.nil? || @last_checkin.expired?)
+            submit_button_options[:disabled] = 'true'
+          end
+        %>
+        <%= submit_tag('Check-out', submit_button_options) %>
+        <a class="ui-btn ui-corner-all ui-btn-inline ui-mini ui-btn-icon-top ui-icon-gear" href="#map-options-panel" data-role="button">Options</a>
+      <% end %>
+    </td>
+  </tr>
+</table>
+<% end %>

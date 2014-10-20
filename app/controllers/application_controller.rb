@@ -1,4 +1,4 @@
-require "exceptions"
+require "app/exceptions"
 
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   helper :nested_urls
   helper :map
   helper :mail
+  helper :client_json
   helper ConfigData
 
 #disable caching

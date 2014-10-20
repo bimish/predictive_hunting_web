@@ -34,19 +34,30 @@ Scripts.Page.StandsMap = function() {
 
   var _map = null;
   var _mapHelper = null;
-  var _standLocationMarkerOptions = {
-    clickHandler: function(stand_location) { $("#huntingLocationPopupDialog").popup("open"); },
-    icon: getLocationIcon
-  };
   var _memberLocationMarkerOptions = {
     icon: MapIcons.Hunter
   };
+
+  var _haveInitializedGeoLocation = false;
 
   // public functions
   this.initPage = function() {
 
     // always set the content to full height ? need to test this
     Scripts.Common.setContentFullHeight();
+
+    // initialize geolocation if not already setup
+    if (!_haveInitializedGeoLocation) {
+      var longitudeField = $('#checkin-form').find('input[name="position_longitude"]');
+      var latitudeField = $('#checkin-form').find('input[name="position_latitude"]');
+      Scripts.Common.initGeoLocation(
+        function(position) {
+          longitudeField.val(position.coords.longitude);
+          latitudeField.val(position.coords.latitude);
+        }
+      );
+      _haveInitializedGeoLocation = true;
+    }
 
     if (_map == null) {
 
@@ -55,7 +66,7 @@ Scripts.Page.StandsMap = function() {
 
       updateHuntingLocationStatus();
 
-      _mapHelper.createLocationMarkers(g_standLocations, _standLocationMarkerOptions);
+      _mapHelper.createLocationMarkers(g_standLocations, { icon: getLocationIcon, clickHandler: showLocationPopup } );
       _mapHelper.createMemberMarkers(g_memberLocations, _memberLocationMarkerOptions);
       showWindConditions();
 
@@ -102,6 +113,42 @@ Scripts.Page.StandsMap = function() {
         }
       );
     }
+  }
+
+  this.updateCheckinStatus = function(new_status, location_record) {
+    $('#huntingLocationPopupDialog').popup('close');
+    var existing_location_record_index = -1;
+    for (var i = 0; i < g_memberLocations.length; i++) {
+      if (g_memberLocations[i].user_id = new_status.user_id) {
+        existing_location_record_index = i;
+        break;
+      }
+    }
+    if (new_status.checked_in) {
+      if (existing_location_record_index < 0) {
+        g_memberLocations.push(location_record);
+      }
+      else {
+        g_memberLocations[existing_location_record_index] = location_record;
+      }
+    }
+    else {
+      if (existing_location_record_index >= 0) {
+        g_memberLocations.splice(existing_location_record_index, 1);
+      }
+    }
+    updateHuntingLocationStatus();
+  }
+
+  function showLocationPopup(hunting_location) {
+    var dialog = $('#huntingLocationPopupDialog');
+    dialog.find('#location_name').text(hunting_location.name);
+    dialog.find('#location_status').text(HuntingLocationStatus.getName(hunting_location.status));
+    var checkInForm = $('#checkin-form');
+    checkInForm.find('input[name="hunting_location_id"]').val(hunting_location.id);
+    //checkInForm.find('input[name="position_longitude"]').val(hunting_location.location_id);
+    //checkInForm.find('input[name="position_latitude"]').val(hunting_location.location_id);
+    dialog.popup("open");
   }
 
   function getLocationIcon(hunting_location) {
@@ -186,8 +233,8 @@ Scripts.Page.StandsMap = function() {
     function setHuntingLocationStatus(hunting_location, newStatus) {
       var statusChanged = (!isDefined(hunting_location.status) || (hunting_location.status != newStatus));
       hunting_location.status = newStatus;
-      if (isDefined(hunting_location.mapMarker) && (statusChanged)) {
-        _mapHelper.updateLocation(hunting_location, _standLocationMarkerOptions);
+      if (statusChanged) {
+        _mapHelper.updateLocation(hunting_location, { icon: getLocationIcon });
       }
     }
   }
@@ -210,6 +257,7 @@ Scripts.Page.StandsMap = function() {
     }
     return null;
   }
+
   return this;
 }();
 

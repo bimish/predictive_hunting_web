@@ -1,0 +1,27 @@
+<%
+@forecast[:forecast]['simpleforecast']['forecastday'].each_with_index do |simple_forecast, index|
+  day_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == index * 2 }
+  night_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == index * 2 + 1 }
+
+  day_forecast = {
+    period_name: day_text_forecast['title'],
+    icon_url: day_text_forecast['icon_url'],
+    temp_type: 'High',
+    temp: simple_forecast['high']['fahrenheit'],
+    description: day_text_forecast['fcttext']
+  }
+  night_forecast = {
+    period_name: night_text_forecast['title'],
+    icon_url: night_text_forecast['icon_url'],
+    temp_type: 'Low',
+    temp: simple_forecast['low']['fahrenheit'],
+    description: night_text_forecast['fcttext']
+  }
+%>
+  <%= render partial:'weather_daily_item', :locals => { :forecast => day_forecast } %>
+  <%= render partial:'weather_daily_item', :locals => { :forecast => night_forecast } %>
+<% end %>
+
+<div style="clear:both;">
+  <%=link_to content_tag(:span, 'details', class:'text-muted small'), @forecast[:details_url], target:'_weather_details' %>
+</div>

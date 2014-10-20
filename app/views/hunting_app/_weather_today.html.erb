@@ -1,0 +1,29 @@
+<%
+today_simple_forecast = @forecast[:forecast]['simpleforecast']['forecastday'][0]
+today_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 0 }
+tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 1 }
+%>
+<div class="weather-summary-day">
+  <h3 class="ui-bar ui-bar-a ui-corner-all"><%= today_text_forecast['title'] %></h3>
+  <div class="summary">
+    <%= image_tag(today_text_forecast['icon_url']) %>
+    <p class="high-temp"><%=today_simple_forecast['high']['fahrenheit']%></p>
+  </div>
+  <div class="details">
+    <%= today_text_forecast['fcttext'] %>
+  </div>
+</div>
+<div class="weather-summary-day">
+  <h3 class="ui-bar ui-bar-a ui-corner-all"><%= tonight_text_forecast['title'] %></h3>
+  <div class="summary">
+    <%= image_tag(tonight_text_forecast['icon_url']) %>
+    <p class="low-temp"><%=today_simple_forecast['low']['fahrenheit']%></p>
+  </div>
+  <div class="details">
+    <%= tonight_text_forecast['fcttext'] %>
+  </div>
+</div>
+
+<div style="clear:both;">
+  <%=link_to content_tag(:span, 'details', class:'text-muted small'), @forecast[:details_url], target:'_weather_details' %>
+</div>

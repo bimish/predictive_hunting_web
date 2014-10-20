@@ -1,0 +1,9 @@
+<% if last_checkin.nil? || last_checkin.expired? %>
+<p>Not checked in<p>
+<p></p>
+<p>To check-in, select a stand on the map</p>
+<% else %>
+<p>Checked in</p>
+<p><%= date_time_to_s(last_checkin.updated_at, :short) %></p>
+<p><%= (last_checkin.hunting_location_id.nil? ? nil : last_checkin.hunting_location.name ) %></p>
+<% end %>

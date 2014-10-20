@@ -1,0 +1,15 @@
+<%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkin-form' do %>
+  <%= hidden_field_tag("position_longitude", "") %>
+  <%= hidden_field_tag("position_latitude", "") %>
+  <label>
+    <select name="hunting_location_id" id="hunting_location_id" data-native-menu="false" <%= current_checkin.nil? ? "disabled" : nil %>>
+      <option data-placeholder="true" value="">Choose Stand...</option>
+      <option value="">[Not in a stand]</option>
+      <% @hunting_plot.locations.find_all { |location| location.location_type_stand? }.each do |location| %>
+        <option value="<%= location.id%>"<%= ((!current_checkin.nil? && current_checkin.hunting_location_id == location.id) ? "selected" : nil) %>><%= location.name%></option>
+      <% end %>
+    </select>
+  </label>
+  <hr/>
+  <input id="checkin-submit" type="submit" value="Update" data-icon="check" disabled="disabled" style="background-color:green;">
+<% end %>

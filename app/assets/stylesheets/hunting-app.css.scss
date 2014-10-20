@@ -5,6 +5,7 @@
 div.content-panel {
   display: none;
   padding: 1em;
+  overflow-y: scroll;
 }
 div.content-panel-active {
   display: block;
@@ -230,3 +231,60 @@ ul.chat-list {
   padding-bottom:.22em;
 }
 
+div.weather-summary-day {
+  clear: both;
+  div.summary {
+    float: left;
+    margin-right: 20px;
+    p.high-temp:after, p.low-temp:after {
+      content: '\00B0 F';
+    }
+    p.high-temp:before {
+      content: 'H ';
+    }
+    p.low-temp:before {
+      content: 'L ';
+    }
+  }
+  div.details {
+    overflow: hidden;
+    white-space: normal;
+  }
+}
+div.weather-summary-day:after {
+  content: '';
+  clear: both;
+  visibility: hidden;
+}
+
+div.popup-dialog {
+  padding: 10px;
+  width:100%;
+  h1 {
+    padding: 0px;
+    margin: 0px;
+    font-size: inherit;
+    font-weight: bold;
+  }
+}
+
+table.stands-footer {
+  width:100%;
+}
+
+td.stands-footer-text {
+  padding: 5px;
+  font-weight: normal;
+  font-size: 75%;
+  white-space: normal;
+  width: 100%;
+  vertical-align:top;
+  p {
+    margin:0px;
+    padding:0px;
+  }
+}
+
+td.stands-footer-buttons {
+  white-space: nowrap;
+}

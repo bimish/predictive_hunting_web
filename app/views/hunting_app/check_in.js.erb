@@ -1,4 +1,8 @@
-$("#checkin-submit").button("disable");
-$.mobile.loading("hide");
-$('p.check-in-msg').text("Successfully updated at <%= j date_time_to_s(DateTime.current, :short)%>");
+Scripts.Page.StandsMap.updateCheckinStatus(<%== @status.to_json%>, <%== (@location_record.nil? ? 'null' : member_location_from_hunting_mode_location(@location_record).to_json) %>);
+$('td.stands-footer-text').html('<%= j render partial: 'stand_checkin_status_description', locals: { last_checkin: @location_record } %>');
+<% if @location_record.nil? || @location_record.expired? %>
+$('#checkout-submit').button("disable");
+<% else %>
+$('#checkout-submit').button("enable");
+<% end %>
 

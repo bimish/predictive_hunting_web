@@ -1,0 +1,10 @@
+<div class="weather-summary-day">
+  <h3 class="ui-bar ui-bar-a ui-corner-all"><%= forecast[:period_name] %></h3>
+  <div class="summary">
+    <%= image_tag(forecast[:icon_url]) %>
+    <p class="temperature"><%=forecast[:temp_type]%> <%=forecast[:temp]%></p>
+  </div>
+  <div class="details">
+    <%= forecast[:description] %>
+  </div>
+</div>

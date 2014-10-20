@@ -13,12 +13,12 @@ function PlotMapHelper(map) {
         var marker =
           _map.addMarker(
             {
-              title: member_location.user_name,
-              coordinates: member_location.location_coordinates,
+              title: memberLocation.user_name,
+              coordinates: memberLocation.location_coordinates,
               icon: options.icon,
               zIndex: 3,
               visible: (isDefined(options.showMarker) ? options.showMarker : true),
-              infoWindowContent: getMemberLocationInfoWindowContent(member_location)
+              infoWindowContent: getMemberLocationInfoWindowContent(memberLocation)
             },
             plotMembersMarkerTag
           );
@@ -78,13 +78,13 @@ function PlotMapHelper(map) {
   this.updateLocation = function(standLocation, options) {
     var mapMarker = null;
     for (var i = 0; i < _plotLocationMarkers.length; i++) {
-      if (_plotLocationMarkers[i].location_id = standLocation.id) {
+      if (_plotLocationMarkers[i].location_id == standLocation.id) {
         mapMarker = _plotLocationMarkers[i].marker;
         break;
       }
     }
     if (mapMarker != null) {
-      initializeStandMarker(mapMarker, hunting_location, options);
+      initializeStandMarker(mapMarker, standLocation, options);
     }
   }
   this.showLocations = function() {
