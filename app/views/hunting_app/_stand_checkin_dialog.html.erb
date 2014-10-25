@@ -23,7 +23,7 @@
       checkin_available = false
     else
       warning_msg = 'This stand is marked as occupied'
-      status_user = @checked_in_user.get_display_name
+      status_user = @checked_in_user.user.get_display_name
     end
   end
 %>
