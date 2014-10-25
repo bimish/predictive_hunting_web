@@ -36,6 +36,12 @@ module EnumsHelper
     def self.get_entry_type_description(entry_type)
       entry_type.sub("entry_type_", "").humanize
     end
+    def self.time_periods
+      @@time_periods_map ||= HuntingLocationSchedule.time_periods.collect { |item| [get_time_period_description(item[0]), item[0]] }
+    end
+    def self.get_time_period_description(time_period)
+      time_period.sub("time_period_", "").humanize
+    end
   end
   module UserInvitationEnums
     def self.statuses

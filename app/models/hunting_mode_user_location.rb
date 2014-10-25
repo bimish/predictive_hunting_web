@@ -9,11 +9,15 @@ class HuntingModeUserLocation < ActiveRecord::Base
   component_assigned_attribute :created_by_id
 
   def expired?
-    self.updated_at > expiration_cut_off
+    self.updated_at < expiration_cut_off
   end
 
   def self.non_expired_for_plot(hunting_plot_id)
     where(hunting_plot_id: hunting_plot_id).where('updated_at > ?', expiration_cut_off)
+  end
+
+  def self.current_for_location(hunting_location_id)
+    where(hunting_location_id: hunting_location_id).where('updated_at > ?', expiration_cut_off).order(updated_at: :desc).limit(1).first
   end
 
 private
@@ -22,6 +26,7 @@ private
     current_date = Time.now
     Time.new(current_date.year, current_date.month, current_date.day)
   end
+
   def expiration_cut_off
     HuntingModeUserLocation.expiration_cut_off
   end

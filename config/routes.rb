@@ -94,17 +94,22 @@ Web::Application.routes.draw do
   get '/hunting_app/:hunting_plot_id/chat_refresh/:since_id', to: 'hunting_app#chat_refresh', as: :hunting_app_chat_refresh
   post '/hunting_app/:hunting_plot_id/chat_post', to: 'hunting_app#chat_post', as: :hunting_app_chat_post
   post '/hunting_app/:hunting_plot_id/checkin', to: 'hunting_app#check_in', as: :hunting_app_checkin
+  get '/hunting_app/:hunting_plot_id/stand_checkin_dialog/:hunting_location_id', to: 'hunting_app#stand_checkin_dialog', as: :hunting_app_stand_checkin_dialog
+  get '/hunting_app/:hunting_plot_id/stand_reservation_dialog/:hunting_location_id', to: 'hunting_app#stand_reservation_dialog', as: :hunting_app_stand_reservation_dialog
+  post '/hunting_app/:hunting_plot_id/create_stand_reservation', to: 'hunting_app#create_stand_reservation', as: :hunting_app_create_stand_reservation
+  get '/hunting_app/:hunting_plot_id/hunt_forecast', to: 'hunting_app#hunt_forecast', as: :hunting_app_hunt_forecast
 
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'
   delete '/signout', to: 'sessions#destroy'
   get '/help', to: 'static_pages#help'
+  get '/home' => 'static_pages#home', as: :home
 
   get '/map/hunting_plot/:id' => 'map#hunting_plot', as: :plot_map
   get '/network_panel/:network_id' => 'static_pages#network_panel', as: :network_panel
   get '/test' => 'static_pages#test', as: :test
 
-  root to: 'static_pages#home'
+  root to: 'static_pages#router'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

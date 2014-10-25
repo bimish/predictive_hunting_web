@@ -31,8 +31,9 @@
       <%= @view_data.get_admin_description(@user.admin) %>
     </p>
 
-    <%= link_to 'Edit', edit_user_path(@user) %> |
-    <%= link_to 'Back', users_path %>
+    <%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-sm btn-default' %>
+    <%= link_to 'Back', users_path, class: 'btn btn-sm btn-default' %>
+    <%= link_to 'Home', '/', class: 'btn btn-sm btn-default' %>
 
   </div>
 </div>

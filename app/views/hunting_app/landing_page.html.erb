@@ -1,14 +1,7 @@
 <% provide(:page_id, 'landing') %>
-<% content_for :panels do %>
-<div data-role="panel" data-display="overlay" id="topmenu">
-  <ul data-role="listview">
-    <li><a href="#">Login</a></li>
-    <li><a href="#">Logout</a></li>
-    <li><a href="#">Change Plot</a></li>
-  </ul>
-  <br/>
-  <a href="#header" data-rel="close" class="ui-btn ui-icon-carat-l ui-btn-icon-left">Close</a>
-</div>
+
+<% if current_user.hunting_plots.size() > 1 %>
+<%= select_tag 'selected-plot', options_for_select(current_user.hunting_plots.collect { |plot| [ plot.name, plot.id ] }, @hunting_plot.id) %>
 <% end %>
 
 <div class="ui-grid-a">
@@ -17,10 +10,6 @@
       <%= link_to(hunting_app_stands_path(@hunting_plot)) do %>
         <h1>Check-in<br/>Check-out</h1>
         <%= image_tag('stand_checkin_icon.png') %>
-        <% current_checkin = (@last_checkin.nil? || @last_checkin.expired?) ? nil : @last_checkin %>
-        <% unless (current_checkin.nil?) %>
-        Currently checked in to stand <%=@last_checkin.hunting_location.get_display_name%>
-        <% end %>
       <% end %>
     </div>
   </div>
@@ -59,10 +48,10 @@ tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].dete
   </div>
   <div class="ui-block-b">
     <div class="navigation-panel">
-      <a href="#">
+      <%= link_to(hunting_app_hunt_forecast_path(@hunting_plot)) do %>
         <h1>Hunting Forecast</h1>
         <%= image_tag('graph-icon_96.png') %>
-      </a>
+      <% end %>
     </div>
   </div>
   <div class="ui-block-a">

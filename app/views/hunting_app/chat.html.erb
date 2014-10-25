@@ -5,10 +5,16 @@
 
 <%= content_for :footer do %>
   <%= form_for(@user_status_post, url: hunting_app_chat_post_path(@hunting_plot.id), remote: true) do |f| %>
-    <div data-role="controlgroup" data-type="horizontal">
-      <input type="hidden" name="last_post_id" value="<%= (@chat_items.nil? || @chat_items.size() == 0) ? '' : @chat_items.first.id %>" />
-      <%= f.text_field :status_text, { placeholder: 'Type message...', data: { wrapper_class: 'controlgroup-textinput ui-btn' } } %>
-      <%= f.submit 'Send', { class:'ui-btn ui-corner-all ui-btn-inline' } %>
-    </div>
+  <table class="chat-footer">
+    <tr>
+      <td class="chat-field">
+        <input type="hidden" name="last_post_id" value="<%= (@chat_items.nil? || @chat_items.size() == 0) ? '' : @chat_items.first.id %>" />
+        <%= f.text_field :status_text, { placeholder: 'Type message...' } %>
+      </td>
+      <td class="chat-submit">
+        <%= f.submit 'Send', { class:'ui-btn ui-corner-all ui-btn-inline' } %>
+      </td>
+    </tr>
+  </table>
   <% end %>
 <% end %>

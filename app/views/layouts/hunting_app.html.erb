@@ -17,6 +17,7 @@
     }
   };
   var g_huntingPlotId = <%=@hunting_plot.id%>;
+  var g_userId = <%=current_user.id%>;
   var HuntingLocationStatus = function() {
     this.Available = 1;
     this.Occupied = 2;
@@ -58,13 +59,8 @@
       end.to_json %>;
   var g_standReservations = <%==
     @hunting_location_schedules.collect do |hunting_location_schedule|
-        {
-          location_id: hunting_location_schedule.hunting_location_id,
-          created_by: hunting_location_schedule.created_by.get_display_name,
-          start_date_time: hunting_location_schedule.start_date_time,
-          end_date_time: hunting_location_schedule.end_date_time,
-        }
-      end.to_json %>;
+      stand_reservation_from_hunting_location_schedule(hunting_location_schedule)
+    end.to_json %>;
   var g_memberLocations = <%==
     @member_locations.collect do |member_location|
       member_location_from_hunting_mode_location(member_location)
@@ -91,13 +87,6 @@
   <%= csrf_meta_tag %>
   <%= yield :head %>
   <script type="text/javascript">
-  $(document).on(
-    "pagecontainershow",
-    function(event, ui) {
-      Scripts.Common.setContentFullHeight();
-      Scripts.Common.callPageInitializers($(ui.toPage).get(0).id);
-    }
-  );
   g_huntingPlotLocation.boundary = parseWKTPolygon(g_huntingPlotLocation.boundary_wkt);
   // convert date/time values to javascript dates
   $.each(
@@ -114,11 +103,22 @@
 
   <div data-role="page" id="<%=yield(:page_id)%>" data-dom-cache="true">
 
+    <div data-role="panel" data-display="overlay" id="topmenu">
+      <ul data-role="listview">
+        <li><%= link_to('Home', hunting_app_path(@hunting_plot)) %></li>
+        <li><a href="#">Login</a></li>
+        <li><a href="#">Logout</a></li>
+        <li><a href="#">Change Plot</a></li>
+      </ul>
+      <br/>
+      <a href="#header" data-rel="close" class="ui-btn ui-icon-carat-l ui-btn-icon-left">Close</a>
+    </div>
     <%= yield :panels %>
 
     <div data-role="header" data-position="fixed" id="header">
-      <%= image_tag "logo.png", size:'40x40', style:'float:right;' %><h1>Predictive Hunting</h1>
-      <a href="#topmenu" class="jqm-navmenu-link ui-nodisc-icon ui-alt-icon ui-btn-left ui-btn ui-icon-bars ui-btn-icon-notext" style="font-size: 110%;" data-role="button">Menu</a>
+      <h1><%= image_tag "logo.png", size:'40x40', style:'margin-top:-10px;margin-bottom:-10px;' %> Predictive Hunting</h1>
+      <a href="#topmenu" class="jqm-navmenu-link ui-nodisc-icon ui-alt-icon ui-btn-left ui-btn ui-icon-bars ui-btn-icon-notext" data-role="button">Menu</a>
+      <a href="#reload" class="jqm-navmenu-link ui-nodisc-icon ui-alt-icon ui-btn-right ui-btn ui-icon-refresh ui-btn-icon-notext" data-role="button">Reload</a>
       <%= yield :header %>
     </div>
 

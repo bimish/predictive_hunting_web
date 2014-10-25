@@ -21,6 +21,10 @@
       <strong>Entry type:</strong>
       <%= EnumsHelper::HuntingLocationScheduleEnums::get_entry_type_description(@hunting_location_schedule.entry_type) %>
     </p>
+    <p>
+      <strong>Time period:</strong>
+      <%= EnumsHelper::HuntingLocationScheduleEnums::get_time_period_description(@hunting_location_schedule.time_period) %>
+    </p>
 
     <%= link_to 'Edit', edit_hunting_location_schedule_path(@hunting_location_schedule) %> |
     <%= link_to 'Back', hunting_location_schedules_path %>

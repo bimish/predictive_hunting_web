@@ -69,11 +69,11 @@ class HuntingLocationSchedulesController < ComponentController
     end
 
     def update_params
-      params.require(:hunting_location_schedule).permit(:start_date_time, :end_date_time, :entry_type)
+      params.require(:hunting_location_schedule).permit(:start_date_time, :end_date_time, :entry_type, :time_period)
     end
 
     def create_params
-      params.require(:hunting_location_schedule).permit(:start_date_time, :end_date_time, :entry_type)
+      params.require(:hunting_location_schedule).permit(:start_date_time, :end_date_time, :entry_type, :time_period)
     end
 
 end

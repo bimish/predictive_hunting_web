@@ -24,6 +24,13 @@ div.map-info-window {
   }
 }
 
+/* boost font-size for buttons in the header menu */
+div[data-role="header"] {
+  a.jqm-navmenu-link {
+    font-size: 125%;
+  }
+}
+
 /* get rid of text shadow */
 .ui-overlay-a, .ui-page-theme-a, .ui-page-theme-a .ui-panel-wrapper {
     text-shadow: none;
@@ -287,4 +294,38 @@ td.stands-footer-text {
 
 td.stands-footer-buttons {
   white-space: nowrap;
+}
+
+table.chat-footer {
+  width:100%;
+  .chat-field {
+    padding-left:10px;
+    width:100%;
+    input[type="text"] {
+      width:100%;
+    }
+  }
+  .chat-submit {
+    padding-right:10px;
+  }
+}
+
+.warning-message {
+  padding-left: 32px;
+  min-height: 32px;
+  max-width: 200px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20%3F%3E%0A%3Csvg%20height%3D%2232px%22%20version%3D%221.1%22%20viewBox%3D%220%200%2032%2032%22%20width%3D%2232px%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Asketch%3D%22http%3A%2F%2Fwww.bohemiancoding.com%2Fsketch%2Fns%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%0A%09%3Ctitle%2F%3E%0A%09%3Cdesc%2F%3E%0A%09%3Cdefs%2F%3E%0A%09%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20id%3D%22Page-1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%3E%0A%09%09%3Cg%20fill%3D%22%23E9AF00%22%20id%3D%22icon-61-warning%22%3E%0A%09%09%09%3Cpath%20d%3D%22M14.3077969%2C6.05448962%20C15.177863%2C4.64682663%2016.5905922%2C4.65018129%2017.4585848%2C6.05448962%20L28.2436741%2C23.5034768%20C29.4052031%2C25.382692%2028.5591104%2C26.9060969%2026.3549711%2C26.9060969%20L5.41141065%2C26.9060969%20C3.20677982%2C26.9060969%202.35742742%2C25.388761%203.52270757%2C23.5034768%20L14.3077969%2C6.05448962%20L14.3077969%2C6.05448962%20Z%20M15.8835643%2C11.9060969%20C15.3312795%2C11.9060969%2014.8835643%2C12.3591332%2014.8835643%2C12.903127%20L14.8835643%2C18.9090667%20C14.8835643%2C19.4597113%2015.3274291%2C19.9060969%2015.8835643%2C19.9060969%20C16.435849%2C19.9060969%2016.8835643%2C19.4530606%2016.8835643%2C18.9090667%20L16.8835643%2C12.903127%20C16.8835643%2C12.3524825%2016.4396994%2C11.9060969%2015.8835643%2C11.9060969%20L15.8835643%2C11.9060969%20Z%20M15.8835643%2C23.9060969%20C16.435849%2C23.9060969%2016.8835643%2C23.4583816%2016.8835643%2C22.9060969%20C16.8835643%2C22.3538121%2016.435849%2C21.9060969%2015.8835643%2C21.9060969%20C15.3312795%2C21.9060969%2014.8835643%2C22.3538121%2014.8835643%2C22.9060969%20C14.8835643%2C23.4583816%2015.3312795%2C23.9060969%2015.8835643%2C23.9060969%20L15.8835643%2C23.9060969%20Z%22%20id%3D%22warning%22%2F%3E%0A%09%09%3C%2Fg%3E%0A%09%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+}
+
+table.plot-map-footer {
+  width:100%;
+  td.date-field {
+    font-size: 75%;
+    padding: 5px;
+    width:100%;
+  }
+  td.buttons {
+    white-space: nowrap;
+  }
 }

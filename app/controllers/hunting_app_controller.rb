@@ -10,23 +10,60 @@ class HuntingAppController < ApplicationController
   def landing_page
     @forecast = WeatherService.forecast(@hunting_plot)
     set_last_checkin
-    set_location_schedules
+    set_location_schedules_for_today
     set_member_locations
   end
 
   def map
-    set_location_schedules
+    set_location_schedules_for_week
     set_member_locations
+
+    @wind_forecast = []
+
+    hourly_forecast = WeatherForecastHelper.forecast_hourly(@hunting_plot)
+    if hourly_forecast[:forecast][0].nil?
+      todays_forecast = {
+        wind_dir: 'Unavailable',
+        wind_degrees: '0',
+        wind_mph: '?'
+      }
+    else
+      todays_forecast = {
+        wind_dir: hourly_forecast[:forecast][0]['wdir']['dir'],
+        wind_degrees: hourly_forecast[:forecast][0]['wdir']['degrees'],
+        wind_mph: hourly_forecast[:forecast][0]['wspd']['english']
+      }
+    end
+    todays_forecast[:date] = Date.today
+    @wind_forecast.push todays_forecast
+
+    ten_day_forecast = WeatherService.forecast_10_day(@hunting_plot)
+    ((Date.today + 1)..(Date.today + 7)).each do |date|
+      day_forecast = ten_day_forecast[:forecast]['simpleforecast']['forecastday'].detect do |forecast_day|
+        forecast_day['date']['year'] == date.year && forecast_day['date']['month'] == date.month && forecast_day['date']['day'] == date.day
+      end
+      unless day_forecast.nil?
+        forecast_item =
+          {
+            date: date,
+            wind_dir: day_forecast['avewind']['dir'],
+            wind_degrees: day_forecast['avewind']['degrees'],
+            wind_mph: day_forecast['avewind']['mph']
+          }
+        @wind_forecast.push forecast_item
+      end
+    end
+
   end
 
   def stands
-    set_location_schedules
+    set_location_schedules_for_today
     set_member_locations
     set_last_checkin
   end
 
   def activity
-    set_location_schedules
+    set_location_schedules_for_today
     set_member_locations
     @animal_activity_observations = AnimalActivityObservation.search(@hunting_plot.id, params).preload(:hunting_location).preload(:named_animal)
 
@@ -66,7 +103,7 @@ class HuntingAppController < ApplicationController
   def chat
     set_chat_feed
     @user_status_post = HuntingModeUserStatus.new()
-    set_location_schedules
+    set_location_schedules_for_today
     set_member_locations
   end
 
@@ -90,7 +127,7 @@ class HuntingAppController < ApplicationController
     @forecast = WeatherService.forecast(@hunting_plot)
     @hourly_forecast = WeatherService.forecast_hourly(@hunting_plot)
 
-    set_location_schedules
+    set_location_schedules_for_today
     set_member_locations
   end
 
@@ -118,6 +155,55 @@ class HuntingAppController < ApplicationController
     end
   end
 
+  def stand_checkin_dialog
+    set_hunting_plot
+    @hunting_location = HuntingLocation.find(params[:hunting_location_id])
+    @checked_in_user = HuntingModeUserLocation.current_for_location(@hunting_location.id)
+    @next_reservation = HuntingLocationSchedule.next_reservation(@hunting_location.id)
+  end
+
+  def stand_reservation_dialog
+    set_hunting_plot
+    @hunting_location = HuntingLocation.find(params[:hunting_location_id])
+    @reservation_date = params[:reservation_date].blank? ? Date.today : Date.parse(params[:reservation_date])
+    @existing_reservations = HuntingLocationSchedule.schedules_for_location(@hunting_location, @reservation_date.beginning_of_day, @reservation_date.end_of_day)
+  end
+
+  def create_stand_reservation
+
+    if (params[:existing_reservation_id].blank?)
+      @reservation = HuntingLocationSchedule.new(hunting_location_id: params[:hunting_location_id], start_date_time: params[:reservation_date], end_date_time: params[:reservation_date], entry_type: HuntingLocationSchedule.entry_types[:entry_type_reservation])
+      @reservation.init_new current_user
+    else
+      @reservation = HuntingLocationSchedule.find(params[:existing_reservation_id])
+    end
+
+    reserve_am = !params[:reserve_am].blank?
+    reserve_pm = !params[:reserve_pm].blank?
+    if (reserve_am && reserve_pm)
+      @reservation.time_period_all_day!
+    elsif reserve_am
+      @reservation.time_period_am!
+    elsif reserve_pm
+      @reservation.time_period_pm!
+    else
+      if (@reservation.persisted?)
+        @reservation.destroy
+      end
+      @reservation = nil
+    end
+
+    unless @reservation.nil?
+      @reservation.save
+    end
+
+  end
+
+  def hunt_forecast
+    set_location_schedules_for_today
+    set_member_locations
+  end
+
 private
   def set_hunting_plot
     @hunting_plot = HuntingPlot.find(params[:hunting_plot_id])
@@ -128,8 +214,12 @@ private
     @member_locations ||= HuntingModeUserLocation.non_expired_for_plot(params[:hunting_plot_id]).preload(:user).preload(:hunting_location)
   end
 
-  def set_location_schedules
-    @hunting_location_schedules = HuntingLocationSchedule.current_schedules_for_plot(@hunting_plot)
+  def set_location_schedules_for_today
+    @hunting_location_schedules = HuntingLocationSchedule.schedules_for_plot(@hunting_plot, Time.now, Time.now.end_of_day)
+  end
+
+  def set_location_schedules_for_week
+    @hunting_location_schedules = HuntingLocationSchedule.schedules_for_plot(@hunting_plot, Time.now.beginning_of_day, 1.weeks.from_now.end_of_day)
   end
 
   def set_chat_feed(since_item_id = nil)

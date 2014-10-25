@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141014220254) do
+ActiveRecord::Schema.define(version: 20141023121653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,13 +82,14 @@ ActiveRecord::Schema.define(version: 20141014220254) do
   add_index "hunting_location", ["hunting_plot_id"], :name => "index_hunting_location_on_hunting_plot_id"
 
   create_table "hunting_location_schedule", force: true do |t|
-    t.integer  "created_by_id",                 null: false
-    t.integer  "hunting_location_id",           null: false
-    t.datetime "start_date_time",               null: false
-    t.datetime "end_date_time",                 null: false
-    t.integer  "entry_type",          limit: 2, null: false
+    t.integer  "created_by_id",                             null: false
+    t.integer  "hunting_location_id",                       null: false
+    t.datetime "start_date_time",                           null: false
+    t.datetime "end_date_time",                             null: false
+    t.integer  "entry_type",          limit: 2,             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "time_period",         limit: 2, default: 1, null: false
   end
 
   add_index "hunting_location_schedule", ["created_by_id"], :name => "index_hunting_location_schedule_on_created_by_id"

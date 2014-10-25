@@ -1,16 +1,14 @@
-g_memberLocations = <%==
-  @member_locations.collect do |member_location|
-    {
-      user_id: member_location.user_id,
-      user_name: member_location.user.get_display_name,
-      location_id: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location_id,
-      location_name: member_location.hunting_location_id.nil? ? '' : member_location.hunting_location.name,
-      location_coordinates: {
-        lat: member_location.hunting_location_id.nil? ? member_location.location_coordinates.y() : member_location.hunting_location.coordinates.y(),
-        lng: member_location.hunting_location_id.nil? ? member_location.location_coordinates.x() : member_location.hunting_location.coordinates.x()
-      }
-    }
-  end.to_json
-%>;
-updateHuntingLocationStatus();
-showMap();
+AssetPath.Image.StandReservedNone = '<%= asset_path('stand_reservation_available.png') %>';
+AssetPath.Image.StandReservedAM = '<%= asset_path('stand_reservation_reserved_am.png') %>';
+AssetPath.Image.StandReservedPM = '<%= asset_path('stand_reservation_reserved_pm.png') %>';
+AssetPath.Image.StandReservedAllDay = '<%= asset_path('stand_reservation_reserved.png') %>';
+
+Scripts.Page.PlotMap.setStandReservations(
+<%==
+    @hunting_location_schedules.collect do |hunting_location_schedule|
+      stand_reservation_from_hunting_location_schedule(hunting_location_schedule)
+    end.to_json
+%>
+);
+Scripts.Page.PlotMap.setWindForecast(<%== @wind_forecast.to_json %>);
+Scripts.Page.PlotMap.initalizeMap();

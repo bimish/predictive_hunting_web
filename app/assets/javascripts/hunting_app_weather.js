@@ -20,4 +20,4 @@ Scripts.Page.Weather = function() {
 }();
 
 // register the page initailizer
-Scripts.Common.pageInit('weather', Scripts.Page.Weather.initPage);
+Scripts.Common.pageShow('weather', Scripts.Page.Weather.initPage);

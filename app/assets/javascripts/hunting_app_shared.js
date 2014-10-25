@@ -30,15 +30,31 @@ Scripts.Page = {};   // page-specific scripts are declared under the Page namesp
 // scripts shared by more than one page are declared under the Common namespace
 Scripts.Common = function () {
 
-  var _pageInitializers = [];
-
-  this.pageInit = function(pageId, initFunction) {
-    _pageInitializers.push( { pageId: pageId, handler: initFunction } );
+  // page initializers are called once per page instance
+  var _pageInitializeHandlers = [];
+  this.pageInitialize = function(pageUrl, initFunction) {
+    var pageUrlRegex = (typeof pageUrl == 'object') ? pageUrl : new RegExp(pageUrl);
+    _pageInitializeHandlers.push( { pageUrlRegex: pageUrlRegex, handler: initFunction } );
+  };
+  this.callPageInitializeHandlers = function(pageUrl) {
+    $.each(
+      _pageInitializeHandlers,
+      function(index, item) {
+        if (item.pageUrlRegex.test(pageUrl)) {
+          item.handler();
+        }
+      }
+    );
   };
 
-  this.callPageInitializers = function(pageId) {
+  // page show is called each time a page is shown
+  var _pageShowHandlers = [];
+  this.pageShow = function(pageId, initFunction) {
+    _pageShowHandlers.push( { pageId: pageId, handler: initFunction } );
+  };
+  this.callPageShowHandlers = function(pageId) {
     $.each(
-      _pageInitializers,
+      _pageShowHandlers,
       function(index, item) {
         if (item.pageId == pageId) {
           item.handler();
@@ -78,3 +94,62 @@ Scripts.Common = function () {
 
   return this;
 }();
+
+/*
+$(document).on("pagecontainerbeforechange", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerbeforehide", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerbeforeload", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerbeforeshow", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerbeforetransition", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerchange", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerchangefailed", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainercreate", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerhide", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerload", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerloadfailed", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainerremove", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainershow", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecontainertransition", function( event, ui ) { logEvent(event, ui); } );
+
+function logEvent(event, ui) {
+  var toPageId = null;
+  if (isDefinedAndNonNull(ui.toPage)) {
+    if (typeof ui.toPage == "string")
+      toPageId = ui.toPage;
+    else if (ui.toPage.length > 0)
+      toPageId = ui.toPage.get(0).id
+  }
+  console.log(
+    event.type + " triggered:" +
+    " ui.prevPage.id = " + ( (isDefinedAndNonNull(ui.prevPage) && ui.prevPage.length > 0) ? ui.prevPage.get(0).id : '') +
+    " ui.toPage.id = " + toPageId
+  );
+}
+*/
+
+// set global hooks for jqm page management
+$(document).on(
+  "pagecontainershow",
+  function(event, ui) {
+    Scripts.Common.setContentFullHeight();
+    Scripts.Common.callPageShowHandlers($(ui.toPage).get(0).id);
+  }
+);
+
+// work around for issue https://github.com/jquery/jquery-mobile/issues/7580
+// once corrected, the pagecontainerload event can be changed to reference the page id like the pagecontainershow event above
+var g_urlBeingLoaded = null;
+$(document).on(
+  "pagecontainerbeforeload",
+  function(event, ui) {
+    g_urlBeingLoaded = ui.toPage;
+  }
+);
+
+$(document).on(
+  "pagecontainerload",
+  function(event, ui) {
+    Scripts.Common.callPageInitializeHandlers(g_urlBeingLoaded);
+  }
+);
+

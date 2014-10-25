@@ -22,6 +22,9 @@ end
   <% if (attribute_list.nil? || attribute_list.include?(:entry_type)) %>
     <td><%= EnumsHelper::HuntingLocationScheduleEnums::get_entry_type_description(hunting_location_schedule.entry_type) %></td>
   <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:time_period)) %>
+    <td><%= EnumsHelper::HuntingLocationScheduleEnums::get_time_period_description(hunting_location_schedule.time_period) %></td>
+  <% end %>
   <% if editable %>
     <td>
       <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_location_schedule_path(hunting_location_schedule)) : nil %>

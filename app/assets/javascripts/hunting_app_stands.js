@@ -47,6 +47,7 @@ Scripts.Page.StandsMap = function() {
     Scripts.Common.setContentFullHeight();
 
     // initialize geolocation if not already setup
+    /*
     if (!_haveInitializedGeoLocation) {
       var longitudeField = $('#checkin-form').find('input[name="position_longitude"]');
       var latitudeField = $('#checkin-form').find('input[name="position_latitude"]');
@@ -58,6 +59,7 @@ Scripts.Page.StandsMap = function() {
       );
       _haveInitializedGeoLocation = true;
     }
+    */
 
     if (_map == null) {
 
@@ -70,7 +72,8 @@ Scripts.Page.StandsMap = function() {
       _mapHelper.createMemberMarkers(g_memberLocations, _memberLocationMarkerOptions);
       showWindConditions();
 
-      $('#map-options-panel ul li input').change(
+      var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+      $('#stands-map-options-panel ul li input', activePage).change(
         function(event) {
           var isChecked = $(this).is(':checked');
           switch ($(this).attr('name')) {
@@ -112,11 +115,22 @@ Scripts.Page.StandsMap = function() {
           }
         }
       );
+      $('#huntingLocationPopupDialog', activePage).find('#checkin-submit-warn').click(
+        function() {
+          var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+          var dialog = $('#huntingLocationPopupDialog', activePage);
+          $('#checkin-warning', activePage).show();
+          hideJQMButton(dialog.find('#checkin-submit-warn'));
+          showJQMButton(dialog.find('#checkin-submit'));
+          dialog.popup("reposition", { positionTo: 'window' });
+        }
+      );
     }
   }
 
   this.updateCheckinStatus = function(new_status, location_record) {
-    $('#huntingLocationPopupDialog').popup('close');
+    var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+    $('#huntingLocationPopupDialog', activePage).popup('close');
     var existing_location_record_index = -1;
     for (var i = 0; i < g_memberLocations.length; i++) {
       if (g_memberLocations[i].user_id = new_status.user_id) {
@@ -141,14 +155,67 @@ Scripts.Page.StandsMap = function() {
   }
 
   function showLocationPopup(hunting_location) {
-    var dialog = $('#huntingLocationPopupDialog');
+    $.getScript("/hunting_app/" + g_huntingPlotId + "/stand_checkin_dialog/" + hunting_location.id + ".js") ;
+    /*
+    var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+    var dialog = $('#huntingLocationPopupDialog', activePage);
     dialog.find('#location_name').text(hunting_location.name);
     dialog.find('#location_status').text(HuntingLocationStatus.getName(hunting_location.status));
+    $('#checkin-warning', activePage).hide();
+    switch (hunting_location.status) {
+      case HuntingLocationStatus.Available:
+      {
+        hideJQMButton(dialog.find('#checkin-submit-warn'));
+        showJQMButton(dialog.find('#checkin-submit'));
+        dialog.find('#location_status_user').hide();
+        break;
+      }
+      case HuntingLocationStatus.Occupied:
+      {
+        dialog.find('#location_status_user').show();
+        if (hunting_location.occupied_by_user.user_id == g_userId) {
+          dialog.find('#location_status_user').text('You');
+          hideJQMButton(dialog.find('#checkin-submit-warn'));
+          hideJQMButton(dialog.find('#checkin-submit'));
+        }
+        else {
+          dialog.find('#location_status_user').text(hunting_location.occupied_by_user.user_name);
+          dialog.find('#stand-occupied-warning').show();
+          dialog.find('#stand-reserved-warning').hide();
+          showJQMButton(dialog.find('#checkin-submit-warn'));
+          hideJQMButton(dialog.find('#checkin-submit'));
+        }
+        break;
+      }
+      case HuntingLocationStatus.Reserved:
+      {
+        dialog.find('#location_status_user').show();
+        if (hunting_location.next_reservation.created_by_id == g_userId) {
+          dialog.find('#location_status_user').text('You');
+          hideJQMButton(dialog.find('#checkin-submit-warn'));
+          hideJQMButton(dialog.find('#checkin-submit'));
+        }
+        else {
+          dialog.find('#location_status_user').show();
+          dialog.find('#stand-occupied-warning').hide();
+          dialog.find('#stand-reserved-warning').show();
+          showJQMButton(dialog.find('#checkin-submit-warn'));
+          hideJQMButton(dialog.find('#checkin-submit'));
+        }
+        break;
+      }
+    }
     var checkInForm = $('#checkin-form');
     checkInForm.find('input[name="hunting_location_id"]').val(hunting_location.id);
-    //checkInForm.find('input[name="position_longitude"]').val(hunting_location.location_id);
-    //checkInForm.find('input[name="position_latitude"]').val(hunting_location.location_id);
     dialog.popup("open");
+    */
+  }
+
+  function hideJQMButton(button) {
+    button.parents('.ui-btn').hide();
+  }
+  function showJQMButton(button) {
+    button.parents('.ui-btn').show();
   }
 
   function getLocationIcon(hunting_location) {
@@ -169,7 +236,7 @@ Scripts.Page.StandsMap = function() {
   }
 
   function showWindConditions() {
-    var svgDoc = $("#windIndicatorSvg");
+    var svgDoc = $('#stands-map-wind-indicator').find("#windIndicatorSvg");
     var windSpeedNode = svgDoc.find("#windSpeed");
     var windDirectionNode = svgDoc.find("#windDirection");
     windSpeedNode.text(g_windForecast.wind_mph);
@@ -215,15 +282,19 @@ Scripts.Page.StandsMap = function() {
     $.each(
       g_standLocations,
       function(index, hunting_location) {
+        delete hunting_location.occupied_by_user;
+        delete hunting_location.next_reservation;
         var memberInLocation = getMemberInLocation(hunting_location.id);
         if (memberInLocation != null) {
           setHuntingLocationStatus(hunting_location, HuntingLocationStatus.Occupied);
+          hunting_location.occupied_by_user = memberInLocation;
           return;
         }
         else {
           var nextReservation = getNextReservationForLocation(hunting_location.id);
           if (nextReservation != null) {
             setHuntingLocationStatus(hunting_location, HuntingLocationStatus.Reserved);
+            hunting_location.next_reservation = nextReservation;
             return;
           }
         }
@@ -262,4 +333,4 @@ Scripts.Page.StandsMap = function() {
 }();
 
 // register the page initailizer
-Scripts.Common.pageInit('stands_map', Scripts.Page.StandsMap.initPage);
+Scripts.Common.pageShow('stands_map', Scripts.Page.StandsMap.initPage);

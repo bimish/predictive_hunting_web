@@ -1,0 +1,39 @@
+<a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
+<h1>Stand Reservation</h1>
+<div role="main">
+  <p>Stand: <%= @hunting_location.get_display_name %></p>
+  <p>Date: <%= date_to_s(@reservation_date, :descriptive) %></p>
+  <%
+    current_user_reservation = @existing_reservations.find { |reservation| reservation.created_by_id == current_user.id }
+    if current_user_reservation.nil?
+      reserved_am = @existing_reservations.any? do |reservation|
+        reservation.time_period_am? || ((reservation.start_date_time >= @reservation_date.beginning_of_day) && (reservation.start_date_time < @reservation_date.middle_of_day)) || ((reservation.end_date_time >= @reservation_date.beginning_of_day) && (reservation.end_date_time < @reservation_date.middle_of_day))
+      end
+      reserved_pm = @existing_reservations.any? do |reservation|
+        reservation.time_period_pm? || ((reservation.start_date_time >= @reservation_date.middle_of_day) && (reservation.start_date_time < @reservation_date.end_of_day)) || ((reservation.end_date_time >= @reservation_date.middle_of_day) && (reservation.end_date_time < @reservation_date.end_of_day))
+      end
+    else
+      puts "current reservation found -> #{current_user_reservation.id}: #{current_user_reservation.time_period_am?}/#{current_user_reservation.time_period_pm?}"
+    end
+  %>
+  <div id="stand-reservation-form">
+  <%= form_tag hunting_app_create_stand_reservation_path(@hunting_plot.id), remote: true do %>
+    <% if current_user_reservation.nil? %>
+      <%= hidden_field_tag("reservation_date", @reservation_date) %>
+      <%= hidden_field_tag("hunting_location_id", @hunting_location.id) %>
+      <%= label_tag('reserve_am', 'Reserve for AM') %>
+      <%= check_box_tag('reserve_am', 'true', false, disabled: reserved_am) %>
+      <%= label_tag('reserve_pm', 'Reserve for PM') %>
+      <%= check_box_tag('reserve_pm', 'true', false, disabled: reserved_pm) %>
+      <input id="checkin-submit" type="submit" value="Create Reservation" data-icon="check" style="background-color:green;" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" />
+    <% else %>
+      <%= hidden_field_tag("existing_reservation_id", current_user_reservation.id) %>
+      <%= label_tag('reserve_am', 'Reserve for AM') %>
+      <%= check_box_tag('reserve_am', 'true', (current_user_reservation.time_period_am? || current_user_reservation.time_period_all_day?)) %>
+      <%= label_tag('reserve_pm', 'Reserve for PM') %>
+      <%= check_box_tag('reserve_pm', 'true', (current_user_reservation.time_period_pm? || current_user_reservation.time_period_all_day?)) %>
+      <input id="checkin-submit" type="submit" value="Update" data-icon="check" style="background-color:green;" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" />
+    <% end %>
+  <% end %>
+  </div>
+</div>

@@ -28,6 +28,9 @@ end
       <% if (attribute_list.nil? || attribute_list.include?(:entry_type)) %>
         <th>Entry type</th>
       <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:time_period)) %>
+        <th>Time period</th>
+      <% end %>
       <th></th>
     </tr>
   </thead>

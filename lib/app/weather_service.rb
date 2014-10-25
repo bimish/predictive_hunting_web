@@ -24,7 +24,7 @@ module WeatherService
 
     return {
       details_url: location_result['location']['wuiurl'],
-      forecast: forecast_result['forecast10day']
+      forecast: forecast_result['forecast']
     }
 
   end

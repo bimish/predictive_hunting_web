@@ -1,5 +1,5 @@
 <% content_for :panels do %>
-<div data-role="panel" data-display="overlay" data-position="right" id="map-options-panel" class="right-align-panel">
+<div data-role="panel" data-display="overlay" data-position="right" id="stands-map-options-panel" class="right-align-panel">
   <ul data-role="listview">
     <li>
       <label>
@@ -13,7 +13,7 @@
     </li>
     <li>
       <label>
-        <input name="stands-checkbox" id="stands-checkbox" type="checkbox" data-role="flipswitch" checked="true"> Stands <%= image_tag 'hunting_location_available_32.png', size:'16x16' %>
+        <input name="stands-checkbox" id="stands-checkbox" type="checkbox" data-role="flipswitch" checked="true"> Stands <%= image_tag 'hunting_location_available_32.png', size:'32x32' %>
       </label>
     </li>
     <li>
@@ -27,34 +27,20 @@
 <% end %>
 <div id="stands-map-canvas" style="width:100%;height:100%;">Loading, please wait...</div>
 
-<div id="map-wind-indicator" style="position: absolute; right: 5px; top: 55px;">
+<div id="stands-map-wind-indicator" style="position: absolute; right: 5px; top: 55px;">
   <a class="ui-btn ui-btn-inline" href="#wind-indicator-popup" data-transition="pop" data-rel="popup" style="padding:0.25em;">
     <svg id="windIndicatorSvg" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
       <defs>
         <marker id="Arrow" markerWidth="10" markerHeight="10" viewBox="-6 -6 12 12" refX="-2" refY="0" markerUnits="strokeWidth" orient="auto">
-          <polygon points="-3,0 -4,4 4,0 -4,-4" fill="black" stroke="none" stroke-width="1px"/>
+          <polygon points="-3,0 -4,4 4,0 -4,-4" fill="black" stroke="none" stroke-width="1px"></polygon>
         </marker>
       </defs>
-      <circle id="mycircle" fill="none" stroke="black" cx="25" cy="25" r="20" stroke-width="2px" />
+      <circle id="mycircle" fill="none" stroke="black" cx="25" cy="25" r="20" stroke-width="2px"></circle>
       <text id="windSpeed" x="25" y="30" fill="black" font-size="12" font-weight="bold" text-anchor="middle">12</text>
-      <line id="windDirection" x1="25" y1="4" x2="25" y2="5" stroke="black" stroke-width="2px" marker-end="url(#Arrow)" transform="rotate(0 25 25)" />
+      <line id="windDirection" x1="25" y1="4" x2="25" y2="5" stroke="black" stroke-width="2px" marker-end="url(#Arrow)" transform="rotate(0 25 25)"></line>
     </svg>
   </a>
   <div id="wind-indicator-popup" data-role="popup">This is popup</div>
 </div>
 
-<div id="huntingLocationPopupDialog" data-role="popup" data-dismissible="false" class="popup-dialog">
-  <a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
-  <h1>Hunting Stand</h1>
-  <div role="main" class="ui-content-padded">
-    <p>Stand: <span id="location_name">Tripod</span></h1>
-    <p>Status: <span id="location_status">Available<span></p>
-    <%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkin-form' do %>
-      <%= hidden_field_tag("is_at_plot", "true") %>
-      <%= hidden_field_tag("position_longitude", "") %>
-      <%= hidden_field_tag("position_latitude", "") %>
-      <%= hidden_field_tag("hunting_location_id", "") %>
-      <input id="checkin-submit" type="submit" value="Check-in" data-icon="check" style="background-color:green;" class="ui-btn ui-corner-all ui-shadow ui-btn-inline">
-    <% end %>
-  </div>
-</div>
+<div id="huntingLocationPopupDialog" data-role="popup" data-dismissible="false" class="popup-dialog">Popup content</div>

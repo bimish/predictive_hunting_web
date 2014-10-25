@@ -1,3 +1,31 @@
 <% provide(:page_id, 'plot_map') %>
 
 <%= render partial:'map', locals: { hunting_plot: @hunting_plot } %>
+
+<%= content_for :footer do %>
+<table class="plot-map-footer">
+  <tr>
+    <td class="date-field">
+      <%
+        today = Date.today
+        select_items = ((today)..(today + 7)).collect.with_index do |day, index|
+          case index
+          when 0
+            day_name = 'Today'
+          when 1
+            day_name = 'Tomorrow'
+          else
+            day_name = day.strftime('%A')
+          end
+          [ "#{day_name} (#{day.strftime('%b-%-d')})", day.to_s ]
+        end
+      %>
+      <%= select_tag "stand-reservation-date", options_for_select(select_items) %>
+    </td>
+    <td class="buttons">
+      <a class="ui-btn ui-corner-all ui-btn-inline ui-mini ui-btn-icon-top ui-icon-bullets" href="#hunting-location-reservations" data-role="button">My Reservations</a>
+      <a class="ui-btn ui-corner-all ui-btn-inline ui-mini ui-btn-icon-top ui-icon-gear" href="#plot-map-options-panel" data-role="button">Options</a>
+    </td>
+  </tr>
+</table>
+<% end %>
