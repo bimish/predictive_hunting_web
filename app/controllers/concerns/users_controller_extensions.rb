@@ -40,6 +40,10 @@ module UsersControllerExtensions
     end
   end
 
+  def action_requires_authenticated_user
+    get_crud_action != :create
+  end
+
   included do
     before_action :set_view_data
     prepend_before_action :ensure_not_logged_in, only: [:new, :create]
