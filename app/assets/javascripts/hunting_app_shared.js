@@ -32,20 +32,33 @@ Scripts.Common = function () {
 
   // page initializers are called once per page instance
   var _pageInitializeHandlers = [];
-  this.pageInitialize = function(pageUrl, initFunction) {
-    var pageUrlRegex = (typeof pageUrl == 'object') ? pageUrl : new RegExp(pageUrl);
-    _pageInitializeHandlers.push( { pageUrlRegex: pageUrlRegex, handler: initFunction } );
+  this.pageInitialize = function(pageId, initFunction) {
+    _pageInitializeHandlers.push( { pageId: pageId, handler: initFunction } );
   };
-  this.callPageInitializeHandlers = function(pageUrl) {
+  this.registerPageInitializers = function() {
     $.each(
       _pageInitializeHandlers,
-      function(index, item) {
-        if (item.pageUrlRegex.test(pageUrl)) {
-          item.handler();
-        }
+      function (index, item) {
+        $(document).on(
+          'pagecreate',
+          '#' + item.pageId,
+          item.handler
+        );
       }
     );
-  };
+    // global page initalizer
+    $(document).on(
+      'pagecreate',
+      function(event, ui) {
+        // hookup the refresh page button
+        $('a[href="#reload"]', ui.toPage).click(
+          function (event) {
+            Scripts.Common.refreshPage();
+          }
+        );
+      }
+    );
+  }
 
   // page show is called each time a page is shown
   var _pageShowHandlers = [];
@@ -92,10 +105,26 @@ Scripts.Common = function () {
     }
   };
 
+  this.refreshPage = function() {
+    var r = $(":mobile-pagecontainer").pagecontainer(
+      "change",
+      window.location.href,
+      {
+        allowSamePageTransition : true,
+        transition : 'none',
+        showLoadMsg : false,
+        reload : true
+      }
+    );
+  }
+
+
   return this;
 }();
 
 /*
+$(document).on("pagebeforecreate", function( event, ui ) { logEvent(event, ui); } );
+$(document).on("pagecreate", function( event, ui ) { logEvent(event, ui); } );
 $(document).on("pagecontainerbeforechange", function( event, ui ) { logEvent(event, ui); } );
 $(document).on("pagecontainerbeforehide", function( event, ui ) { logEvent(event, ui); } );
 $(document).on("pagecontainerbeforeload", function( event, ui ) { logEvent(event, ui); } );
@@ -146,10 +175,19 @@ $(document).on(
   }
 );
 
+/*
 $(document).on(
   "pagecontainerload",
   function(event, ui) {
     Scripts.Common.callPageInitializeHandlers(g_urlBeingLoaded);
   }
 );
+*/
 
+// setup the hooks for the individual pages
+$(document).on(
+  "pagecontainercreate",
+  function(event, ui) {
+    Scripts.Common.registerPageInitializers()
+  }
+);

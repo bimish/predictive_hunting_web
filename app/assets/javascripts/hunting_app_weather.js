@@ -1,6 +1,7 @@
 Scripts.Page.Weather = function() {
 
-  this.initPage = function() {
+  this.initPage = function(event, ui) {
+    console.log('Scripts.Page.Weather.initPage called');
     var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
     $('div[data-role="navbar"] > ul > li > a', activePage).click(
       function (eventObject) {
@@ -20,4 +21,5 @@ Scripts.Page.Weather = function() {
 }();
 
 // register the page initailizer
-Scripts.Common.pageShow('weather', Scripts.Page.Weather.initPage);
+Scripts.Common.pageInitialize('weather', Scripts.Page.Weather.initPage);
+//Scripts.Common.pageShow('weather', Scripts.Page.Weather.initPage);

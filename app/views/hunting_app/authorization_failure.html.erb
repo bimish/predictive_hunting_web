@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Authorization failure</title>
+</head>
+<body>
+<h4>Authorization failure</h4>
+<p>You were not authorized to access the requested information and/or perform the request action</p>
+<% unless flash.alert.blank? %>
+<p><%= flash.alert %></p>
+<% end %>
+<% unless flash.notice.blank? %>
+<p><%= flash.notice %></p>
+<% end %>
+</body>

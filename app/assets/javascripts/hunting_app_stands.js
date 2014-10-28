@@ -129,8 +129,6 @@ Scripts.Page.StandsMap = function() {
   }
 
   this.updateCheckinStatus = function(new_status, location_record) {
-    var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
-    $('#huntingLocationPopupDialog', activePage).popup('close');
     var existing_location_record_index = -1;
     for (var i = 0; i < g_memberLocations.length; i++) {
       if (g_memberLocations[i].user_id = new_status.user_id) {

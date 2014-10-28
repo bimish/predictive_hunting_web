@@ -171,11 +171,16 @@ class HuntingAppController < ApplicationController
 
   def create_stand_reservation
 
+    @action_taken = {}
+
     if (params[:existing_reservation_id].blank?)
       @reservation = HuntingLocationSchedule.new(hunting_location_id: params[:hunting_location_id], start_date_time: params[:reservation_date], end_date_time: params[:reservation_date], entry_type: HuntingLocationSchedule.entry_types[:entry_type_reservation])
       @reservation.init_new current_user
+      @action_taken[:action] = :create
     else
       @reservation = HuntingLocationSchedule.find(params[:existing_reservation_id])
+      @action_taken[:reservation_id] = @reservation.id
+      @action_taken[:action] = :update
     end
 
     reserve_am = !params[:reserve_am].blank?
@@ -188,6 +193,7 @@ class HuntingAppController < ApplicationController
       @reservation.time_period_pm!
     else
       if (@reservation.persisted?)
+        @action_taken[:action] = :delete
         @reservation.destroy
       end
       @reservation = nil
@@ -207,6 +213,10 @@ class HuntingAppController < ApplicationController
 private
   def set_hunting_plot
     @hunting_plot = HuntingPlot.find(params[:hunting_plot_id])
+    if !@hunting_plot.authorize_action?(current_user, :read)
+      flash[:alert] = 'The current user does not have access to the specified plot'
+      render 'authorization_failure', :layout => false
+    end
   end
 
   def set_member_locations

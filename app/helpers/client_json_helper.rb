@@ -26,6 +26,7 @@ module ClientJsonHelper
 
   def stand_reservation_from_hunting_location_schedule(hunting_location_schedule)
     {
+      id: hunting_location_schedule.id,
       location_id: hunting_location_schedule.hunting_location_id,
       created_by_id: hunting_location_schedule.created_by_id,
       created_by: hunting_location_schedule.created_by.get_display_name,

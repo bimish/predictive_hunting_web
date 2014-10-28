@@ -21,4 +21,4 @@ Scripts.Page.Chat = function() {
 }();
 
 // register the page initializer
-Scripts.Common.pageShow('chat', Scripts.Page.Chat.initPage);
+Scripts.Common.pageInitialize('chat', Scripts.Page.Chat.initPage);

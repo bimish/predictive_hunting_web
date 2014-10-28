@@ -42,8 +42,7 @@ Scripts.Page.PlotMap = function() {
     $.each(
       _standReservations,
       function(index, item) {
-        item.start_date_time = new Date(item.start_date_time);
-        item.end_date_time = new Date(item.end_date_time);
+        prepStandReservationJson(item);
       }
     );
   }
@@ -124,6 +123,55 @@ Scripts.Page.PlotMap = function() {
       );
 
     }
+  }
+
+  this.updateStandReservation = function(actionTaken, standReservation) {
+    var affectedLocationId = null;
+    if (standReservation != null) {
+      prepStandReservationJson(standReservation);
+    }
+    switch (actionTaken.action) {
+      case 'update':
+      {
+        var itemIndex = getReservationIndex(actionTaken.reservation_id);
+        if (itemIndex >= 0) {
+          _standReservations[itemIndex] = standReservation;
+          affectedLocationId = standReservation.location_id;
+        }
+        break;
+      }
+      case 'create':
+      {
+        _standReservations.push(standReservation);
+        affectedLocationId = standReservation.location_id;
+        break;
+      }
+      case 'delete':
+      {
+        var itemIndex = getReservationIndex(actionTaken.reservation_id);
+        if (itemIndex >= 0) {
+          affectedLocationId = _standReservations[itemIndex].location_id
+          _standReservations.splice(itemIndex, 1);
+        }
+        break;
+      }
+    }
+    if (affectedLocationId != null) {
+      updateStandLocation(affectedLocationId);
+    }
+    function getReservationIndex(reservation_id) {
+      for (var i = 0 ; i < _standReservations.length; i++) {
+        if (_standReservations[i].id == reservation_id) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  }
+
+  function prepStandReservationJson(standReservation) {
+    standReservation.start_date_time = new Date(standReservation.start_date_time);
+    standReservation.end_date_time = new Date(standReservation.end_date_time);
   }
 
   function showLocationPopup(hunting_location) {
@@ -215,6 +263,20 @@ Scripts.Page.PlotMap = function() {
       }
     );
   }
+
+  function updateStandLocation(locationId) {
+    var standLocation = null;
+    for (var i = 0; i < g_standLocations.length; i++) {
+      if (g_standLocations[i].id == locationId) {
+        standLocation = g_standLocations[i];
+        break;
+      }
+    }
+    if (standLocation != null) {
+      _mapHelper.updateLocation(standLocation, _standLocationMarkerOptions);
+    }
+  }
+
   function isReserved(location_id, date) {
 
     var dateRangeAM = { start: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1) };
@@ -262,5 +324,5 @@ Scripts.Page.PlotMap = function() {
   return this;
 }();
 
-// register the page initailizer
+// register the page initializer
 Scripts.Common.pageShow('plot_map', Scripts.Page.PlotMap.initPage);

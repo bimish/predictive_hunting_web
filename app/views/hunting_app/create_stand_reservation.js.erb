@@ -1,0 +1,2 @@
+$('#huntingLocationPopupDialog', $.mobile.pageContainer.pagecontainer("getActivePage")).popup('close');
+Scripts.Page.PlotMap.updateStandReservation(<%== @action_taken.to_json%>, <%== (@reservation.nil? ? 'null' : stand_reservation_from_hunting_location_schedule(@reservation).to_json) %>);
