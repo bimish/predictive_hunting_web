@@ -7,6 +7,7 @@
 		var location = { lat: <%=hunting_plot.location_coordinates.y()%>, lng: <%=hunting_plot.location_coordinates.x()%> };
 		var mapOptions = {
 			center: location,
+			showCenterMarker: true,
 <%
 if !hunting_plot.boundary.nil?
 	view_window = rgeo_get_bounds(hunting_plot.boundary)
