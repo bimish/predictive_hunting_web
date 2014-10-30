@@ -329,3 +329,14 @@ table.plot-map-footer {
     white-space: nowrap;
   }
 }
+
+.header-title {
+  margin-top:2px;
+  margin-bottom:2px;
+  text-align:center;
+}
+@media only screen and (max-height: 480px) and (orientation: portrait) {
+  .header-title {
+    display:none;
+  }
+}

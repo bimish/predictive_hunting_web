@@ -128,7 +128,8 @@ PlotMapHelper.createMap = function(mapCanvas, options) {
     center: options.center,
     view_window: options.view_window,
     boundary: options.boundary,
-    zoom: 12
+    zoom: 12,
+    mapType: MapsHelper.MapTypes.Satellite
   };
   try {
     return new MapsHelper(mapCanvas, mapOptions);

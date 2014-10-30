@@ -9,9 +9,6 @@ class HuntingAppController < ApplicationController
 
   def landing_page
     @forecast = WeatherService.forecast(@hunting_plot)
-    set_last_checkin
-    set_location_schedules_for_today
-    set_member_locations
   end
 
   def map
@@ -57,14 +54,26 @@ class HuntingAppController < ApplicationController
   end
 
   def stands
+    hourly_forecast = WeatherService.forecast_hourly(@hunting_plot)
+    if hourly_forecast[:forecast][0].nil?
+      @wind_forecast = {
+        wind_dir: 'Unavailable',
+        wind_degrees: '0',
+        wind_mph: '?'
+      }
+    else
+      @wind_forecast = {
+        wind_dir: hourly_forecast[:forecast][0]['wdir']['dir'],
+        wind_degrees: hourly_forecast[:forecast][0]['wdir']['degrees'],
+        wind_mph: hourly_forecast[:forecast][0]['wspd']['english']
+      }
+    end.to_json
     set_location_schedules_for_today
     set_member_locations
     set_last_checkin
   end
 
   def activity
-    set_location_schedules_for_today
-    set_member_locations
     @animal_activity_observations = AnimalActivityObservation.search(@hunting_plot.id, params).preload(:hunting_location).preload(:named_animal)
 
     @filters = Array.new
@@ -103,8 +112,6 @@ class HuntingAppController < ApplicationController
   def chat
     set_chat_feed
     @user_status_post = HuntingModeUserStatus.new()
-    set_location_schedules_for_today
-    set_member_locations
   end
 
   def chat_post
@@ -126,9 +133,6 @@ class HuntingAppController < ApplicationController
   def weather
     @forecast = WeatherService.forecast(@hunting_plot)
     @hourly_forecast = WeatherService.forecast_hourly(@hunting_plot)
-
-    set_location_schedules_for_today
-    set_member_locations
   end
 
   def check_in
@@ -206,8 +210,7 @@ class HuntingAppController < ApplicationController
   end
 
   def hunt_forecast
-    set_location_schedules_for_today
-    set_member_locations
+
   end
 
 private

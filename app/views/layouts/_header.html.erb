@@ -17,7 +17,7 @@
 
     <div class="collapse navbar-collapse" id="main-menu">
       <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to "Home", root_path %></li>
+        <li><%= link_to "Home", home_path %></li>
 <% if signed_in? %>
         <li><%= link_to "Friends", friends_path %></li>
         <li><%= link_to "Networks", user_network_subscriptions_path %></li>

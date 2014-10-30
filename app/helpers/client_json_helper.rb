@@ -35,4 +35,15 @@ module ClientJsonHelper
     }
   end
 
+  def hunting_location_to_stand_location(hunting_location)
+    {
+      id: hunting_location.id,
+      name: hunting_location.name,
+      coordinates: {
+        lat: hunting_location.coordinates.y(),
+        lng: hunting_location.coordinates.x()
+      }
+    }
+  end
+
 end

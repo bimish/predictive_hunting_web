@@ -1,5 +1,8 @@
 <li data-id="<%=chat_item.id%>">
-  <%= content_tag(:p, time_to_s(chat_item.created_at, :short), class:'time') %>
+  <%
+    chat_item_date_time = (chat_item.created_at < Date.today.beginning_of_day) ? date_time_to_s(chat_item.created_at, :short) : 'Today ' + time_to_s(chat_item.created_at, :short)
+  %>
+  <%= content_tag(:p, chat_item_date_time, class:'time') %>
   <%= content_tag(:p, chat_item.user.get_display_name, class:'user') %>
   <%= content_tag(:p, chat_item.status_text, class:'content') %>
 </li>

@@ -1,0 +1,23 @@
+Scripts.Page.StandsMap.setStandLocations(
+<%==
+    @hunting_plot.locations.collect do |hunting_location|
+      hunting_location_to_stand_location(hunting_location)
+    end.to_json
+%>
+);
+Scripts.Page.StandsMap.setStandReservations(
+<%==
+    @hunting_location_schedules.collect do |hunting_location_schedule|
+      stand_reservation_from_hunting_location_schedule(hunting_location_schedule)
+    end.to_json
+%>
+);
+Scripts.Page.StandsMap.setMemberLocations(
+<%==
+    @member_locations.collect do |member_location|
+      member_location_from_hunting_mode_location(member_location)
+    end.to_json
+%>
+);
+Scripts.Page.StandsMap.setWindForecast(<%== @wind_forecast.to_json %>);
+Scripts.Page.StandsMap.createMap();

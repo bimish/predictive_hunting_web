@@ -1,0 +1,5 @@
+<li data-id="<%=reservation.id%>">
+  <%= content_tag(:p, date_to_s(reservation.start_date_time, :short), class:'time') %>
+  <%= content_tag(:p, reservation.created_by.get_display_name, class:'user') %>
+  <%= content_tag(:p, reservation.time_period, class:'content') %>
+</li>

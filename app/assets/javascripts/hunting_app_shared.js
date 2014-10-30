@@ -35,6 +35,7 @@ Scripts.Common = function () {
   this.pageInitialize = function(pageId, initFunction) {
     _pageInitializeHandlers.push( { pageId: pageId, handler: initFunction } );
   };
+  /*
   this.registerPageInitializers = function() {
     $.each(
       _pageInitializeHandlers,
@@ -46,19 +47,34 @@ Scripts.Common = function () {
         );
       }
     );
-    // global page initalizer
-    $(document).on(
-      'pagecreate',
-      function(event, ui) {
-        // hookup the refresh page button
-        $('a[href="#reload"]', ui.toPage).click(
-          function (event) {
-            Scripts.Common.refreshPage();
-          }
-        );
+  }
+  */
+  this.initializePage = function(pageContainer) {
+
+    initializePageCommon(pageContainer);
+
+    // call any other initializers that have been registered
+    var pageId = $(pageContainer).attr('id');
+    $.each(
+      _pageInitializeHandlers,
+      function(index, item) {
+        if (item.pageId == pageId) {
+          item.handler(pageContainer);
+        }
       }
     );
   }
+
+  function initializePageCommon(pageContainer) {
+    // if page has a refresh button, initialize it if necessary
+    pageContainer.find('#reload-button').click(
+      function(event) {
+        event.preventDefault();
+        Scripts.Common.refreshPage();
+      }
+    );
+  }
+
 
   // page show is called each time a page is shown
   var _pageShowHandlers = [];
@@ -106,13 +122,15 @@ Scripts.Common = function () {
   };
 
   this.refreshPage = function() {
-    var r = $(":mobile-pagecontainer").pagecontainer(
+    $(":mobile-pagecontainer").pagecontainer(
       "change",
       window.location.href,
       {
         allowSamePageTransition : true,
+        changeHash: false,
         transition : 'none',
         showLoadMsg : false,
+        reloadPage : true, // this is supposed to be deprecated in v 1.4 and replaced by reload, but apparently there is a bug
         reload : true
       }
     );
@@ -160,7 +178,18 @@ function logEvent(event, ui) {
 $(document).on(
   "pagecontainershow",
   function(event, ui) {
+
+    // common initialization time a page is shown
     Scripts.Common.setContentFullHeight();
+
+    // if page has not yet been initialized, do it now
+    var isInitialized = ($(ui.toPage).data('isInitialized') == 'true');
+    if (!isInitialized) {
+      Scripts.Common.initializePage(ui.toPage);
+      $(ui.toPage).data('isInitialized', 'true');
+    }
+
+    // custom page show handlers
     Scripts.Common.callPageShowHandlers($(ui.toPage).get(0).id);
   }
 );
@@ -185,9 +214,11 @@ $(document).on(
 */
 
 // setup the hooks for the individual pages
+/*
 $(document).on(
   "pagecontainercreate",
   function(event, ui) {
     Scripts.Common.registerPageInitializers()
   }
 );
+*/

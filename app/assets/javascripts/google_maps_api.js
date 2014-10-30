@@ -46,7 +46,8 @@ function MapsHelper(mapCanvas, options)
       zoom: MapsHelper.DEFAULT_ZOOM,
       markerTitle: 'US',
       showCenterMarker: false,
-      borderFillColor: '#8FBC8F'
+      borderFillColor: '#8FBC8F',
+      mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     _mode = MapsHelper.Mode.View;
 
@@ -78,6 +79,8 @@ function MapsHelper(mapCanvas, options)
         _mapOptions.additional_markers = options.additional_markers;
       if (isDefinedAndNonNull(options.borderFillColor))
         _mapOptions.borderFillColor = options.borderFillColor;
+      if (isDefinedAndNonNull(options.mapType))
+        _mapOptions.mapTypeId = options.mapType;
     }
   }
 

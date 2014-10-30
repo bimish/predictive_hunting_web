@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Predictive Hunting</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no, minimal-ui">
 
   <%= stylesheet_link_tag "hunting-app", media: "all" %>
   <script type="text/javascript">
@@ -36,6 +36,13 @@
     };
     return this;
   }();
+  </script>
+  <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?libraries=drawing" %>
+  <%= javascript_include_tag "hunting_app" %>
+  <%= csrf_meta_tag %>
+  <%= yield :head %>
+  <%# this has to go after the main script so the parseWKTPolygon function is available %>
+  <script type="text/javascript">
   var g_huntingPlotLocation = {
     center: { lat: <%=@hunting_plot.location_coordinates.y()%>, lng: <%=@hunting_plot.location_coordinates.x()%> },
     <%
@@ -44,81 +51,37 @@
     %>
     view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
     <% end %>
-    boundary_wkt: '<%=@hunting_plot.boundary.to_s%>'
+    boundary: parseWKTPolygon('<%=@hunting_plot.boundary.to_s%>')
   };
-  var g_standLocations = <%==
-      @hunting_plot.locations.collect do |hunting_location|
-        {
-          id: hunting_location.id,
-          name: hunting_location.name,
-          coordinates: {
-            lat: hunting_location.coordinates.y(),
-            lng: hunting_location.coordinates.x()
-          }
-        }
-      end.to_json %>;
-  var g_standReservations = <%==
-    @hunting_location_schedules.collect do |hunting_location_schedule|
-      stand_reservation_from_hunting_location_schedule(hunting_location_schedule)
-    end.to_json %>;
-  var g_memberLocations = <%==
-    @member_locations.collect do |member_location|
-      member_location_from_hunting_mode_location(member_location)
-    end.to_json %>;
-  var g_windForecast = <%==
-    hourly_forecast = WeatherForecastHelper.forecast_hourly(@hunting_plot)
-    if hourly_forecast[:forecast][0].nil?
-      forecast = {
-        wind_dir: 'Unavailable',
-        wind_degrees: '0',
-        wind_mph: '?'
-      }
-    else
-      forecast = {
-        wind_dir: hourly_forecast[:forecast][0]['wdir']['dir'],
-        wind_degrees: hourly_forecast[:forecast][0]['wdir']['degrees'],
-        wind_mph: hourly_forecast[:forecast][0]['wspd']['english']
-      }
-    end
-    forecast.to_json %>;
-  </script>
-  <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?libraries=drawing" %>
-  <%= javascript_include_tag "hunting_app" %>
-  <%= csrf_meta_tag %>
-  <%= yield :head %>
-  <script type="text/javascript">
-  g_huntingPlotLocation.boundary = parseWKTPolygon(g_huntingPlotLocation.boundary_wkt);
-  // convert date/time values to javascript dates
-  $.each(
-    g_standReservations,
-    function(index, reservation) {
-      reservation.start_date_time = new Date(reservation.start_date_time);
-      reservation.end_date_time = new Date(reservation.end_date_time);
-    }
-  );
   </script>
 </head>
 
 <body data-no-turbolink="true">
 
-  <div data-role="page" id="<%=yield(:page_id)%>" data-dom-cache="true">
+  <% page_id = yield(:page_id) %>
 
+  <div data-role="page" id="<%=page_id%>" data-dom-cache="true">
+
+    <% if page_id == 'landing' %>
     <div data-role="panel" data-display="overlay" id="topmenu">
       <ul data-role="listview">
-        <li><%= link_to('Home', hunting_app_path(@hunting_plot)) %></li>
-        <li><a href="#">Login</a></li>
-        <li><a href="#">Logout</a></li>
-        <li><a href="#">Change Plot</a></li>
+        <li><%= link_to 'Home', home_path, data: { ajax: false } %></li>
+        <li><%= link_to 'Sign out', signout_path, data: { ajax: false } %></li>
       </ul>
       <br/>
       <a href="#header" data-rel="close" class="ui-btn ui-icon-carat-l ui-btn-icon-left">Close</a>
     </div>
+    <% end %>
     <%= yield :panels %>
 
     <div data-role="header" data-position="fixed" id="header">
-      <h1><%= image_tag "logo.png", size:'40x40', style:'margin-top:-10px;margin-bottom:-10px;' %> Predictive Hunting</h1>
+      <h1>Predictive Hunting</h1>
+      <% if page_id == 'landing' %>
       <a href="#topmenu" class="jqm-navmenu-link ui-nodisc-icon ui-alt-icon ui-btn-left ui-btn ui-icon-bars ui-btn-icon-notext" data-role="button">Menu</a>
-      <a href="#reload" class="jqm-navmenu-link ui-nodisc-icon ui-alt-icon ui-btn-right ui-btn ui-icon-refresh ui-btn-icon-notext" data-role="button">Reload</a>
+      <% else %>
+      <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-icon-carat-l ui-btn-icon-left ui-shadow ui-corner-all" data-role="button" role="button">Back</a>
+      <a href="#" id="reload-button"  class="ui-btn-right ui-btn ui-icon-refresh ui-btn-icon-right ui-shadow ui-corner-all" data-role="button" role="button">Refresh</a>
+      <% end %>
       <%= yield :header %>
     </div>
 

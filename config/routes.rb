@@ -102,6 +102,7 @@ Web::Application.routes.draw do
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'
   delete '/signout', to: 'sessions#destroy'
+  get '/signout', to: 'sessions#destroy'
   get '/help', to: 'static_pages#help'
   get '/home' => 'static_pages#home', as: :home
 
