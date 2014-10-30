@@ -139,6 +139,7 @@
       var currentLocationCoordinates = $('#plot_location').val();
       if (!isNullOrEmpty(currentLocationCoordinates)) {
         mapOptions.center = parseWKTPoint(currentLocationCoordinates);
+        mapOptions.showCenterMarker = true;
       }
       else if (!isDefinedAndNonNull(mapOptions.view_window)) {
         mapOptions.zoom = 5;
