@@ -1,0 +1,17 @@
+<% content_for :head do %>
+<style type="text/css" media="screen">
+</style>
+<% end %>
+
+<div class="row">
+  <div class="md-col-12">
+    Hi There!
+      <svg id="moon_phase" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="200px" height="200px" viewBox="0 0 200 200">
+        <path class="moonback" fill="#000000" stroke="#ffffff" d="m100,5 a20,20 0 1,1 0,150 a20,20 0 1,1 0,-150"></path>
+        <path class="moon"     fill="#aaaaaa" stroke="#ffffff" d="m100,5 a10,20 0 1,1 0,150 a20,20 0 1,1 0,-150"></path>
+        <circle fill="white" fill-opacity="0" stroke="black" cx="100" cy="100" r="95"></circle>
+      </svg>
+
+    <%= image_tag 'layers.svg' %>
+  </div>
+</div>

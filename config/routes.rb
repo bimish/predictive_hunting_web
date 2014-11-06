@@ -98,6 +98,7 @@ Web::Application.routes.draw do
   get '/hunting_app/:hunting_plot_id/stand_reservation_dialog/:hunting_location_id', to: 'hunting_app#stand_reservation_dialog', as: :hunting_app_stand_reservation_dialog
   post '/hunting_app/:hunting_plot_id/create_stand_reservation', to: 'hunting_app#create_stand_reservation', as: :hunting_app_create_stand_reservation
   get '/hunting_app/:hunting_plot_id/hunt_forecast', to: 'hunting_app#hunt_forecast', as: :hunting_app_hunt_forecast
+  get '/hunting_app/:hunting_plot_id/hunt_forecast_month/:forecast_date', to: 'hunting_app#hunt_forecast_month', as: :hunting_app_hunt_forecast_month
 
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141023121653) do
+ActiveRecord::Schema.define(version: 20141030214842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +179,34 @@ ActiveRecord::Schema.define(version: 20141023121653) do
   add_index "relationship_request", ["created_by_id", "related_user_id"], :name => "index_relationship_request_on_created_by_id_and_related_user_id", :unique => true
   add_index "relationship_request", ["created_by_id"], :name => "index_relationship_request_on_created_by_id"
   add_index "relationship_request", ["related_user_id"], :name => "index_relationship_request_on_related_user_id"
+
+  create_table "solunar_forecast", force: true do |t|
+    t.integer  "location_id",                  null: false
+    t.date     "forecast_day",                 null: false
+    t.time     "minor_am"
+    t.time     "major_am"
+    t.time     "minor_pm"
+    t.time     "major_pm"
+    t.time     "sun_rise",                     null: false
+    t.time     "sun_set",                      null: false
+    t.time     "moon_rise"
+    t.time     "moon_set"
+    t.time     "moon_up"
+    t.time     "moon_down"
+    t.integer  "moon_phase",         limit: 2
+    t.integer  "activity_indicator", limit: 2
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "solunar_forecast", ["location_id"], :name => "index_solunar_forecast_on_location_id"
+
+  create_table "solunar_forecast_location", force: true do |t|
+    t.string   "name",                 limit: 100,                                              null: false
+    t.spatial  "location_coordinates", limit: {:srid=>4326, :type=>"point", :geographic=>true}, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "user", force: true do |t|
     t.string   "first_name",            limit: 100,                 null: false

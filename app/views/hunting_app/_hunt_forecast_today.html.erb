@@ -1,0 +1,60 @@
+<div class="hunt-forecast-day">
+
+  <div class="ui-grid-a">
+    <div class="ui-block-a">
+      <p class="ui-bar ui-bar-a ui-corner-all">Sun</p>
+      <p class="time-value"><label>Rise</label><%= content_tag :span, time_to_s(@day_forecast.sun_rise) %></p>
+      <p class="time-value"><label>Set</label><%= content_tag :span, time_to_s(@day_forecast.sun_set) %></p>
+    </div>
+    <div class="ui-block-b">
+      <p class="ui-bar ui-bar-a ui-corner-all">Moon</p>
+      <p class="time-value"><label>Rise</label><%= content_tag :span, time_to_s(@day_forecast.moon_rise) %></p>
+      <p class="time-value"><label>Set</label><%= content_tag :span, time_to_s(@day_forecast.moon_set) %></p>
+      <p class="time-value"><label>Up</label><%= content_tag :span, time_to_s(@day_forecast.moon_up) %></p>
+      <p class="time-value"><label>Down</label><%= content_tag :span, time_to_s(@day_forecast.moon_down) %></p>
+    </div>
+  </div>
+
+  <%
+  if @day_forecast.major_am.nil?
+    major_am_span = '-'
+  else
+    major_am_span = time_to_s(@day_forecast.major_am.to_time - 1.hours, :hours_minutes) + ' - ' + time_to_s(@day_forecast.major_am.to_time + 1.hours, :hours_minutes)
+  end
+  if @day_forecast.major_pm.nil?
+    major_pm_span = '-'
+  else
+    major_pm_span = time_to_s(@day_forecast.major_pm.to_time - 1.hours, :hours_minutes) + ' - ' + time_to_s(@day_forecast.major_pm.to_time + 1.hours, :hours_minutes)
+  end
+  if @day_forecast.minor_am.nil?
+    minor_am_span = '-'
+  else
+    minor_am_span = time_to_s(@day_forecast.minor_am.to_time - 30.minutes, :hours_minutes) + ' - ' + time_to_s(@day_forecast.minor_am.to_time + 30.minutes, :hours_minutes)
+  end
+  if @day_forecast.minor_pm.nil?
+    minor_pm_span = '-'
+  else
+    minor_pm_span = time_to_s(@day_forecast.minor_pm.to_time - 30.minutes, :hours_minutes) + ' - ' + time_to_s(@day_forecast.minor_pm.to_time + 30.minutes, :hours_minutes)
+  end
+  %>
+
+  <p class="ui-bar ui-bar-a ui-corner-all">Major/Minor Times</p>
+  <table class="major-minor-times">
+    <tr>
+      <td></td>
+      <th>AM</th>
+      <th>PM</th>
+    </tr>
+    <tr>
+      <th>Major</th>
+      <td><%= major_am_span%></td>
+      <td><%= major_pm_span%></td>
+    </tr>
+    <tr>
+      <th>Minor</th>
+      <td><%= minor_am_span%></td>
+      <td><%= minor_pm_span%></td>
+    </tr>
+  </table>
+
+</div>

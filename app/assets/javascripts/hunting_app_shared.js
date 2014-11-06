@@ -136,6 +136,22 @@ Scripts.Common = function () {
     );
   }
 
+  this.initializeTabbedNavBar = function(navbar) {
+    $(navbar).find('ul > li > a').click(
+      function (eventObject) {
+        var targetPanelId = $(this).data('target');
+        var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+        $('div[data-role="content"] > div', activePage).each(
+          function (index, item) {
+            if ($(item).attr('id') == targetPanelId)
+              $(item).addClass('content-panel-active');
+            else
+              $(item).removeClass('content-panel-active');
+          }
+        );
+      }
+    );
+  }
 
   return this;
 }();

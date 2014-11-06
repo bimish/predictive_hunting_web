@@ -1,0 +1,68 @@
+<div data-role="header">
+  <%= link_to 'Previous', hunting_app_hunt_forecast_month_path(@hunting_plot.id, forecast_date - 1.month), remote: true, class: 'ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-notext ui-icon-carat-l' %>
+  <h1><%= l forecast_date, format: :month_year%></h1>
+  <%= link_to 'Next', hunting_app_hunt_forecast_month_path(@hunting_plot.id, forecast_date + 1.month), remote: true, class: 'ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-notext ui-icon-carat-r' %>
+</div>
+
+<% if forecast.size == 0 %>
+<p>Forecast not available</p>
+<% else %>
+<table class="month-hunt-forecast">
+  <thead>
+    <tr>
+      <th>Su</th>
+      <th>Mo</th>
+      <th>Tu</th>
+      <th>We</th>
+      <th>Th</th>
+      <th>Fr</th>
+      <th>Sa</th>
+    </tr>
+  </thead>
+  <tbody>
+<%
+  beginning_offset = forecast.first.forecast_day.wday
+  end_of_month_day = forecast.first.forecast_day.end_of_month.day
+  forecast_index = 0
+  6.times do |week_index|
+%>
+    <tr>
+<%
+    7.times do |day_of_week_index|
+      day_of_month = 7 * week_index + day_of_week_index - beginning_offset + 1
+      unless ((day_of_month <= 0) || (day_of_month > end_of_month_day))
+        day_forecast = forecast[forecast_index]
+        forecast_index += 1
+      end
+      unless day_forecast.nil?
+        case day_forecast.activity_indicator
+        when 2
+          class_name = 'medium'
+        when 3
+          class_name = 'high'
+        else
+          class_name = 'low'
+        end
+        if (day_forecast.forecast_day == Date.today)
+          class_name << " today"
+        end
+        if (day_forecast.moon_phase == 100)
+          class_name << " full-moon"
+        elsif (day_forecast.moon_phase == 0)
+          class_name << " new-moon"
+        elsif (day_forecast.moon_phase == 50)
+          class_name << " half-moon"
+        end
+      end
+%>
+      <td class="<%= class_name %>"><%= day_forecast.nil? ? nil : day_forecast.forecast_day.day %></td>
+<%
+    end
+%>
+    </tr>
+<%
+  end
+%>
+  </tbody>
+</table>
+<% end %>

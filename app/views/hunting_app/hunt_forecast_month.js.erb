@@ -1,0 +1,6 @@
+(function() {
+  var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+  var monthTab = $('#hunt_forecast_month', activePage);
+  monthTab.html('<%= j render partial:'hunt_forecast_month', :locals => { :forecast => @forecast, forecast_date: @forecast_date } %>');
+  monthTab.trigger('create');
+})();

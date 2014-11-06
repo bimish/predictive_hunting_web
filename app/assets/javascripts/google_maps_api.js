@@ -89,7 +89,8 @@ function MapsHelper(mapCanvas, options)
     _map = new google.maps.Map(resolveElement(mapCanvas), _mapOptions);
 
     if (isDefinedAndNonNull(_mapOptions.view_window)) {
-      _map.fitBounds(_mapOptions.view_window);
+      fitViewWindow(_mapOptions.view_window);
+      //_map.fitBounds(_mapOptions.view_window);
     }
 
     if (
@@ -236,15 +237,11 @@ function MapsHelper(mapCanvas, options)
     var boundary = new google.maps.Polygon (
       {
         paths: polygonPaths,
-        strokeColor: (editable ? '#000000' : '#8FBC8F'),
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: _mapOptions.borderFillColor,
-        fillOpacity: 0.35
       }
     );
     boundary.setMap(_map);
     boundary.setEditable(editable);
+    setBoundaryColor(boundary);
     return boundary;
   }
   function setBoundary(vertices) {
@@ -254,6 +251,35 @@ function MapsHelper(mapCanvas, options)
     }
     _boundary = addBoundary(vertices, (_mode == MapsHelper.Mode.SetBoundary));
   }
+  function setBoundaryColor(boundary) {
+    editable = (_mode == MapsHelper.Mode.SetBoundary);
+    var options = null;
+    if (_map.getMapTypeId() == MapsHelper.MapTypes.Roadmap) {
+      options = {
+        strokeColor: (editable ? '#000000' : '#8FBC8F'),
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: _mapOptions.borderFillColor,
+        fillOpacity: 0.35
+      };
+    }
+    else {
+      options = {
+        strokeColor: '#000088',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#000000',
+        fillOpacity: 0
+      };
+    }
+    boundary.setOptions(options);
+  }
+  function updateBoundaryColor() {
+    if (_boundary != null) {
+      setBoundaryColor(_boundary);
+    }
+  }
+
   function polygonCompleteHandler(polygon) {
     _boundary = polygon;
     _boundary.setEditable(true);
@@ -319,6 +345,7 @@ function MapsHelper(mapCanvas, options)
         break;
       }
     }
+    updateBoundaryColor();
   }
   function getModeImpl() {
     return _mode;
@@ -335,6 +362,7 @@ function MapsHelper(mapCanvas, options)
   }
   function setMapTypeImpl(mapType) {
     _map.setMapTypeId(mapType);
+    updateBoundaryColor();
   }
   function setDragEventHandlerImpl(handler) {
     _dragEventHandler = handler;
@@ -351,6 +379,50 @@ function MapsHelper(mapCanvas, options)
         function() { _dragEventHandler(marker); }
       );
     }
+  }
+  function fitViewWindow(viewWindow) {
+
+    _map.fitBounds(viewWindow); // calling fitBounds() here to center the map for the bounds
+
+    var overlayHelper = new google.maps.OverlayView();
+    overlayHelper.draw = function () {
+      if (!this.ready) {
+        var extraZoom = getExtraZoom(this.getProjection(), viewWindow, _map.getBounds());
+        if (extraZoom > 0) {
+          _map.setZoom(_map.getZoom() + extraZoom);
+        }
+        this.ready = true;
+        google.maps.event.trigger(this, 'ready');
+      }
+    };
+    overlayHelper.setMap(_map);
+  }
+
+  function getExtraZoom(projection, expectedBounds, actualBounds) {
+
+    // in: LatLngBounds bounds -> out: height and width as a Point
+    function getSizeInPixels(bounds) {
+      var sw = projection.fromLatLngToContainerPixel(bounds.getSouthWest());
+      var ne = projection.fromLatLngToContainerPixel(bounds.getNorthEast());
+      return new google.maps.Point(Math.abs(sw.y - ne.y), Math.abs(sw.x - ne.x));
+    }
+
+    var expectedSize = getSizeInPixels(expectedBounds),
+      actualSize = getSizeInPixels(actualBounds);
+
+    if (Math.floor(expectedSize.x) == 0 || Math.floor(expectedSize.y) == 0) {
+      return 0;
+    }
+
+    var qx = actualSize.x / expectedSize.x;
+    var qy = actualSize.y / expectedSize.y;
+    var min = Math.min(qx, qy);
+
+    if (min < 1) {
+      return 0;
+    }
+
+    return Math.floor(Math.log(min) / Math.LN2 /* = log2(min) */);
   }
 }
 function Marker(map, googleMarker, tag) {

@@ -16,11 +16,19 @@ module ApplicationHelper
   end
 
   def date_to_s(date_time_value, format = :short)
-    localize date_time_value.to_date, format: format
+    if date_time_value.nil?
+      nil
+    else
+      localize date_time_value.to_date, format: format
+    end
   end
 
   def time_to_s(date_time_value, format = :short)
-    localize date_time_value.in_time_zone, format: format
+    if date_time_value.nil?
+      nil
+    else
+      localize date_time_value.in_time_zone, format: format
+    end
   end
 
   def date_time_to_feed(date_time_value)

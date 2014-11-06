@@ -1,3 +1,17 @@
 <% provide(:page_id, 'hunt_forecast') %>
 
-<h3>Coming Soon...</h3>
+<div data-role="content" id="hunt_forecast_today" class="content-panel content-panel-active">
+  <%= render partial:'hunt_forecast_today', :locals => { :forecast => @day_forecast } %>
+</div>
+<div data-role="content" id="hunt_forecast_month" class="content-panel">
+  <%= render partial:'hunt_forecast_month', :locals => { :forecast => @month_forecast, forecast_date: @forecast_date } %>
+</div>
+
+<%= content_for :footer do %>
+<div data-role="navbar" data-mini="true" data-iconpos="left">
+  <ul>
+    <li><a href="#" data-target="hunt_forecast_today" data-icon="clock" class="ui-btn-active">Today</a></li>
+    <li><a href="#" data-target="hunt_forecast_month" data-icon="calendar">Month</a></li>
+  </ul>
+</div>
+<% end %>

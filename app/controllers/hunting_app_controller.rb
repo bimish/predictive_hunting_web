@@ -144,6 +144,7 @@ class HuntingAppController < ApplicationController
       if @location_record.nil?
         @location_record = HuntingModeUserLocation.create(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: params[:hunting_location_id], location_coordinates: location_coordinates)
       else
+        @location_record.touch # ensure updated_at gets changed
         @location_record.update(location_coordinates: location_coordinates, hunting_location_id: params[:hunting_location_id])
       end
     elsif !@location_record.nil?
@@ -210,8 +211,19 @@ class HuntingAppController < ApplicationController
   end
 
   def hunt_forecast
-
+    forecast_location = SolunarForecastLocation.nearest_to_plot(@hunting_plot)
+    @month_forecast = SolunarForecast.for_month(forecast_location.id).order(forecast_day: :asc)
+    today = Date.today
+    @forecast_date = today.beginning_of_month
+    @day_forecast = @month_forecast.find { |daily_forecast| daily_forecast.forecast_day == today }
   end
+
+  def hunt_forecast_month
+    @forecast_date = params[:forecast_date].blank? ? Date.today.beginning_of_month : Date.parse(params[:forecast_date]).beginning_of_month
+    forecast_location = SolunarForecastLocation.nearest_to_plot(@hunting_plot)
+    @forecast = SolunarForecast.for_month(forecast_location.id, @forecast_date).order(forecast_day: :asc)
+  end
+
 
 private
   def set_hunting_plot

@@ -340,3 +340,99 @@ table.plot-map-footer {
     display:none;
   }
 }
+
+div.hunt-forecast-day {
+  padding: 0px;
+  margin: 0px;
+  p.time-value {
+    margin-top: 0;
+    margin-bottom: 0;
+    clear: both;
+    line-height:1em;
+    label {
+      display: block;
+      float: left;
+      width:3em;
+    }
+    label:after {
+      content: ':';
+    }
+    span {
+      display: inline-block;
+    }
+  }
+  .ui-grid-a {
+    label {
+      display: block;
+      float: left;
+      width: 3em;
+    }
+    label:after {
+      content: ':';
+      margin-right:0.5em;
+    }
+    span {
+      display: inline-block;
+    }
+  }
+}
+
+div.content-panel {
+  padding: 0px !important;
+  overflow-y: visible;
+}
+
+table.major-minor-times {
+  margin: 0px;
+  width: 100%;
+  td {
+    padding: 0px;
+    margin: 0px;
+    text-align: center;
+  }
+}
+
+table.month-hunt-forecast {
+  table-layout: fixed;
+  width: 100%;
+  margin: 0px;
+  border-collapse: collapse;
+  td {
+    text-align: left;
+    vertical-align: top;
+    border: 2px solid #cccccc;
+    height: 3em;
+    font-size: 75%;
+  }
+  td.low, td.medium, td.high {
+    cursor: pointer;
+  }
+  td.low {
+    background-color: #FFDE77;
+  }
+  td.medium {
+    background-color: #FFAC63;
+  }
+  td.high {
+    font-weight: bold;
+    background-color: #FF585D;
+  }
+  td.today {
+    border: 3px solid blue;
+  }
+  td.new-moon {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20%3F%3E%0A%3Csvg%20height%3D%2220x%22%20version%3D%221.1%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220px%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20fill%3D%22%23333333%22%20fill-opacity%3D%221%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%229%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  td.full-moon {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20%3F%3E%0A%3Csvg%20height%3D%2220x%22%20version%3D%221.1%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220px%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20fill%3D%22white%22%20fill-opacity%3D%221%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%229%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  td.half-moon {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20%3F%3E%0A%3Csvg%20height%3D%2220x%22%20width%3D%2220px%22%20version%3D%221.1%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M10%2C1%20a9%2C9%200%200%2C0%200%2C18%22%20fill%3D%22%23333333%22%20stroke%3D%22%23333333%22%20stroke-width%3D%221%22%20%2F%3E%0A%20%20%3Cpath%20d%3D%22M10%2C19%20a9%2C9%200%200%2C0%200%2C-18%22%20fill%3D%22white%22%20stroke%3D%22white%22%20stroke-width%3D%221%22%20%2F%3E%0A%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
