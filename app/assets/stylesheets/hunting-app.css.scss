@@ -36,11 +36,22 @@ div[data-role="header"] {
     text-shadow: none;
 }
 
+.ui-header .ui-title, .ui-footer .ui-title {
+    text-overflow: clip;
+    white-space: normal;
+}
+.ui-header {
+  h1.header-title {
+    text-overflow: clip;
+    white-space: normal;
+  }
+}
+
 .navigation-panel {
   height: 140px;
-  border: 1px solid #cccccc;
   border-radius: 10px;
-  background-color: #cccccc;
+  border-style: solid;
+  border-width: 1px;
   padding: 0px;
   margin: 10px;
   margin-bottom:0px;
@@ -54,19 +65,45 @@ div[data-role="header"] {
     border-radius: 10px;
     margin: 0px;
   }
-  a:hover {
-    background-color: #aaaaaa;
-  }
   h1 {
     display: block;
     font-size: 1em;
     margin:0px;
     height: 2.75em;
     font-weight: bold;
-    color: #666666;
     background-color: white;
     border-top-left-radius:10px;
     border-top-right-radius:10px;
+  }
+}
+.ui-page-theme-a {
+  .navigation-panel {
+    border-color: #6d6154;
+    background-color: #c7b299;
+    a {
+      color: black;
+    }
+    a:hover {
+      background-color: #b98653;
+    }
+    h1 {
+      color: #6d6154;
+    }
+  }
+}
+.ui-page-theme-b {
+  .navigation-panel {
+    border-color: #cccccc;
+    background-color: #cccccc;
+    a {
+      color: black;
+    }
+    a:hover {
+      background-color: #aaaaaa;
+    }
+    h1 {
+      color: #666666;
+    }
   }
 }
 
@@ -436,3 +473,38 @@ table.month-hunt-forecast {
     background-position: center;
   }
 }
+
+/*
+.ui-btn {
+  background-image: -webkit-gradient(linear, 0 0, 0 100%,
+    color-stop(0%, #FFA733),
+    color-stop(50%, #E08916),
+    color-stop(50%, #D57900),
+    color-stop(100%, #EBBC2F));
+  background-image: -webkit-linear-gradient(top,
+    #FFA733 0%,
+    #E08916 50%,
+    #D57900 50%,
+    #EBBC2F 100%);
+  background-image: -moz-linear-gradient(top,
+    #FFA733 0%,
+    #E08916 50%,
+    #D57900 50%,
+    #EBBC2F 100%);
+  background-image: -o-linear-gradient(top,
+    #FFA733 0%,
+    #E08916 50%,
+    #D57900 50%,
+    #EBBC2F 100%);
+  background-image: -ms-linear-gradient(top,
+    #FFA733 0%,
+    #E08916 50%,
+    #D57900 50%,
+    #EBBC2F 100%);
+  background-image: linear-gradient(top,
+    #FFA733 0%,
+    #E08916 50%,
+    #D57900 50%,
+    #EBBC2F 100%);
+}
+*/
