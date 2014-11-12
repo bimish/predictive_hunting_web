@@ -4,6 +4,9 @@
 
     this.initPage = function(page) {
 
+      // hide the sucsess message
+      $('#notice-success', page).hide();
+
       Scripts.Common.initializeTabbedNavBar($('div[data-role="navbar"]', page));
 
       $('select[name="observation_date_time_offset"]', page).change(
@@ -82,6 +85,11 @@
       $('#named-deer-fields', activePage).hide();
     }
 
+    this.flashSuccess = function() {
+      var notice = $('#notice-success', Scripts.Common.getActivePage()).show();
+      notice.show();
+      window.setTimeout(function() { notice.hide(); }, 5000);
+    }
   }
 
   Scripts.Page.AnimalActivity = new AnimalActivityPageScript();

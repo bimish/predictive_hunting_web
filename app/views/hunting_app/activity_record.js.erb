@@ -1,5 +1,5 @@
 <% if @animal_activity_observation.errors.size == 0 %>
-alert('Successfully saved observation');
+Scripts.Page.AnimalActivity.flashSuccess();
 Scripts.Page.AnimalActivity.resetForm();
 <% else %>
 Scripts.Page.AnimalActivity.showValidationErrors(
