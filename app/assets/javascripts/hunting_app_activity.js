@@ -88,7 +88,7 @@
     this.flashSuccess = function() {
       var notice = $('#notice-success', Scripts.Common.getActivePage()).show();
       notice.show();
-      window.setTimeout(function() { notice.hide(); }, 5000);
+      window.setTimeout(function() { notice.fadeOut(1000); }, 2000);
     }
   }
 
