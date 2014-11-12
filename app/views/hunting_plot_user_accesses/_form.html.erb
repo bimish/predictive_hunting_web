@@ -3,5 +3,5 @@
     <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_plot_user_access } %>
   <% end %>
   <%= render :partial => 'form_fields', :locals => { :form => f } %>
-  <%= _submit_button(f, @hunting_plot_user_access, 'Hunting Plot User Access') %>
+  <%= _submit_button(f, @hunting_plot_user_access) %>
 <% end %>

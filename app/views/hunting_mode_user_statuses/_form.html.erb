@@ -3,5 +3,5 @@
     <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_mode_user_status } %>
   <% end %>
   <%= render :partial => 'form_fields', :locals => { :form => f } %>
-  <%= _submit_button(f, @hunting_mode_user_status, 'Hunting Mode User Status') %>
+  <%= _submit_button(f, @hunting_mode_user_status) %>
 <% end %>

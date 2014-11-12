@@ -27,6 +27,7 @@ en:
       short: "%l:%M %p"
       descriptive: "%l:%M %p (%Z)"
       hours_minutes: "%l:%M"
+      rfc3339: '%H:%M:%S'
 
   date:
     order:
@@ -38,3 +39,4 @@ en:
       descriptive: "%A, %B %d, %Y"
       dayofmonth: "%B %-d"
       month_year: "%B %Y"
+      rfc3339: '%Y-%m-%d'

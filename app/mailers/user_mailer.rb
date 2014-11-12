@@ -23,4 +23,9 @@ class UserMailer < ActionMailer::Base
     mail(to: email_address, subject: "Invitation to join hunting plot #{plot_name}")
   end
 
+  def password_reset(email_address, reset_token)
+    @reset_token = reset_token
+    mail(to: email_address, subject: "Password Reset")
+  end
+
 end

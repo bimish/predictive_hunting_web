@@ -3,5 +3,5 @@
     <%%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @<%= singular_table_name %> } %>
   <%% end %>
   <%%= render :partial => 'form_fields', :locals => { :form => f } %>
-  <%%= _submit_button(f, @<%= singular_table_name %>, '<%= singular_table_name.titleize %>') %>
+  <%%= _submit_button(f, @<%= singular_table_name %>) %>
 <%% end %>

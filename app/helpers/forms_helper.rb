@@ -107,9 +107,12 @@ module FormsHelper
     form.week_field instance_method, options
   end
 
-  def _submit_button(form, instance_record, title, options = {})
+  def _submit_button(form, instance_record, title = nil, options = {})
     options[:class] = 'btn btn-default btn-primary btn-sm'
-    form.submit instance_record.nil? ? 'Search' : instance_record.new_record? ? 'Create' : 'Update', options
+    if title.nil?
+      title = instance_record.nil? ? 'Search' : instance_record.new_record? ? 'Create' : 'Update'
+    end
+    form.submit title, options
   end
 
   def _check_box_list(form, title, options = {}, &block)

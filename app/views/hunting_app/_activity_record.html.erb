@@ -1,0 +1,76 @@
+<div>
+<%= form_tag hunting_app_activity_record_path(@hunting_plot.id), remote: true, id:'animal-activity-observation-record' do |f| %>
+
+  <%#= label_tag :observation_date_time_offset, 'Date/Time' %>
+  <%
+    time_offset_choices = [
+      ["Now", "0"],
+      ["5 minutes ago", "5"],
+      ["10 minutes ago", "10"],
+      ["15 minutes ago", "15"],
+      ["30 minutes ago", "30"],
+      ["1 hour ago", "60"],
+      ["2 hours ago", "120"],
+      ["3 hours ago", "180"],
+      ["Another date/time", "another"]
+    ]
+  %>
+  <fieldset data-role="controlgroup" data-type="horizontal">
+    <%= select_tag :observation_date_time_offset, options_for_select(time_offset_choices), { prompt:'[Date & Time]', data: { val_required: 'true', val_label:'Date & Time' } } %>
+  </fieldset>
+  <div id="observation-date-time-fields" class="ui-grid-a" style="display:none;">
+    <div class="ui-block-a">
+      <%= date_field_tag :observation_date, '', { placeholder:'Date', data: { val_required: 'true', val_label:'Date' } } %>
+    </div>
+    <div class="ui-block-b">
+      <%= time_field_tag :observation_time, '', { placeholder:'Time', data: { val_required: 'true', val_label:'Time' } } %>
+    </div>
+  </div>
+
+  <%#= label_tag :location, 'Location' %>
+  <%
+    location_choices = @view_data.hunting_locations
+    location_choices.unshift( ["My current location", "0"] )
+  %>
+  <fieldset data-role="controlgroup" data-type="horizontal">
+    <%= select_tag :hunting_location_id, options_for_select(location_choices), { prompt:'[Location]', data: { val_required: 'true', val_label:'Location' } } %>
+  </fieldset>
+
+  <%= hidden_field_tag 'location_coordinates_lat' %>
+  <%= hidden_field_tag 'location_coordinates_lng' %>
+
+  <fieldset data-role="controlgroup" data-type="horizontal">
+    <!--<legend>Deer Count &amp; Type</legend>-->
+    <%= label_tag :animal_count, 'Count' %>
+    <%= select_tag :animal_count, options_for_select(1..10) %>
+    <%= label_tag :animal_category_id, 'Type' %>
+    <%
+      animal_categories = @view_data.animal_categories
+      if @view_data.named_animals.size > 0
+        animal_categories.push ['A named deer...', 'named']
+      end
+    %>
+    <%= select_tag :animal_category_id, options_for_select(animal_categories), { prompt:'[Deer Type]', data: { val_required: 'true', val_label:'Deer Type' } } %>
+  </fieldset>
+
+  <fieldset data-role="controlgroup" data-type="horizontal" style="display:none;" id="named-deer-fields">
+    <%= select_tag :hunting_plot_named_animal_id, options_for_select(@view_data.named_animals), { prompt:'[Named Deer]', data: { val_required: 'true', val_label:'Named Deer' } } %>
+  </fieldset>
+
+  <%#= label_tag :animal_activity_type_id, 'Behavior' %>
+  <fieldset data-role="controlgroup" data-type="horizontal">
+    <%= select_tag :animal_activity_type_id, options_for_select(@view_data.animal_activity_types), { prompt:'[Behavior]', data: { val_required: 'true', val_label:'Behavior' } } %>
+  </fieldset>
+
+  <%= submit_tag 'Submit', { class:'ui-btn ui-corner-all', data: { icon:'check' } } %>
+
+<% end %>
+</div>
+
+<div data-role="popup" data-dismissible="false" id="validation-popup" class="validation-dialog">
+<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+<p>The following validation errors occurred:</p>
+<ul>
+</ul>
+</div>
+

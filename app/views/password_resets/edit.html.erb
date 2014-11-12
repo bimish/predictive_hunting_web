@@ -1,0 +1,8 @@
+<%= bootstrap_form_for @user, :url => password_reset_path(params[:id]) do |form| %>
+  <% if @user.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user } %>
+  <% end %>
+  <%= _password_field(form, :password, 'Password', required: 'true') %>
+  <%= _password_field(form, :password_confirmation, 'Confirmation', required: 'true') %>
+  <%= _submit_button(form, @user, 'Update Password') %>
+<% end %>

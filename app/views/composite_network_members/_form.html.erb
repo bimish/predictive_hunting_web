@@ -3,5 +3,5 @@
     <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @composite_network_member } %>
   <% end %>
   <%= render :partial => 'form_fields', :locals => { :form => f } %>
-  <%= _submit_button(f, @composite_network_member, 'Composite Network Member') %>
+  <%= _submit_button(f, @composite_network_member) %>
 <% end %>

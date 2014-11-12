@@ -4,7 +4,7 @@ today_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect
 tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 1 }
 %>
 <div class="weather-summary-day">
-  <h3 class="ui-bar ui-bar-a ui-corner-all"><%= today_text_forecast['title'] %></h3>
+  <h3 class="ui-bar ui-bar-inherit ui-corner-all"><%= today_text_forecast['title'] %></h3>
   <div class="summary">
     <%= image_tag(today_text_forecast['icon_url']) %>
     <p class="high-temp"><%=today_simple_forecast['high']['fahrenheit']%></p>
@@ -14,7 +14,7 @@ tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].dete
   </div>
 </div>
 <div class="weather-summary-day">
-  <h3 class="ui-bar ui-bar-a ui-corner-all"><%= tonight_text_forecast['title'] %></h3>
+  <h3 class="ui-bar ui-bar-inherit ui-corner-all"><%= tonight_text_forecast['title'] %></h3>
   <div class="summary">
     <%= image_tag(tonight_text_forecast['icon_url']) %>
     <p class="low-temp"><%=today_simple_forecast['low']['fahrenheit']%></p>

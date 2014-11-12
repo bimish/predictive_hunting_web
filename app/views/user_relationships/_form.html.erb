@@ -3,5 +3,5 @@
     <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user_relationship } %>
   <% end %>
   <%= render :partial => 'form_fields', :locals => { :form => f } %>
-  <%= _submit_button(f, @user_relationship, 'User Relationship') %>
+  <%= _submit_button(f, @user_relationship) %>
 <% end %>

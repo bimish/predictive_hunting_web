@@ -111,6 +111,17 @@ class User < ActiveRecord::Base
     self.authentication_method = User.authentication_methods[:authentication_method_direct]
   end
 
+  def reset_password
+    self.password_reset_token = SecureRandom.urlsafe_base64
+    self.password_reset_sent_at = Time.now
+    save!
+    MailHelper.password_reset_email(self)
+  end
+
+  def password_reset_expired?
+    self.password_reset_sent_at < 4.hours.ago
+  end
+
 private
   def create_remember_token
     self.remember_token = SecureRandom.urlsafe_base64

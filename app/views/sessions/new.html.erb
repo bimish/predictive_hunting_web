@@ -1,11 +1,16 @@
-<h1>Sign in</h1>
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-sm-6">
     <%= bootstrap_form_for :session, url: sessions_path do |f| %>
-      <%= f.text_field :email, { size: 50 } %>
+      <%= f.email_field :email, { size: 50 } %>
       <%= f.password_field :password %>
-      <%= f.submit "Sign in", class: "btn btn-primary" %>
-      <div class="pull-right">New user? <%= link_to "Sign up now!", signup_path, class:'btn btn-default' %></div>
+      <%= f.submit "Sign in", class: "btn btn-primary btn-sm" %>
+      <%= link_to "Forgot password?", new_password_reset_path, style:'display:inline-block;margin-left:1em;' %>
     <% end %>
+  </div>
+</div>
+<hr/>
+<div class="row">
+  <div class="col-sm-6">
+    <%= link_to "New user? Sign up now!", signup_path %>
   </div>
 </div>

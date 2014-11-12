@@ -1,0 +1,12 @@
+<% if @animal_activity_observation.errors.size == 0 %>
+alert('Successfully saved observation');
+Scripts.Page.AnimalActivity.resetForm();
+<% else %>
+Scripts.Page.AnimalActivity.showValidationErrors(
+  [
+  <% @animal_activity_observation.errors.full_messages.each_with_index do |message, index| %>
+    <%= (index > 0) ? ',' : nil %>'<%= j message %>'
+  <% end %>
+  ]
+);
+<% end %>

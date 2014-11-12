@@ -56,7 +56,7 @@ tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].dete
   </div>
   <div class="ui-block-a">
     <div class="navigation-panel">
-      <%= link_to(hunting_app_activity_path(@hunting_plot), { method: 'post' } ) do %>
+      <%= link_to(hunting_app_activity_path(@hunting_plot) ) do %>
         <h1>Deer Activity</h1>
         <%= image_tag('log_book.png') %>
       <% end %>

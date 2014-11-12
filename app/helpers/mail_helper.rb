@@ -15,4 +15,8 @@ module MailHelper
     UserMailer.plot_invite(hunting_plot_access_request.id, recipient_email, sender_name, hunting_plot_access_request.hunting_plot.name).deliver
   end
 
+  def self.password_reset_email(user)
+    UserMailer.password_reset(user.email, user.password_reset_token).deliver
+  end
+
 end

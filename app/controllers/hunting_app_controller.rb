@@ -74,39 +74,62 @@ class HuntingAppController < ApplicationController
   end
 
   def activity
-    @animal_activity_observations = AnimalActivityObservation.search(@hunting_plot.id, params).preload(:hunting_location).preload(:named_animal)
 
-    @filters = Array.new
+    set_activity_history
+    @new_observation = AnimalActivityObservation.new
+    @view_data = ViewData.new(@hunting_plot)
 
-    unless params[:animal_category_id].blank?
-      animal_category_ids = params[:animal_category_id]
-      animal_category_names = animal_category_ids.collect { |category_id| ConfigData.animal_categories[category_id.to_i][:name] }
-      @filters << { item_name: "Deer type(s)", item_values: animal_category_names }
+  end
+
+  def activity_record
+    @animal_activity_observation = AnimalActivityObservation.new
+    @animal_activity_observation.hunting_plot_id = @hunting_plot.id
+    @animal_activity_observation.init_new current_user
+    if params[:observation_date_time_offset].blank?
+      unless params[:observation_date].blank? || params[:observation_time].blank?
+        date = Date.parse(params[:observation_date])
+        time = Time.parse(params[:observation_time])
+        @animal_activity_observation.observation_date_time = DateTime.new(date.year, date.month, date.day, time.hour, time.min, time.sec, time.zone)
+      end
+    else
+      @animal_activity_observation.observation_date_time = params[:observation_date_time_offset].to_i.minutes.ago
+    end
+
+    unless params[:hunting_location_id].blank?
+      if params[:hunting_location_id] == "0"
+        current_checkin = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
+        if current_checkin.nil? || current_checkin.expired? || current_checkin.hunting_location_id.nil?
+          unless params[:location_coordinates_lat].blank? || params[:location_coordinates_lng].blank?
+            @animal_activity_observation.location_coordinates = "POINT(#{params[:location_coordinates_lng]} #{params[:location_coordinates_lat]})"
+          end
+        else
+          @animal_activity_observation.hunting_location_id = params[:hunting_location_id]
+        end
+      else
+        @animal_activity_observation.hunting_location_id = params[:hunting_location_id]
+      end
+    end
+
+    if (params[:animal_category_id] == 'named')
+      @animal_activity_observation.hunting_plot_named_animal_id = params[:hunting_plot_named_animal_id]
+      named_animal = HuntingPlotNamedAnimal.find(params[:hunting_plot_named_animal_id])
+      @animal_activity_observation.animal_count = 1
+      @animal_activity_observation.animal_category_id = named_animal.animal_category_id
+    else
+      @animal_activity_observation.animal_count = params[:animal_count]
+      @animal_activity_observation.animal_category_id = params[:animal_category_id]
     end
 
     unless params[:animal_activity_type_id].blank?
-      animal_activity_type_ids = params[:animal_activity_type_id]
-      animal_activity_names = animal_activity_type_ids.collect { |animal_activity_type_id| ConfigData.animal_activity_types[animal_activity_type_id.to_i][:name] }
-      @filters << { item_name: "Behavior(s)", item_values: animal_activity_names }
+      @animal_activity_observation.animal_activity_type_id = params[:animal_activity_type_id]
     end
 
-    unless params[:hunting_plot_named_animal_id].blank?
-      named_animal_ids = params[:hunting_plot_named_animal_id]
-      named_animals = named_animal_ids.collect { |named_animal_id| HuntingPlotNamedAnimal.find(named_animal_id.to_i).name }
-      @filters << { item_name: "Named Animal(s)", item_values: named_animals }
-    end
+    @animal_activity_observation.save
 
-    unless (params[:after_date].blank? && params[:before_date].blank?)
-      if params[:after_date].blank?
-        date_range = "before #{params[:before_date]}"
-      elsif params[:before_date].blank?
-        date_range = "after #{params[:after_date]}"
-      else
-        date_range = "#{params[:after_date]} - #{params[:before_date]}"
-      end
-      @filters << { item_name: "Date Range", item_values: [ date_range ] }
-    end
+  end
 
+  def activity_history
+    set_activity_history
   end
 
   def chat
@@ -254,4 +277,64 @@ private
   def set_last_checkin
     @last_checkin = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
   end
+
+  def set_activity_history
+    @animal_activity_observations = AnimalActivityObservation.search(@hunting_plot.id, params).preload(:hunting_location).preload(:named_animal)
+
+    @filters = Array.new
+
+    unless params[:animal_category_id].blank?
+      animal_category_ids = params[:animal_category_id]
+      animal_category_names = animal_category_ids.collect { |category_id| ConfigData.animal_categories[category_id.to_i][:name] }
+      @filters << { item_name: "Deer type(s)", item_values: animal_category_names }
+    end
+
+    unless params[:animal_activity_type_id].blank?
+      animal_activity_type_ids = params[:animal_activity_type_id]
+      animal_activity_names = animal_activity_type_ids.collect { |animal_activity_type_id| ConfigData.animal_activity_types[animal_activity_type_id.to_i][:name] }
+      @filters << { item_name: "Behavior(s)", item_values: animal_activity_names }
+    end
+
+    unless params[:hunting_plot_named_animal_id].blank?
+      named_animal_ids = params[:hunting_plot_named_animal_id]
+      named_animals = named_animal_ids.collect { |named_animal_id| HuntingPlotNamedAnimal.find(named_animal_id.to_i).name }
+      @filters << { item_name: "Named Animal(s)", item_values: named_animals }
+    end
+
+    unless (params[:after_date].blank? && params[:before_date].blank?)
+      if params[:after_date].blank?
+        date_range = "before #{params[:before_date]}"
+      elsif params[:before_date].blank?
+        date_range = "after #{params[:after_date]}"
+      else
+        date_range = "#{params[:after_date]} - #{params[:before_date]}"
+      end
+      @filters << { item_name: "Date Range", item_values: [ date_range ] }
+    end
+  end
+
+  class ViewData
+
+    def initialize(hunting_plot)
+      @hunting_plot = hunting_plot
+    end
+
+    def hunting_locations
+      @locations_map ||= @hunting_plot.locations.map { |m| [m.name, m.id] }
+    end
+
+    def animal_categories
+      @animal_categories_map ||= AnimalCategory.all.map { |m| [m.name, m.id] }
+    end
+
+    def animal_activity_types
+      @animal_activity_types_map ||= AnimalActivityType.all.map { |m| [m.name, m.id] }
+    end
+
+    def named_animals
+      @named_animals ||= @hunting_plot.named_animals.map { |m| [m.name, m.id] }
+    end
+
+  end
+
 end

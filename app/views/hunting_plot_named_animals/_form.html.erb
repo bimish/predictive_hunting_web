@@ -3,5 +3,5 @@
     <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_plot_named_animal } %>
   <% end %>
   <%= render :partial => 'form_fields', :locals => { :form => f } %>
-  <%= _submit_button(f, @hunting_plot_named_animal, 'Hunting Plot Named Animal') %>
+  <%= _submit_button(f, @hunting_plot_named_animal) %>
 <% end %>

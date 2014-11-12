@@ -2,12 +2,12 @@
 
   <div class="ui-grid-a">
     <div class="ui-block-a">
-      <p class="ui-bar ui-bar-a ui-corner-all">Sun</p>
+      <p class="ui-bar ui-bar-inherit -a ui-corner-all">Sun</p>
       <p class="time-value"><label>Rise</label><%= content_tag :span, time_to_s(@day_forecast.sun_rise) %></p>
       <p class="time-value"><label>Set</label><%= content_tag :span, time_to_s(@day_forecast.sun_set) %></p>
     </div>
     <div class="ui-block-b">
-      <p class="ui-bar ui-bar-a ui-corner-all">Moon</p>
+      <p class="ui-bar ui-bar-inherit ui-corner-all">Moon</p>
       <p class="time-value"><label>Rise</label><%= content_tag :span, time_to_s(@day_forecast.moon_rise) %></p>
       <p class="time-value"><label>Set</label><%= content_tag :span, time_to_s(@day_forecast.moon_set) %></p>
       <p class="time-value"><label>Up</label><%= content_tag :span, time_to_s(@day_forecast.moon_up) %></p>
@@ -38,7 +38,7 @@
   end
   %>
 
-  <p class="ui-bar ui-bar-a ui-corner-all">Major/Minor Times</p>
+  <p class="ui-bar ui-bar-inherit ui-corner-all">Major/Minor Times</p>
   <table class="major-minor-times">
     <tr>
       <td></td>

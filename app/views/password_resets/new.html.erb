@@ -1,0 +1,4 @@
+<%= bootstrap_form_tag url: password_resets_path, :method => :post do |form| %>
+<%= _email_field(form, :email, 'Email Address') %>
+<%= _submit_button(form, nil, 'Reset Password') %>
+<% end %>

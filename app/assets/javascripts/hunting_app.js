@@ -12,4 +12,5 @@
 //= require hunting_app_weather
 //= require hunting_app_landing
 //= require hunting_app_forecast
+//= require hunting_app_activity
 //= require hunting_app_map_helper

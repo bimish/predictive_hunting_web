@@ -3,5 +3,5 @@
     <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location_schedule } %>
   <% end %>
   <%= render :partial => 'form_fields', :locals => { :form => f } %>
-  <%= _submit_button(f, @hunting_location_schedule, 'Hunting Location Schedule') %>
+  <%= _submit_button(f, @hunting_location_schedule) %>
 <% end %>

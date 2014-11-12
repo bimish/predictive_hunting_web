@@ -153,7 +153,12 @@ Scripts.Common = function () {
     );
   }
 
+  this.getActivePage = function() {
+    return $("body").pagecontainer("getActivePage");
+  }
+
   return this;
+
 }();
 
 /*
@@ -210,31 +215,4 @@ $(document).on(
   }
 );
 
-// work around for issue https://github.com/jquery/jquery-mobile/issues/7580
-// once corrected, the pagecontainerload event can be changed to reference the page id like the pagecontainershow event above
-var g_urlBeingLoaded = null;
-$(document).on(
-  "pagecontainerbeforeload",
-  function(event, ui) {
-    g_urlBeingLoaded = ui.toPage;
-  }
-);
-
-/*
-$(document).on(
-  "pagecontainerload",
-  function(event, ui) {
-    Scripts.Common.callPageInitializeHandlers(g_urlBeingLoaded);
-  }
-);
-*/
-
-// setup the hooks for the individual pages
-/*
-$(document).on(
-  "pagecontainercreate",
-  function(event, ui) {
-    Scripts.Common.registerPageInitializers()
-  }
-);
-*/
+$(window).resize(function() { Scripts.Common.setContentFullHeight(); });

@@ -60,7 +60,7 @@
 
   <% page_id = yield(:page_id) %>
 
-  <div data-role="page" id="<%=page_id%>" data-dom-cache="true">
+  <div data-role="page" id="<%=page_id%>" data-dom-cache="true" data-theme="a">
 
     <% if page_id == 'landing' %>
     <div data-role="panel" data-display="overlay" id="topmenu">
@@ -75,12 +75,12 @@
     <%= yield :panels %>
 
     <div data-role="header" data-position="fixed" id="header">
-      <h1>Predictive Hunting</h1>
+      <h1 class="header-title">Predictive Hunting</h1>
       <% if page_id == 'landing' %>
-      <a href="#topmenu" class="jqm-navmenu-link ui-nodisc-icon ui-alt-icon ui-btn-left ui-btn ui-icon-bars ui-btn-icon-notext" data-role="button">Menu</a>
+      <a href="#topmenu" class="ui-btn-left ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow ui-nodisc-icon ui-alt-icon" data-role="button">Menu</a>
       <% else %>
-      <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-icon-carat-l ui-btn-icon-left ui-shadow ui-corner-all" data-role="button" role="button">Back</a>
-      <a href="#" id="reload-button"  class="ui-btn-right ui-btn ui-icon-refresh ui-btn-icon-right ui-shadow ui-corner-all" data-role="button" role="button">Refresh</a>
+      <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-icon-carat-l ui-shadow ui-corner-all ui-btn-icon-notext ui-alt-icon" data-role="button" role="button">Back</a>
+      <a href="#" id="reload-button"  class="ui-btn-right ui-btn ui-icon-refresh ui-shadow ui-corner-all ui-btn-icon-notext ui-alt-icon" data-role="button" role="button">Refresh</a>
       <% end %>
       <%= yield :header %>
     </div>
