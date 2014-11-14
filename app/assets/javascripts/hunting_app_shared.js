@@ -161,40 +161,6 @@ Scripts.Common = function () {
 
 }();
 
-/*
-$(document).on("pagebeforecreate", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecreate", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerbeforechange", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerbeforehide", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerbeforeload", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerbeforeshow", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerbeforetransition", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerchange", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerchangefailed", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainercreate", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerhide", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerload", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerloadfailed", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainerremove", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainershow", function( event, ui ) { logEvent(event, ui); } );
-$(document).on("pagecontainertransition", function( event, ui ) { logEvent(event, ui); } );
-
-function logEvent(event, ui) {
-  var toPageId = null;
-  if (isDefinedAndNonNull(ui.toPage)) {
-    if (typeof ui.toPage == "string")
-      toPageId = ui.toPage;
-    else if (ui.toPage.length > 0)
-      toPageId = ui.toPage.get(0).id
-  }
-  console.log(
-    event.type + " triggered:" +
-    " ui.prevPage.id = " + ( (isDefinedAndNonNull(ui.prevPage) && ui.prevPage.length > 0) ? ui.prevPage.get(0).id : '') +
-    " ui.toPage.id = " + toPageId
-  );
-}
-*/
-
 // set global hooks for jqm page management
 $(document).on(
   "pagecontainershow",
@@ -216,3 +182,30 @@ $(document).on(
 );
 
 $(window).resize(function() { Scripts.Common.setContentFullHeight(); });
+
+/*
+$(document).on(
+  'focus',
+  'input, textarea, select',
+  function () {
+    $('div[data-role="footer"]').hide();
+  }
+);
+*/
+
+// if iphone4, this work around fixes a glitch with input elements
+var g_iPhone4 = ((navigator.userAgent.toLowerCase().indexOf("iphone") >= 0) && (window.screen.height == (960 / 2)));
+if (g_iPhone4) {
+  $(document).on(
+    'blur',
+    'input, textarea, select',
+    function() {
+      setTimeout(
+        function() {
+          jQuery.mobile.silentScroll(0);
+        },
+        0
+      );
+    }
+  );
+}
