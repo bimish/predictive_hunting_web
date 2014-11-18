@@ -1,0 +1,22 @@
+<% provide(:page_id, 'stand_checkin') %>
+
+<div data-role="content" id="stand_checkin_map" class="content-panel content-panel-active">
+  <%= render partial:'stand_checkin_map', locals: { hunting_plot: @hunting_plot } %>
+</div>
+<div data-role="content" id="stand_checkin_list" class="content-panel">
+  <%= render partial:'stand_checkin_list', locals: { hunting_plot: @hunting_plot } %>
+</div>
+<div data-role="content" id="stand_checkin_options" class="content-panel">
+  <%= render partial:'stand_checkin_options', locals: { hunting_plot: @hunting_plot } %>
+</div>
+
+<%= content_for :footer do %>
+<p id="selected_date"><%= date_to_s(Date.today, :descriptive) %></p>
+<div data-role="navbar" data-mini="true">
+  <ul>
+    <li><a href="#" data-target="stand_checkin_map" data-icon="location" class="ui-btn-active">Map</a></li>
+    <li><a href="#" data-target="stand_checkin_list" data-icon="bullets">List</a></li>
+    <li><a href="#" data-target="stand_checkin_options" data-icon="gear">Options</a></li>
+  </ul>
+</div>
+<% end %>

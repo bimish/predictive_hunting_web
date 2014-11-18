@@ -104,6 +104,8 @@ Web::Application.routes.draw do
   get '/hunting_app/:hunting_plot_id/hunt_forecast', to: 'hunting_app#hunt_forecast', as: :hunting_app_hunt_forecast
   get '/hunting_app/:hunting_plot_id/hunt_forecast_month/:forecast_date', to: 'hunting_app#hunt_forecast_month', as: :hunting_app_hunt_forecast_month
 
+  get '/hunting_app/:hunting_plot_id/stand_checkin', to: 'hunting_app#stand_checkin', as: :hunting_app_stand_checkin
+
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'
   delete '/signout', to: 'sessions#destroy'

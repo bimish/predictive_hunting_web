@@ -88,7 +88,7 @@ class HuntingAppController < ApplicationController
     if params[:observation_date_time_offset] == "another"
       unless params[:observation_date].blank? || params[:observation_time].blank?
         date = Date.parse(params[:observation_date])
-        time = Time.parse(params[:observation_time])
+        time = Time.zone.parse(params[:observation_time])
         @animal_activity_observation.observation_date_time = DateTime.new(date.year, date.month, date.day, time.hour, time.min, time.sec, time.zone)
       end
     else
