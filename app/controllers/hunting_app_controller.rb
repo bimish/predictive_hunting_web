@@ -85,7 +85,7 @@ class HuntingAppController < ApplicationController
     @animal_activity_observation = AnimalActivityObservation.new
     @animal_activity_observation.hunting_plot_id = @hunting_plot.id
     @animal_activity_observation.init_new current_user
-    if params[:observation_date_time_offset].blank?
+    if params[:observation_date_time_offset] == "another"
       unless params[:observation_date].blank? || params[:observation_time].blank?
         date = Date.parse(params[:observation_date])
         time = Time.parse(params[:observation_time])
@@ -103,7 +103,7 @@ class HuntingAppController < ApplicationController
             @animal_activity_observation.location_coordinates = "POINT(#{params[:location_coordinates_lng]} #{params[:location_coordinates_lat]})"
           end
         else
-          @animal_activity_observation.hunting_location_id = params[:hunting_location_id]
+          @animal_activity_observation.hunting_location_id = current_checkin.hunting_location_id
         end
       else
         @animal_activity_observation.hunting_location_id = params[:hunting_location_id]
@@ -280,7 +280,7 @@ private
 
   def set_activity_history
     @animal_activity_observations = AnimalActivityObservation.search(@hunting_plot.id, params).preload(:hunting_location).preload(:named_animal)
-
+=begin
     @filters = Array.new
 
     unless params[:animal_category_id].blank?
@@ -301,6 +301,12 @@ private
       @filters << { item_name: "Named Animal(s)", item_values: named_animals }
     end
 
+    unless params[:hunting_location_id].blank?
+      location_ids = params[:hunting_location_id]
+      locations = named_animal_ids.collect { |named_animal_id| HuntingPlotNamedAnimal.find(named_animal_id.to_i).name }
+      @filters << { item_name: "Named Animal(s)", item_values: named_animals }
+    end
+
     unless (params[:after_date].blank? && params[:before_date].blank?)
       if params[:after_date].blank?
         date_range = "before #{params[:before_date]}"
@@ -311,6 +317,7 @@ private
       end
       @filters << { item_name: "Date Range", item_values: [ date_range ] }
     end
+=end
   end
 
   class ViewData

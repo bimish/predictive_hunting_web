@@ -1,0 +1,4 @@
+(function() {
+  var activePage = Scripts.Common.getActivePage();
+  $('#activity-list', activePage).html('<%= j render :partial => 'activity_list', :locals => { animal_activity_observations: @animal_activity_observations } %>').trigger("create");
+})();

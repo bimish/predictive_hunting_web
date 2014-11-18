@@ -1,6 +1,6 @@
 <% content_for :panels do %>
 <div data-role="panel" data-display="overlay" data-position="right" id="activity-filters-panel" class="right-align-panel">
-  <%= form_tag hunting_app_activity_path(@hunting_plot.id), remote: true do %>
+  <%= form_tag hunting_app_activity_history_path(@hunting_plot.id), remote: true do %>
   <div data-role="collapsible">
     <h4>Deer Type(s)</h4>
     <% ConfigData.animal_categories.values.each do |category| %>
@@ -17,6 +17,12 @@
     <h4>Named Animals(s)</h4>
     <% @hunting_plot.named_animals.each do |named_animal| %>
     <label><input name="hunting_plot_named_animal_id[]" type="checkbox" value="<%= named_animal[:id]%>"><%= named_animal[:name]%></label>
+    <% end %>
+  </div>
+  <div data-role="collapsible">
+    <h4>Location(s)</h4>
+    <% @hunting_plot.locations.each do |location| %>
+    <label><input name="hunting_location_id[]" type="checkbox" value="<%= location.id%>"><%= location.name%></label>
     <% end %>
   </div>
   <div data-role="collapsible">
@@ -42,10 +48,12 @@
 
 <div>
   <a class="ui-btn ui-btn-inline ui-corner-all " href="#activity-filters-panel" title="Filter Options" data-role="button"><%= image_tag 'funnel.png' %> Filter Results</a>
+<!--
   <a class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-info ui-btn-icon-notext" href="#popupBasic" data-transition="pop" data-rel="popup">Info</a>
   <div id="popupBasic" data-role="popup">
     <p id="filter-summary">Current Filter(s)</p>
   </div>
+-->
 </div>
 
 <div id="activity-list" style="clear:both;">

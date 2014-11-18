@@ -1,6 +1,0 @@
-$('div[id="activity-list"]').html('<%= j render :partial => 'activity_list', :locals => { animal_activity_observations: @animal_activity_observations } %>').trigger("create");
-<% if @filters.count == 0 %>
-$('p[id="filter-summary"]').html('No filters');
-<% else %>
-$('p[id="filter-summary"]').html('<%= j render :partial => 'activity_list_filters', :locals => { filters: @filters } %>');
-<% end %>
