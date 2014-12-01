@@ -63,7 +63,6 @@ end
 
 group :production do
   gem 'rails_12factor'
-  gem 'newrelic_rpm'
 end
 
 # Use ActiveModel has_secure_password
@@ -81,3 +80,5 @@ gem 'unicorn'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+gem 'newrelic_rpm'
