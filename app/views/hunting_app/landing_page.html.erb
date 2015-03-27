@@ -1,4 +1,5 @@
 <% provide(:page_id, 'landing') %>
+<% provide(:page_title, 'Home') %>
 
 <% if current_user.hunting_plots.size() > 1 %>
 <%= select_tag 'selected-plot', options_for_select(current_user.hunting_plots.collect { |plot| [ plot.name, plot.id ] }, @hunting_plot.id) %>
@@ -7,7 +8,8 @@
 <div class="ui-grid-a">
   <div class="ui-block-a">
     <div class="navigation-panel">
-      <%= link_to(hunting_app_stands_path(@hunting_plot)) do %>
+      <%#= link_to(hunting_app_stands_path(@hunting_plot)) do %>
+      <%= link_to(hunting_app_stand_checkin_path(@hunting_plot)) do %>
         <h1>Check-in<br/>Check-out</h1>
         <%= image_tag('stand_checkin_icon.png') %>
       <% end %>

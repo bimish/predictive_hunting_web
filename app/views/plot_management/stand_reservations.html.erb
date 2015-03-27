@@ -1,0 +1,214 @@
+<% provide(:page_id, :stand_reservations) %>
+<% provide(:page_label, 'Stand Reservations') %>
+
+<% content_for(:head) do %>
+<script type="text/javascript">
+$(document).ready(
+  function() {
+    InteractiveForms.initializeFields();
+    var reservationDateField = $('#reservation_date');
+    var reservationDateDisplay = $('#reservation_date_display');
+    var reservationDatePicker = null;
+    var reservationDateRangePicker = null;
+    $('#reservation_date_menu').find('a').click(
+      function() {
+        var href = this.href.match(/#(.*)/)[0];
+        switch (href) {
+          case '#today': {
+            var date = new Date();
+            reservationDateField.val(getIsoDate(date));
+            reservationDateDisplay.val('Today');
+            break;
+          }
+          case '#tomorrow': {
+            var date = new Date(new Date().getTime() + 86400000);
+            reservationDateField.val(getIsoDate(date));
+            reservationDateDisplay.val('Tomorrow');
+            break;
+          }
+          case '#week': {
+            var startDate = new Date();
+            var endDate = new Date(startDate.getTime() + 6 * 86400000);
+            reservationDateField.val(getIsoDate(startDate) + "-" + getIsoDate(endDate));
+            reservationDateDisplay.val('Next 7 days');
+            break;
+          }
+          case '#calendar': {
+            if (reservationDatePicker == null) {
+              reservationDatePicker = $('#reservation_date_picker');
+              reservationDatePicker.css(
+                {
+                  position: "absolute",
+                  left: "0px",
+                  top: reservationDateDisplay.outerHeight() + "px"
+                }
+              );
+              reservationDatePicker.find('#calendar').datepicker().on(
+                'changeDate',
+                function(event) {
+                  var dateVal = $(this).datepicker('getDate');
+                  reservationDateField.val(getIsoDate(dateVal));
+                  reservationDateDisplay.val(dateVal.toLocaleDateString());
+                  $(this).parent().hide();
+                }
+              );
+            }
+            reservationDatePicker.show();
+            break;
+          }
+          /*
+          case '#date_range': {
+            if (reservationDateRangePicker == null) {
+              reservationDateRangePicker = $('#reservation_date_range_picker');
+              //reservationDateRangePicker.datepicker( { multidate: 2, multidateSeparator: '-' });
+              reservationDateRangePicker.css(
+                {
+                  position: "absolute",
+                  left: "0px",
+                  top: reservationDateDisplay.outerHeight() + "px",
+                  width: "250px"
+                }
+              );
+              reservationDateRangePicker.find('.input-daterange').datepicker();
+            }
+            reservationDateRangePicker.show();
+          }
+          */
+        }
+      }
+    );
+    $('#reservation_date_menu').parent().on(
+      'show.bs.dropdown',
+      function() {
+        if (reservationDatePicker != null) reservationDatePicker.hide();
+        //if (reservationDateRangePicker != null) reservationDateRangePicker.hide();
+      }
+    );
+
+    var collapseButtonGlyphiconSpan = $("button[href='#searchCriteriaForm']").find("span.glyphicon");
+    $('#searchCriteriaForm').on(
+      'show.bs.collapse',
+      function (e) {
+        collapseButtonGlyphiconSpan.addClass('glyphicon-chevron-up').removeClass('glyphicon-chevron-down');
+      }
+    );
+    $('#searchCriteriaForm').on(
+      'hide.bs.collapse',
+      function(e) {
+        collapseButtonGlyphiconSpan.addClass('glyphicon-chevron-down').removeClass('glyphicon-chevron-up');
+      }
+    );
+    $('#reservation_date_operator').change(
+      function() {
+        onReservationDateChange();
+      }
+    );
+    onReservationDateChange();
+    function onReservationDateChange() {
+      if ($('#reservation_date_operator').val() == '') {
+        disableField($('#reservation_date_picker'));
+        disableField($('#reservation_date'));
+      }
+      else {
+        enableField($('#reservation_date_picker'));
+        enableField($('#reservation_date'));
+      }
+    }
+    updateSearchDescription(<%== @additional_paging_parameters.to_json %>);
+  }
+);
+function updateSearchDescription(parameters) {
+  var reservationDate = 'Any';
+  var location = 'Any';
+  var reservedBy = 'Any';
+  if (isDefined(parameters.reservation_date)) {
+    if (isDefined(parameters.reservation_date_operator)) {
+      if (parameters.reservation_date_operator == 'equals') {
+        reservationDate = '';
+      }
+      else {
+        reservationDate = parameters.reservation_date_operator + ' ';
+      }
+    }
+    reservationDate += parseDateLocal(parameters.reservation_date).toLocaleDateString();
+  }
+  var searchCriteriaForm = $('#searchCriteriaForm').find('form');
+  if (isDefined(parameters.hunting_location_id)) {
+    var huntingLocationSelect = searchCriteriaForm.find('select[name="hunting_location_id"]');
+    location = huntingLocationSelect.find('option[value="' + parameters.hunting_location_id + '"]').text();
+  }
+  if (isDefined(parameters.created_by_user_id)) {
+    var reservedBySelect = searchCriteriaForm.find('select[name="created_by_user_id"]');
+    reservedBy = reservedBySelect.find('option[value="' + parameters.created_by_user_id + '"]').text();
+  }
+  var criteriaList = $('#searchCriteriaSummary ul');
+  criteriaList.empty();
+  criteriaList.append($('<li><label>Date</label>' + escapeHtml(reservationDate) + '</li>'));
+  criteriaList.append($('<li><label>Stand</label>' + escapeHtml(location) + '</li>'));
+  criteriaList.append($('<li><label>Reserved By</label>' + escapeHtml(reservedBy) + '</li>'));
+}
+var HuntingLocationReservationsTableHelper = new TableHelper('table[data-component="HuntingLocationReservation"]');
+</script>
+<% end %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="panel-title">Stand Reservations |</span>
+    <%= link_to combine_tags(bootstrap_glyphicon('plus-sign'), ' New Reservation'), hunting_plot_reservations_new_path(@hunting_plot), { remote: true, class: 'btn btn-link btn-sm' } %>
+  </div>
+  <div class="panel-heading panel-heading-toolbar">
+    <div id="searchCriteriaSummary" class="search-criteria-summary">
+      <div>
+        <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" href="#searchCriteriaForm"><%= bootstrap_glyphicon('chevron-down') %></button>
+      </div>
+      <div>
+        <ul>
+          <!--
+          <li><label>Date</label>Today</li>
+          <li><label>Stand</label>Any</li>
+          <li><label>Reserved By</label>Any</li>
+          -->
+        </ul>
+      </div>
+    </div>
+    <div id="searchCriteriaForm" class="collapse clearfix">
+      <%= form_tag search_hunting_location_reservations_path(@hunting_plot), remote: true, class: 'form-horizontal' do %>
+        <%= content_tag(:div, { class:'form-group form-group-sm' } ) do %>
+          <%= label_tag :reservation_date_display, 'Date Reserved', class:'control-label col-sm-2' %>
+          <%= content_tag(:div, class: 'col-sm-10') do %>
+            <%= content_tag(:div, class: 'input-group date-picker-form-group') do %>
+              <%= content_tag(:div, class: 'input-group-field') do %>
+                <%
+                  date_operaters = [
+                    ['On', 'equals' ],
+                    ['Before', 'before' ],
+                    ['After', 'after' ]
+                  ]
+                %>
+                <%= select_tag :reservation_date_operator, options_for_select(date_operaters), prompt: '[Any]', class:'form-control' %>
+              <% end %>
+              <%= text_field_tag(:reservation_date_picker, nil, { class:'form-control date-picker', size: 12 } ) %>
+              <%= date_field_tag(:reservation_date, nil, { class:'form-control', prompt: '[Date]', size: 12 } ) %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%= content_tag(:div, class: 'form-group form-group-sm') do %>
+          <%= label_tag :hunting_location_id, 'Stand', class:'control-label col-sm-2' %>
+          <%= content_tag(:div, class: 'col-sm-10') do %>
+            <%= select_tag :hunting_location_id, options_for_select(@stands), prompt: '[Any]', class:'form-control' %>
+          <% end %>
+        <% end %>
+        <%= content_tag(:div, class: 'form-group form-group-sm') do %>
+          <%= label_tag :created_by_user_id, 'Reserved By', class:'control-label col-sm-2' %>
+          <%= content_tag(:div, class: 'col-sm-10') do %>
+            <%= select_tag :created_by_user_id, options_for_select(@users), prompt: '[Any]', class:'form-control' %>
+          <% end %>
+        <% end %>
+        <button type="submit" class='btn btn-sm btn-default'><%= bootstrap_glyphicon('search') %> Search</button>
+      <% end %>
+    </div>
+  </div>
+  <div class="panel-body">
+    <%= render partial:'hunting_location_reservations/index_table', :locals => { :reservations => @reservations, :additional_paging_parameters => @additional_paging_parameters, :use_ajax => true } %>
+  </div>
+</div>

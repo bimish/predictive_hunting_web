@@ -1,11 +1,17 @@
 (function() {
-  var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
-  $('#huntingLocationPopupDialog', activePage).popup('close');
-  Scripts.Page.StandsMap.updateCheckinStatus(<%== @status.to_json%>, <%== (@location_record.nil? ? 'null' : member_location_from_hunting_mode_location(@location_record).to_json) %>);
+  //var activePage = Scripts.Common.getActivePage();
+  Scripts.Page.StandCheckin.updateCheckinStatus(
+    <%== @status.to_json%>,
+    <%== (@location_record.nil? ? 'null' : member_location_from_hunting_mode_location(@location_record).to_json) %>,
+    <%= (params[:form_id] == 'dialog')%>,
+    '<%= j date_time_to_s(DateTime.current, :short) %>'
+  );
+  /*
   $('td.stands-footer-text', activePage).html('<%= j render partial: 'stand_checkin_status_description', locals: { last_checkin: @location_record } %>');
   <% if @location_record.nil? || @location_record.expired? %>
   $('#checkout-submit', activePage).button("disable");
   <% else %>
   $('#checkout-submit', activePage).button("enable");
   <% end %>
+  */
 })();

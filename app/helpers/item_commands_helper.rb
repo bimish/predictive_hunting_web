@@ -21,8 +21,17 @@ module ItemCommandsHelper
       content_tag :span, '', { class:"glyphicon glyphicon-#{glyphicon_name}" }
     end
   end
+  def item_command_cell(&block)
+    content_tag(:td, class:'index-item-commands') do
+      yield
+    end
+  end
 private
   def prep_html_options(title, html_options = { })
-    html_options.merge( { title: title, class: "btn btn-default btn-sm" } )
+    html_options = html_options.merge( { class: "btn btn-default btn-sm" } )
+    if html_options[:title].blank?
+      html_options = html_options.merge( { title: title } )
+    end
+    html_options
   end
 end

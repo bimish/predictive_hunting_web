@@ -1,29 +1,26 @@
 <%
 # initialize any undefined local variables
-attribute_list ||= nil
-command_list ||= nil
+attribute_list ||= HuntingLocationsHelper.index_attribute_list(params[:vantage])
+command_list ||= HuntingLocationsHelper.index_command_list(params[:vantage])
 unless defined?(read_only)
   read_only = false
 end
 %>
 <tr data-id="<%=hunting_location.id%>">
-  <% if (!attribute_list.nil? && attribute_list.include?(:hunting_plot_id)) %><td><%= (hunting_location.hunting_plot_id.nil?) ? nil : hunting_location.hunting_plot.get_display_name %></td><% end %>
-  <% if (attribute_list.nil? || attribute_list.include?(:name)) %><td><%= hunting_location.name %></td><% end %>
-  <% if (!attribute_list.nil? && attribute_list.include?(:coordinates)) %><td><%= hunting_location.coordinates %></td><% end %>
-  <% if (attribute_list.nil? || attribute_list.include?(:location_type)) %><td><%= EnumsHelper::HuntingLocationEnums::get_location_type_description(hunting_location.location_type) %></td><% end %>
+  <% if attribute_list.include?(:hunting_plot_id) %><td><%= (hunting_location.hunting_plot_id.nil?) ? nil : hunting_location.hunting_plot.get_display_name %></td><% end %>
+  <% if attribute_list.include?(:name) %><td><%= hunting_location.name %></td><% end %>
+  <% if attribute_list.include?(:coordinates) %><td><%= hunting_location.coordinates %></td><% end %>
+  <% if attribute_list.include?(:location_type) %><td><%= EnumsHelper::HuntingLocationEnums::get_location_type_description(hunting_location.location_type) %></td><% end %>
+  <% if attribute_list.include?(:access_flags) %><td><%= HuntingLocationHelper.get_access_flags_description(hunting_location) %></td><% end %>
   <% if !read_only %>
-  <td>
-    <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_location_path(hunting_location)) : nil %>
-    <% if (command_list.nil? || command_list.include?(:edit)) %>
-      <%= item_edit_command(edit_hunting_location_path(hunting_location, { active_field_group: :properties }), { remote: true }) %>
-      <%= item_command_glyphicon('Change Location', 'map-marker',  edit_hunting_location_path(hunting_location, { active_field_group: :location }), { remote: true }) %>
+    <%= item_command_cell do %>
+      <% if command_list.include?(:show) %><%= item_show_command(hunting_location_path(hunting_location)) %><% end %>
+      <% if command_list.include?(:edit) %>
+        <%= item_edit_command(edit_hunting_location_path(hunting_location, { active_field_group: :properties }), { remote: true }) %>
+        <%= item_command_glyphicon('Change Location', 'map-marker',  edit_hunting_location_path(hunting_location, { active_field_group: :location }), { remote: true }) %>
+      <% end %>
+      <% if command_list.include?(:schedule) %><%= item_command_glyphicon('Reservations', 'calendar',  hunting_location_schedules_path(hunting_location), { target: '_blank' }) %><% end %>
+      <% if command_list.include?(:delete) %><%= item_delete_command(hunting_location_path(hunting_location), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %><% end %>
     <% end %>
-    <%= (command_list.nil? || command_list.include?(:schedule)) ? item_command_glyphicon('Reservations', 'calendar',  hunting_location_schedules_path(hunting_location), { target: '_blank' }) : nil %>
-    <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_location_path(hunting_location), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
-    <%#= item_edit_command(edit_hunting_location_path(hunting_location), { remote: true }) %>
-    <%#= item_command_glyphicon('Change Location', 'map-marker', '#', { remote: true }) %>
-    <%#= item_command_glyphicon('Reservations', 'calendar',  hunting_location_schedules_path(hunting_location), { target: '_blank' }) %>
-    <%#= item_delete_command(hunting_location_path(hunting_location), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %>
-  </td>
   <% end %>
 </tr>

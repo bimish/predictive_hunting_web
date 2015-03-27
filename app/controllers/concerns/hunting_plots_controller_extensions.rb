@@ -15,6 +15,7 @@ module HuntingPlotsControllerExtensions
 
   def manage
     @hunting_plot = get_component
+    render layout: "layouts/plot_management"
   end
 
   def set_hunting_plots

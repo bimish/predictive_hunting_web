@@ -1,0 +1,4 @@
+UserGroupTableHelper.delete(<%= @user_group.id%>);
+if (typeof g_userGroupAjaxNotifications != 'undefined') {
+  g_userGroupAjaxNotifications.notify('delete', <%== @user_group.to_json%>);
+}

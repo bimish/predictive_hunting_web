@@ -1,22 +1,70 @@
 <% provide(:page_id, 'stand_checkin') %>
+<% provide(:page_title, 'Check-in/Stand Reservations') %>
+
+<% content_for :panels do %>
+<div data-role="panel" data-display="overlay" data-position="right" id="stand-checkin-options-panel" class="right-align-panel">
+  <div data-role="collapsible" class="ui-mini" id="map-options">
+    <h4>Map Options</h4>
+    <div class="ui-field-contain">
+      <input name="satellite-checkbox" id="satellite-checkbox" type="checkbox" checked="true" data-role="flipswitch"> Satellite Imagery
+    </div>
+    <div class="ui-field-contain">
+      <input name="members-checkbox" id="members-checkbox" type="checkbox" checked="true" data-role="flipswitch"> Members <%= image_tag 'user_pin.png', size:'16x16' %>
+    </div>
+    <div class="ui-field-contain">
+      <input name="stands-checkbox" id="stands-checkbox" type="checkbox" checked="true" data-role="flipswitch"> Stands <%= image_tag 'hunting_location_available_32.png', size:'16x16' %>
+    </div>
+    <div class="ui-field-contain">
+      <input name="wind-forecast-checkbox" id="wind-forecast-checkbox" type="checkbox" checked="true" data-role="flipswitch"> Wind Forecast
+    </div>
+  </div>
+  <div data-role="collapsible" class="ui-mini">
+    <h4>Date</h4>
+    Forecast/Reservation Date
+    <%
+      reservation_date_options = (0..6).collect do |days_from_now|
+        date = days_from_now.days.from_now
+        [ date_to_s(date, :day_and_date), date_to_s(date, :rfc3339) ]
+      end
+    %>
+    <%= select_tag('stand-reservation-date', options_for_select(reservation_date_options) ) %>
+  </div>
+  <a href="#header" data-rel="close" class="ui-btn ui-icon-carat-r ui-btn-icon-right ui-mini ui-corner-all" id="map-options-close-button">Close</a>
+</div>
+<% end %>
 
 <div data-role="content" id="stand_checkin_map" class="content-panel content-panel-active">
   <%= render partial:'stand_checkin_map', locals: { hunting_plot: @hunting_plot } %>
 </div>
-<div data-role="content" id="stand_checkin_list" class="content-panel">
-  <%= render partial:'stand_checkin_list', locals: { hunting_plot: @hunting_plot } %>
+<div data-role="content" id="checkin_status" class="content-panel">
+  <div class="content-padded">
+    <%= render partial:'status', locals: { hunting_plot: @hunting_plot } %>
+  </div>
 </div>
-<div data-role="content" id="stand_checkin_options" class="content-panel">
-  <%= render partial:'stand_checkin_options', locals: { hunting_plot: @hunting_plot } %>
+<div data-role="content" id="stand_reservations_list" class="content-panel">
+  <div class="content-padded">
+    <%= render partial:'stand_reservations_list', locals: { hunting_plot: @hunting_plot } %>
+  </div>
 </div>
 
-<%= content_for :footer do %>
-<p id="selected_date"><%= date_to_s(Date.today, :descriptive) %></p>
-<div data-role="navbar" data-mini="true">
+<%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkout-form' do %>
+  <%= hidden_field_tag("is_at_plot", "false") %>
+<% end %>
+
+<%= content_for :header do %>
+<div data-role="navbar" data-mini="true" data-iconpos="top">
   <ul>
     <li><a href="#" data-target="stand_checkin_map" data-icon="location" class="ui-btn-active">Map</a></li>
-    <li><a href="#" data-target="stand_checkin_list" data-icon="bullets">List</a></li>
-    <li><a href="#" data-target="stand_checkin_options" data-icon="gear">Options</a></li>
+    <li><a href="#" data-target="checkin_status" data-icon="info">Check-in Status</a></li>
+    <li><a href="#" data-target="stand_reservations_list" data-icon="bullets">Reservations</a></li>
   </ul>
+</div>
+<% end %>
+
+<%= content_for :footer do %>
+<div class="ui-grid-b ui-grid-centered" data-tab-id="stand_checkin_map">
+  <div class="ui-block-a"><a href="#" id="check-in-with-detect" class="ui-btn ui-icon-check ui-btn-icon-left ui-corner-all" data-role="button">Check-In</a></div>
+  <div class="ui-block-b"><a href="#" id="check-out-submit2" class="ui-btn ui-icon-check ui-btn-icon-left ui-corner-all" data-role="button">Check-Out</a></div>
+  <div class="ui-block-c"><a href="#stand-checkin-options-panel" class="ui-btn ui-icon-gear ui-btn-icon-left ui-corner-all" data-role="button">Options</a></div>
 </div>
 <% end %>

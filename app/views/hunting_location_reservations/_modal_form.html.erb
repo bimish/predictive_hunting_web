@@ -1,0 +1,10 @@
+<%
+  url = @reservation.persisted? ? hunting_location_reservation_path(@reservation) :  hunting_location_reservations_create_path(@view_data.hunting_plot)
+%>
+<% provide(:title, 'Hunting Stand Reservation') %>
+<%= bootstrap_form_for(@reservation, :url => url, remote: true) do |f| %>
+  <% if @reservation.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @reservation } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

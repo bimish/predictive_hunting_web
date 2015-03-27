@@ -1,0 +1,12 @@
+<% provide(:page_id, :stands_list) %>
+<% provide(:page_label, 'Stands') %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="panel-title">Hunting Stands |</span>
+    <%= link_to combine_tags(bootstrap_glyphicon('plus-sign'), ' New Stand'), new_hunting_plot_location_path(@hunting_plot, location_type: HuntingLocation.location_types[:location_type_stand]), { remote: true, class: 'btn btn-link btn-sm' } %>
+  </div>
+  <div class="panel-body">
+    <%= render partial:'hunting_locations/index_table', :locals => { :hunting_locations => @stands } %>
+  </div>
+</div>

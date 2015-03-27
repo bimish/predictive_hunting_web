@@ -57,6 +57,10 @@ class HuntingPlotUserAccessRequest < ActiveRecord::Base
     self.created_by_user_id = signed_in_user.id unless signed_in_user.nil?
   end
 
+  def notify
+    send_invite_email
+  end
+
 private
   def user_or_invite_present
     if self.user_id.nil? && self.user_invitation_id.nil?

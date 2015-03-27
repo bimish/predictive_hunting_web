@@ -59,6 +59,15 @@
 <body data-no-turbolink="true">
 
   <% page_id = yield(:page_id) %>
+  <% page_title = yield(:page_title) %>
+
+  <div id="global-popup" data-theme="a">
+    <div class="ui-content">
+      <p id="message"></p>
+      <a id="global-popup-ok" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" href="#">OK</a>
+      <a id="global-popup-cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" href="#">Cancel</a>
+    </div>
+  </div>
 
   <div data-role="page" id="<%=page_id%>" data-dom-cache="true" data-theme="a">
 
@@ -75,7 +84,12 @@
     <%= yield :panels %>
 
     <div data-role="header" data-position="fixed" id="header">
-      <h1 class="header-title">Predictive Hunting</h1>
+      <div class="page-title">
+        <h1>Predictive Hunting</h1>
+        <% unless page_title.blank? %>
+        <p><%= page_title%></p>
+        <% end %>
+      </div>
       <% if page_id == 'landing' %>
       <a href="#topmenu" class="ui-btn-left ui-btn ui-icon-bars ui-btn-icon-notext ui-shadow ui-nodisc-icon ui-alt-icon" data-role="button">Menu</a>
       <% else %>

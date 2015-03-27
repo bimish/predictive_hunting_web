@@ -1,0 +1,18 @@
+<li data-id="<%=reservation.id%>">
+  <%
+  time_period = date_to_s(reservation.start_date_time, :short)
+  if reservation.time_period_am?
+    time_period << " (AM only)"
+  elsif reservation.time_period_pm?
+    time_period << " (PM only)"
+  end
+  %>
+  <%= content_tag(:p, 'Date/Time', class:'label') %>
+  <%= content_tag(:p, time_period) %>
+
+  <%= content_tag(:p, 'Stand', class:'label') %>
+  <%= content_tag(:p, reservation.hunting_location.name) %>
+
+  <%= content_tag(:p, 'Reserved By', class:'label') %>
+  <%= content_tag(:p, reservation.created_by.get_display_name) %>
+</li>

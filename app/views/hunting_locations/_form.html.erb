@@ -54,13 +54,13 @@ function initModalForm() {
   );
   <% end %>
 }
-<%== MapHelper.create_map_helper_script(@hunting_plot, 'editHuntingLocationCoordinatesMap', { :function_name => 'createEditHuntingLocationCoordinatesMap', :mode => MapHelper::Modes['SetLocation'] } ) %>
+<%== MapHelper.create_map_helper_script(hunting_location.hunting_plot, 'editHuntingLocationCoordinatesMap', { :function_name => 'createEditHuntingLocationCoordinatesMap', :mode => MapHelper::Modes['SetLocation'] } ) %>
 <% unless is_modal %>
 $(document).ready( function() { initModalForm(); });
 <% end %>
 </script>
 
-<%= bootstrap_form_for [@hunting_plot, @hunting_location], remote: is_modal do |f| %>
+<%= bootstrap_form_for [hunting_location.hunting_plot, hunting_location], remote: is_modal do |f| %>
   <div class="panel-group" id="huntingLocationFormAccordion">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -70,8 +70,8 @@ $(document).ready( function() { initModalForm(); });
       </div>
       <div id="huntingLocationProperties" class="panel-collapse collapse<%= (active_field_group == :properties) ? " in" : nil %>">
         <div class="panel-body">
-            <% if @hunting_location.errors.any? %>
-              <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location } %>
+            <% if hunting_location.errors.any? %>
+              <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => hunting_location } %>
             <% end %>
             <%= render :partial => 'form_fields', :locals => { :form => f } %>
         </div>
@@ -91,6 +91,6 @@ $(document).ready( function() { initModalForm(); });
     </div>
   </div>
   <% unless is_modal %>
-  <%= _submit_button(f, @hunting_location) %>
+  <%= _submit_button(f, hunting_location) %>
   <% end %>
 <% end %>

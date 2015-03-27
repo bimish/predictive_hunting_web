@@ -18,6 +18,11 @@ Web::Application.routes.draw do
     end
     resources :user_access_requests, as: 'user_access_requests', controller:'hunting_plot_user_access_requests', :only => [:index, :create, :new] do
     end
+    resources :user_groups, as: 'user_groups', controller:'user_groups', :only => [:index, :create, :new] do
+    end
+    get 'reservations/new', to: 'hunting_location_reservations#new'
+    post 'reservations/create', to: 'hunting_location_reservations#create'
+    get 'reservations', to: 'hunting_location_reservations#index'
   end
 
   resources :hunting_plot_named_animals, :except => [:index, :create, :new]
@@ -26,18 +31,43 @@ Web::Application.routes.draw do
     member do
       patch 'accept'
       patch 'decline'
+      patch 'notify'
     end
     collection do
       get 'review'
     end
   end
 
-  resources :hunting_locations, shallow: true, :except => [:index, :create, :new] do
-    resources :schedules, as: 'schedules', controller:'hunting_location_schedules', :only => [:index, :create, :new] do
+  resources :user_groups, shallow: true, :except => [:index, :create, :new] do
+    resources :user_group_members, as: 'members', controller:'user_group_members', :only => [:index, :create, :new] do
+      collection do
+        get 'select'
+        post 'set'
+      end
     end
   end
 
-  resources :hunting_location_schedules, :except => [:index, :create, :new]
+  resources :hunting_locations, shallow: true, :except => [:index, :create, :new] do
+    get 'reservations', to: 'hunting_location_reservations#index'
+    get 'reservations/new', to: 'hunting_location_reservations#new'
+    post 'reservations/create', to: 'hunting_location_reservations#create'
+    #resources :schedules, as: 'schedules', controller:'hunting_location_schedules', :only => [:index, :create, :new] do
+    #end
+    resources :hunting_location_user_accesses, as: 'user_acccesses', controller:'hunting_location_user_accesses', :only => [:index, :create, :new] do
+    end
+    resources :hunting_location_user_group_accesses, as: 'user_group_accesses', controller:'hunting_location_user_group_accesses', :only => [:index, :create, :new] do
+    end
+  end
+
+  resources :hunting_location_user_accesses, :except => [:index, :create, :new]
+  resources :hunting_location_user_group_accesses, :except => [:index, :create, :new]
+
+  resources :hunting_location_reservations, :except => [:index, :create, :new] do
+    collection do
+      match 'search/:hunting_plot_id' => 'hunting_location_reservations#search', :via => [:get, :post], as: :search
+      get 'index/:hunting_plot_id', to: 'hunting_location_reservations#index', as: :index
+    end
+  end
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :users
@@ -86,6 +116,18 @@ Web::Application.routes.draw do
 
   resources :password_resets
 
+  scope "/plot_management/:hunting_plot_id", as:'plot_management', controller: 'plot_management' do
+    root to:'plot_management#home'
+    get 'members'
+    get 'member_invitations'
+    get 'user_groups'
+    get 'stands_list'
+    get 'stands_map'
+    get 'stand_reservations'
+    get 'named_animals'
+    get 'activity_log'
+  end
+
   get '/hunting_app/:hunting_plot_id', to: 'hunting_app#landing_page', as: :hunting_app
   get '/hunting_app/:hunting_plot_id/home', to: 'hunting_app#home', as: :hunting_app_home
   get '/hunting_app/:hunting_plot_id/stands', to: 'hunting_app#stands', as: :hunting_app_stands
@@ -98,13 +140,14 @@ Web::Application.routes.draw do
   get '/hunting_app/:hunting_plot_id/chat_refresh/:since_id', to: 'hunting_app#chat_refresh', as: :hunting_app_chat_refresh
   post '/hunting_app/:hunting_plot_id/chat_post', to: 'hunting_app#chat_post', as: :hunting_app_chat_post
   post '/hunting_app/:hunting_plot_id/checkin', to: 'hunting_app#check_in', as: :hunting_app_checkin
-  get '/hunting_app/:hunting_plot_id/stand_checkin_dialog/:hunting_location_id', to: 'hunting_app#stand_checkin_dialog', as: :hunting_app_stand_checkin_dialog
+  get '/hunting_app/:hunting_plot_id/stand_checkin_dialog(/:hunting_location_id)', to: 'hunting_app#stand_checkin_dialog', as: :hunting_app_stand_checkin_dialog
   get '/hunting_app/:hunting_plot_id/stand_reservation_dialog/:hunting_location_id', to: 'hunting_app#stand_reservation_dialog', as: :hunting_app_stand_reservation_dialog
   post '/hunting_app/:hunting_plot_id/create_stand_reservation', to: 'hunting_app#create_stand_reservation', as: :hunting_app_create_stand_reservation
   get '/hunting_app/:hunting_plot_id/hunt_forecast', to: 'hunting_app#hunt_forecast', as: :hunting_app_hunt_forecast
   get '/hunting_app/:hunting_plot_id/hunt_forecast_month/:forecast_date', to: 'hunting_app#hunt_forecast_month', as: :hunting_app_hunt_forecast_month
 
   get '/hunting_app/:hunting_plot_id/stand_checkin', to: 'hunting_app#stand_checkin', as: :hunting_app_stand_checkin
+  get '/hunting_app/:hunting_plot_id/stand_dialog/:hunting_location_id', to: 'hunting_app#stand_dialog', as: :hunting_app_stand_dialog
 
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'

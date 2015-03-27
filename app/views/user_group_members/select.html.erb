@@ -1,0 +1,15 @@
+<% content_for :head do %>
+<script type="text/javascript">
+$(document).ready(
+  function() {
+    initializeStyledCheckboxes();
+  }
+);
+</script>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <%= render :partial => 'user_group_members/select', locals: { user_group: @user_group, users: @users } %>
+  </div>
+</div>

@@ -1,0 +1,4 @@
+UserGroupTableHelper.add(<%= @user_group.id%>, '<%= j render(:partial => 'index_item', :locals => { :user_group => @user_group })%>');
+if (typeof g_userGroupAjaxNotifications != 'undefined') {
+  g_userGroupAjaxNotifications.notify('create', <%== @user_group.to_json%>);
+}

@@ -15,4 +15,7 @@ module HuntingPlotUserAccessesHelper
     end
     enabled_permissions.join(', ')
   end
+  def self.index_default_attribute_list
+    [ :user_email, :alias, :initial_permissions, :created_by_user_id ]
+  end
 end

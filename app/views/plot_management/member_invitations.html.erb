@@ -1,0 +1,12 @@
+<% provide(:page_id, :member_invitations) %>
+<% provide(:page_label, 'Member Invitations') %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="panel-title">Pending Invitations |</span>
+    <%= link_to combine_tags(bootstrap_glyphicon('plus-sign'), ' Invite Member'), new_hunting_plot_user_access_request_path(@hunting_plot), { remote: true, class:'btn btn-link btn-sm' } %>
+  </div>
+  <div class="panel-body">
+    <%= render partial:'hunting_plot_user_access_requests/index_table', :locals => { :hunting_plot_user_access_requests => @hunting_plot_user_access_requests } %>
+  </div>
+</div>

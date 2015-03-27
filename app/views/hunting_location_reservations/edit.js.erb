@@ -1,0 +1,5 @@
+(function () {
+  var form = $('#form-placeholder').html('<%= j render :partial => 'modal_form', :layout => '/layouts/modal_form_dialog', :locals => { title:'Hunting Location Reservation' } %>');
+  InteractiveForms.initializeFields(form);
+  showAjaxModalForm('modal-form-dialog');
+})();

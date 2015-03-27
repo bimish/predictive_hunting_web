@@ -1,0 +1,23 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+command_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<tr data-id="<%=user_group_member.id%>">
+  <% if (attribute_list.nil? || attribute_list.include?(:user_group_id)) %>
+    <td><%= (user_group_member.user_group_id.nil?) ? nil : user_group_member.user_group.get_display_name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+    <td><%= (user_group_member.user_id.nil?) ? nil : user_group_member.user.get_display_name %></td>
+  <% end %>
+  <% if editable %>
+    <%= item_command_cell do %>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(user_group_member_path(user_group_member)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_user_group_member_path(user_group_member), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(user_group_member_path(user_group_member), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    <% end %>
+  <% end %>
+</tr>

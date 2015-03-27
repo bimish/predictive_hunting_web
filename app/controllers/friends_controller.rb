@@ -1,6 +1,6 @@
 class FriendsController < ApplicationController
 
-  before_filter :signed_in_user, only: [:index, :edit, :update, :destroy]
+  before_filter :ensure_signed_in, only: [:index, :edit, :update, :destroy]
 
   before_action :set_user_relationship, only: [:show, :edit, :update, :destroy, :delete]
   before_action :authorize_action, only: [:show, :edit, :update, :destroy, :delete]

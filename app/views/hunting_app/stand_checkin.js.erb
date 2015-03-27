@@ -1,0 +1,28 @@
+AssetPath.Image.StandReservedNone = '<%= asset_path('stand_reservation_available.png') %>';
+AssetPath.Image.StandReservedAM = '<%= asset_path('stand_reservation_reserved_am.png') %>';
+AssetPath.Image.StandReservedPM = '<%= asset_path('stand_reservation_reserved_pm.png') %>';
+AssetPath.Image.StandReservedAllDay = '<%= asset_path('stand_reservation_reserved.png') %>';
+
+Scripts.Page.StandCheckin.setStandLocations(
+<%==
+    @hunting_plot.locations.collect do |hunting_location|
+      hunting_location_to_stand_location(hunting_location)
+    end.to_json
+%>
+);
+Scripts.Page.StandCheckin.setStandReservations(
+<%==
+    @hunting_location_schedules.collect do |hunting_location_schedule|
+      stand_reservation_from_hunting_location_schedule(hunting_location_schedule)
+    end.to_json
+%>
+);
+Scripts.Page.StandCheckin.setMemberLocations(
+<%==
+    @member_locations.collect do |member_location|
+      member_location_from_hunting_mode_location(member_location)
+    end.to_json
+%>
+);
+Scripts.Page.StandCheckin.setWindForecast(<%== @wind_forecast.to_json %>);
+Scripts.Page.StandCheckin.initalizeMap();

@@ -53,6 +53,51 @@ class HuntingAppController < ApplicationController
 
   end
 
+  def stand_checkin
+
+    set_location_schedules_for_week
+    set_member_locations
+    set_last_checkin
+    @reservations = HuntingLocationSchedule.schedules_for_plot(@hunting_plot, Time.now.beginning_of_day, 1.weeks.from_now.end_of_day)
+
+    @wind_forecast = []
+
+    hourly_forecast = WeatherForecastHelper.forecast_hourly(@hunting_plot)
+    if hourly_forecast[:forecast][0].nil?
+      todays_forecast = {
+        wind_dir: 'Unavailable',
+        wind_degrees: '0',
+        wind_mph: '?'
+      }
+    else
+      todays_forecast = {
+        wind_dir: hourly_forecast[:forecast][0]['wdir']['dir'],
+        wind_degrees: hourly_forecast[:forecast][0]['wdir']['degrees'],
+        wind_mph: hourly_forecast[:forecast][0]['wspd']['english']
+      }
+    end
+    todays_forecast[:date] = Date.today
+    @wind_forecast.push todays_forecast
+
+    ten_day_forecast = WeatherService.forecast_10_day(@hunting_plot)
+    ((Date.today + 1)..(Date.today + 7)).each do |date|
+      day_forecast = ten_day_forecast[:forecast]['simpleforecast']['forecastday'].detect do |forecast_day|
+        forecast_day['date']['year'] == date.year && forecast_day['date']['month'] == date.month && forecast_day['date']['day'] == date.day
+      end
+      unless day_forecast.nil?
+        forecast_item =
+          {
+            date: date,
+            wind_dir: day_forecast['avewind']['dir'],
+            wind_degrees: day_forecast['avewind']['degrees'],
+            wind_mph: day_forecast['avewind']['mph']
+          }
+        @wind_forecast.push forecast_item
+      end
+    end
+
+  end
+
   def stands
     hourly_forecast = WeatherService.forecast_hourly(@hunting_plot)
     if hourly_forecast[:forecast][0].nil?
@@ -164,11 +209,16 @@ class HuntingAppController < ApplicationController
     @location_record = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
     if (is_at_plot)
       location_coordinates = "POINT(#{params[:position_longitude]} #{params[:position_latitude]})"
+      expires_at = Time.parse(params[:expires_at]) # this returns the supplied time on the current day in the current time zone
+      location_id = params[:hunting_location_id]
+      if location_id == '0'
+        location_id = nil
+      end
       if @location_record.nil?
-        @location_record = HuntingModeUserLocation.create(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: params[:hunting_location_id], location_coordinates: location_coordinates)
+        @location_record = HuntingModeUserLocation.create(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: location_id, location_coordinates: location_coordinates, expires_at: expires_at)
       else
         @location_record.touch # ensure updated_at gets changed
-        @location_record.update(location_coordinates: location_coordinates, hunting_location_id: params[:hunting_location_id])
+        @location_record.update(location_coordinates: location_coordinates, hunting_location_id: location_id, expires_at: expires_at)
       end
     elsif !@location_record.nil?
       @location_record.destroy
@@ -187,14 +237,15 @@ class HuntingAppController < ApplicationController
     set_hunting_plot
     @hunting_location = HuntingLocation.find(params[:hunting_location_id])
     @checked_in_user = HuntingModeUserLocation.current_for_location(@hunting_location.id)
-    @next_reservation = HuntingLocationSchedule.next_reservation(@hunting_location.id)
+    @existing_reservations = HuntingLocationSchedule.schedules_for_location(@hunting_location, Date.current.beginning_of_day, Date.current.end_of_day)
   end
 
   def stand_reservation_dialog
     set_hunting_plot
     @hunting_location = HuntingLocation.find(params[:hunting_location_id])
     @reservation_date = params[:reservation_date].blank? ? Date.today : Date.parse(params[:reservation_date])
-    @existing_reservations = HuntingLocationSchedule.schedules_for_location(@hunting_location, @reservation_date.beginning_of_day, @reservation_date.end_of_day)
+    # get all reservations of this location for the next 7 days
+    @existing_reservations = HuntingLocationSchedule.schedules_for_location(@hunting_location, Date.current.beginning_of_day, 6.days.from_now.end_of_day)
   end
 
   def create_stand_reservation
@@ -202,7 +253,12 @@ class HuntingAppController < ApplicationController
     @action_taken = {}
 
     if (params[:existing_reservation_id].blank?)
-      @reservation = HuntingLocationSchedule.new(hunting_location_id: params[:hunting_location_id], start_date_time: params[:reservation_date], end_date_time: params[:reservation_date], entry_type: HuntingLocationSchedule.entry_types[:entry_type_reservation])
+      @reservation = HuntingLocationSchedule.new(
+        hunting_location_id: params[:hunting_location_id],
+        start_date_time: params[:reservation_date],
+        end_date_time: params[:reservation_date],
+        entry_type: HuntingLocationSchedule.entry_types[:entry_type_reservation]
+      )
       @reservation.init_new current_user
       @action_taken[:action] = :create
     else
@@ -211,6 +267,8 @@ class HuntingAppController < ApplicationController
       @action_taken[:action] = :update
     end
 
+    @reservation.time_period = params[:time_period]
+=begin
     reserve_am = !params[:reserve_am].blank?
     reserve_pm = !params[:reserve_pm].blank?
     if (reserve_am && reserve_pm)
@@ -226,7 +284,7 @@ class HuntingAppController < ApplicationController
       end
       @reservation = nil
     end
-
+=end
     unless @reservation.nil?
       @reservation.save
     end

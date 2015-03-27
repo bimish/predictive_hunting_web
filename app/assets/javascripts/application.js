@@ -21,3 +21,5 @@
 //= require map_helper
 //= require table_helper
 //= require ajax_notifications
+//= require interactive_forms
+//= require bootstrap-datepicker

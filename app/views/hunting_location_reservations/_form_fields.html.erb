@@ -1,0 +1,13 @@
+<% unless form.object.new_record? %>
+<%= _static_control(form, :created_by_name, 'Created By') %>
+<% end %>
+<%= _select_field(form, :hunting_location_id, 'Stand', @view_data.hunting_locations) %>
+<%= _date_picker(form, :reservation_date, 'Reservation Date', date_format: 'D, M d, yyyy') %>
+<%= _radio_button_list(form, :time_period, 'Time Period') do |radio_button_list| %>
+  <%= radio_button_list.add_item(:time_period, 'AM', :time_period_am, inline: true) %>
+  <%= radio_button_list.add_item(:time_period, 'PM', :time_period_pm, inline: true) %>
+  <%= radio_button_list.add_item(:time_period, 'All Day', :time_period_all_day, inline: true) %>
+  <%= radio_button_list.add_item(:time_period, 'Custom', :time_period_custom, inline: true) %>
+<% end %>
+<%= _time_select(form, :start_time, 'Start Time', { }, { data: { enabled_by: "#{form.object_name}[time_period]", enabled_value: :time_period_custom } }) %>
+<%= _time_select(form, :end_time, 'End Time', { }, { data: { enabled_by: "#{form.object_name}[time_period]", enabled_value: :time_period_custom } }) %>

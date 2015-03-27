@@ -1,0 +1,10 @@
+<%
+  url = @reservation.persisted? ? hunting_location_reservation_path(@reservation) :  hunting_location_reservations_create_path(@view_data.hunting_plot)
+%>
+<%= bootstrap_form_for(@reservation, :url => url) do |f| %>
+  <% if @reservation.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @reservation } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @reservation) %>
+<% end %>

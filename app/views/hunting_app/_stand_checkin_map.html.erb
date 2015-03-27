@@ -1,0 +1,38 @@
+<div id="plot-map-canvas" style="width:100%;height:100%;">Loading, please wait...</div>
+
+<div id="plot-map-wind-indicator" style="position: absolute; right: 5px; top: 75px;" class="wind-indicator">
+  <svg id="windIndicatorSvg" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+    <defs>
+      <marker id="Arrow" markerWidth="10" markerHeight="10" viewBox="-6 -6 12 12" refX="-2" refY="0" markerUnits="strokeWidth" orient="auto">
+        <polygon points="-3,0 -4,4 4,0 -4,-4" fill="#3388cc" stroke="none" stroke-width="1px"></polygon>
+      </marker>
+    </defs>
+    <circle id="mycircle" fill="none" stroke="#3388cc" cx="25" cy="25" r="20" stroke-width="2px"></circle>
+    <text id="windSpeed" x="25" y="30" fill="black" font-size="12" font-weight="bold" text-anchor="middle">12</text>
+    <line id="windDirection" x1="25" y1="4" x2="25" y2="5" stroke="#3388cc" stroke-width="2px" marker-end="url(#Arrow)" transform="rotate(0 25 25)"></line>
+  </svg>
+</div>
+
+<%= popup_dialog 'Hunting Stand', id:'stand-dialog' do %>
+  <p>
+    Stand: <span id="stand-name"></span>
+  </p>
+  <p>
+    Status: <span id="stand-status"></span>
+  </p>
+  <a href="#checkin" class="ui-btn ui-btn-inline ui-corner-all">Check-In</a>
+  <a href="#reserve" class="ui-btn ui-btn-inline ui-corner-all">Reserve</a>
+<% end %>
+
+<%= popup_dialog 'Stand Check-in', id:'stand-checkin-dialog' do %>
+  Popup content
+<% end %>
+
+<%= popup_dialog 'Stand Reservation', id:'stand-reservation-dialog' do %>
+  Popup content
+<% end %>
+
+<div class="flash-dialog" data-role="popup" id="stand-checkin-flash">
+  <p class="success-message">Flash message...</p>
+  <p class="warning-message">Flash message...</p>
+</div>

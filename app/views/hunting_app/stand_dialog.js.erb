@@ -1,0 +1,22 @@
+(function() {
+  var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+  var dialog = $('#stand-dialog', activePage);
+  dialog.html('<%= j render(:partial => 'stand_dialog')%>').trigger("create");
+  dialog
+    .popup(
+      {
+        beforeposition: function () {
+          $(this).css({
+            maxWidth: $(window).innerWidth() - 50 /*,
+            height: window.innerHeight - 14,
+            positionTo: 'window'
+            */
+          });
+        },
+        x: 0,
+        y: 0,
+        tolerance: "10,10",
+        positionTo: 'window'
+      }
+    ).popup("open");
+})();

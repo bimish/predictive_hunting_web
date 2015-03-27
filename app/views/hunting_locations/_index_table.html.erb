@@ -4,7 +4,7 @@ var HuntingLocationTableHelper = new TableHelper('table[data-component="HuntingL
 </script>
 <% end %>
 <%
-attribute_list ||= nil
+attribute_list ||= HuntingLocationsHelper.index_attribute_list(params[:vantage])
 unless defined?(read_only)
   read_only = false
 end
@@ -15,10 +15,11 @@ Hi there
 <table class="table" data-component="HuntingLocation">
   <thead>
     <tr>
-      <% if (!attribute_list.nil? && attribute_list.include?(:hunting_plot_id)) %><th>Hunting plot</th><% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:name)) %><th>Name</th><% end %>
-      <% if (!attribute_list.nil? && attribute_list.include?(:coordinates)) %><th>Coordinates</th><% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:location_type)) %><th>Location type</th><% end %>
+      <% if attribute_list.include?(:hunting_plot_id) %><th>Hunting plot</th><% end %>
+      <% if attribute_list.include?(:name) %><th>Name</th><% end %>
+      <% if attribute_list.include?(:coordinates) %><th>Coordinates</th><% end %>
+      <% if attribute_list.include?(:location_type) %><th>Location type</th><% end %>
+      <% if attribute_list.include?(:access_flags) %><th>Access flags</th><% end %>
       <% if !read_only %><th></th><% end %>
     </tr>
   </thead>

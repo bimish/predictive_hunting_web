@@ -1,0 +1,29 @@
+<table class="table table-condensed" data-component="HuntingLocationReservation">
+  <thead>
+    <tr>
+      <th>Stand</th>
+      <th>Reserved by</th>
+      <th>Date</th>
+      <th>Time Period</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'hunting_location_reservations/index_item', :collection => reservations, :as => :reservation %>
+  </tbody>
+
+  <tfoot>
+    <tr>
+      <td colspan="5">
+        <% use_ajax = false unless defined?(use_ajax) %>
+        <%
+          additional_paging_parameters = {} unless defined?(additional_paging_parameters)
+          additional_paging_parameters = additional_paging_parameters.merge( { :controller => "hunting_location_reservations", :action => "search" } )
+        %>
+        <%= will_paginate_bootstrap reservations, { previous_label: '«', next_label: '»', params: additional_paging_parameters, remote: use_ajax } %>
+      </td>
+    </tr>
+  </tfoot>
+
+</table>

@@ -1,0 +1,27 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= UserGroupsHelper.index_default_attribute_list
+command_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<tr data-id="<%=user_group.id%>">
+  <% if (attribute_list.nil? || attribute_list.include?(:name)) %>
+    <td><%= user_group.name %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:group_type)) %>
+    <td><%= EnumsHelper::UserGroupEnums::get_group_type_description(user_group.group_type) %></td>
+  <% end %>
+  <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+    <td><%= (user_group.hunting_plot_id.nil?) ? nil : user_group.hunting_plot.get_display_name %></td>
+  <% end %>
+  <% if editable %>
+    <%= item_command_cell do %>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(user_group_path(user_group)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_user_group_path(user_group), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(user_group_path(user_group), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:members)) ? item_command_glyphicon("Members", "user", select_user_group_members_path(user_group), { remote: true } ) : nil %>
+    <% end %>
+  <% end %>
+</tr>

@@ -1,0 +1,278 @@
+<% provide(:page_id, 'stands_map') %>
+<% provide(:page_label, 'Stands Map') %>
+
+<% content_for :head do %>
+<script type="text/javascript">
+MapIcons = {
+  HuntingPlotLocation: {
+    url: '<%= asset_path('map_marker_blue.png')%>',
+    size: new google.maps.Size(16,16),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(8, 8),
+    scaledSize: new google.maps.Size(16,16)
+  }
+};
+<%== MapHelper.create_map_helper_script(@hunting_plot, 'hunting_locations_map', :function_name => 'initHuntingLocationsMap') %>
+var g_huntingLocations = <%= raw render(:template => "hunting_locations/index.json.jbuilder", :locals => { :hunting_locations => @stands }) %>;
+var g_huntingLocationsMapHelper = null;
+var g_huntingLocationContextMenu = null;
+var g_mapContextMenu = null;
+var g_editLocationNameDialog = null;
+var g_editLocationCoordinatesDialog = null;
+var g_markerInfoWindow = null;
+var g_mapInfoWindow = null;
+
+var EDIT_LOCATION_PROPERTIES_URL = '<%= j edit_hunting_location_path("$id$", { active_field_group: :properties, return_format: :json }) %>';
+var EDIT_LOCATION_POSITION_URL = '<%= j edit_hunting_location_path("$id$", { active_field_group: :location, return_format: :json }) %>';
+var DELETE_LOCATION_URL = '<%= j hunting_location_path("$id$", { format: :json }) %>';
+var NEW_LOCATION_URL = '<%= j new_hunting_plot_location_path(@hunting_plot, { active_field_group: :properties, location_type: HuntingLocation.location_types[:location_type_stand], return_format: :json }) %>';
+var CREATE_LOCATION_URL = '<%= j hunting_plot_locations_path(@hunting_plot, { format: :json }) %>';
+
+$(document).ready(
+  function() {
+
+    g_huntingLocationsMapHelper = initHuntingLocationsMap();
+    g_huntingLocationsMapHelper.rightClick(
+      function (event) {
+        g_mapContextMenu.data('coordinates', { lat: event.latLng.lat(), lng: event.latLng.lng() });
+        g_mapInfoWindow.setPosition(event.latLng);
+        g_mapInfoWindow.open(g_huntingLocationsMapHelper.getMap());
+      }
+    );
+
+    g_huntingLocationContextMenu = $('#huntingLocationContextMenu');
+    g_huntingLocationContextMenu.find('a').click(
+      function() {
+        var cmd = $(this).data('cmd');
+        var locationId = $(this).closest('#huntingLocationContextMenu').data('location_id');
+        switch (cmd) {
+          case 'edit-properties':
+          {
+            $.getScript(EDIT_LOCATION_PROPERTIES_URL.replace(/\$id\$/, locationId));
+            break;
+          }
+          case 'edit-location':
+          {
+            $.getScript(EDIT_LOCATION_POSITION_URL.replace(/\$id\$/, locationId));
+            break;
+          }
+          case 'delete':
+          {
+            if (confirm('Delete this location')) {
+              $.ajax(
+                {
+                  url: DELETE_LOCATION_URL.replace(/\$id\$/, locationId),
+                  type: 'DELETE'
+                }
+              ).done(
+                function() {
+                  g_huntingLocationsMapHelper.clearMarkers(locationId);
+                  g_huntingLocations.splice(getLocationIndexById(locationId), 1);
+                }
+              );
+            }
+            break;
+          }
+        }
+      }
+    );
+    g_markerInfoWindow = new google.maps.InfoWindow( { content: g_huntingLocationContextMenu.get(0) } );
+
+    g_mapContextMenu = $('#mapContextMenu');
+    g_mapContextMenu.find('a').click(
+      function() {
+        var cmd = $(this).data('cmd');
+        var latLng = $(this).closest('#mapContextMenu').data('coordinates');
+        switch (cmd) {
+          case 'new':
+          {
+            $.getScript(NEW_LOCATION_URL).done(
+              function(script, textStatus) {
+                $('#form-placeholder').find('#hunting_location_coordinates').val(formatWKTPoint(latLng));
+              }
+            );
+            break;
+          }
+        }
+      }
+    );
+    g_mapInfoWindow = new google.maps.InfoWindow( { content: g_mapContextMenu.get(0) } );
+
+    for (var i = 0; i < g_huntingLocations.length; i++) {
+      addMapMarker(g_huntingLocations[i]);
+    }
+    fitContentHeight('#hunting_locations_map');
+
+    /* TODO - work around for lack of touch event support in google maps api
+    $('#hunting_locations_map').bind(
+      'touchstart',
+      function(e) {
+        alert('touchstart fired!');
+      }
+    );
+    */
+  }
+);
+
+function addMapMarker(huntingLocation) {
+  var marker = g_huntingLocationsMapHelper.addMarker(
+    {
+      coordinates: huntingLocation.coordinates,
+      icon: MapIcons.HuntingPlotLocation,
+      title: huntingLocation.name
+    },
+    huntingLocation.id
+  );
+  marker.setInfoWindow(
+    g_markerInfoWindow,
+    function (markerTag) {
+      var standName = getLocationById(markerTag).name;
+      g_huntingLocationContextMenu.find('li[class="info-window-header"]').first().text(standName);
+      g_huntingLocationContextMenu.data('location_id', markerTag);
+    }
+  );
+  /*
+  marker.click(
+    function(markerTag, event) {
+      var standName = getLocationById(markerTag).name;
+      var menu = $('#huntingLocationContextMenu');
+      menu.find('li[class="dropdown-header"]').first().text(standName);
+      menu.data('location_id', markerTag);
+      showMapContextMenu(event.latLng, menu);
+      event.stop();
+    }
+  );
+  */
+}
+
+$(document).ajaxSuccess(
+  function(event, request, settings, data) {
+    if (isDefinedAndNonNull(request.responseJSON)) {
+      var isCreate = (settings.url.match(new RegExp('^' + escapeRegex(CREATE_LOCATION_URL))) != null);
+      var location = request.responseJSON;
+      if (isCreate) {
+        g_huntingLocations.push(location);
+        addMapMarker(location);
+        g_mapInfoWindow.close();
+      }
+      else {
+        var index = getLocationIndexById(location.id);
+        g_huntingLocations[index] = location;
+        g_huntingLocationsMapHelper.clearMarkers(location.id);
+        addMapMarker(location);
+      }
+    }
+  }
+);
+
+function getLocationById(id) {
+  return g_huntingLocations[getLocationIndexById(id)];
+}
+
+function getLocationIndexById(id) {
+  for (var i = 0; i < g_huntingLocations.length; i++) {
+    if (g_huntingLocations[i].id == id) {
+      return i;
+    }
+  }
+  throw "Unable to find location with id = " + id;
+}
+
+function showMapContextMenu(latLng, menu) {
+
+  // handler to close the menu when the user clicks outside of it
+  var closeMenuHandler = function(event) {
+    // if the element clicked is not the context menu or a descendant, close the menu and unhook the handler
+    if (!$(event.target).closest(menu).length) {
+      $(menu).hide();
+      $(document).off(
+        'click',
+        closeMenuHandler
+      );
+    }
+  };
+
+  // translate the map coordinates to document coordinates
+  var xy = MapsHelper.LatLngToDocumentPosition(g_huntingLocationsMapHelper.getMap(), latLng);
+
+  // TODO - adjust position if menu would be off the map?
+  var menuWidth = $(menu).width();
+  var menuHeight = $(menu).height();
+
+  var jsMenu = $(menu);
+
+  // set the menu position
+  jsMenu.css( { top: xy.y, left: xy.x } );
+
+  // if the menu is currently hidden, show and setup the close handler
+  if (!jsMenu.is(':visible')) {
+    $(menu).show();
+    // while the menu is open, listen for mouse clicks outside of the menu in order to close it
+    // delay this so it doesn't fire as soon as this event handler exits
+    setTimeout(
+      function() {
+        $(document).on(
+          'click',
+          closeMenuHandler
+        );
+      },
+      100
+    );
+  }
+
+  function getCanvasXY(latLng) {
+    var scale = Math.pow(2, _map.getZoom());
+    var nw = new google.maps.LatLng(
+      map.getBounds().getNorthEast().lat(),
+      map.getBounds().getSouthWest().lng()
+    );
+    var worldCoordinateNW = _map.getProjection().fromLatLngToPoint(nw);
+    var worldCoordinate = _map.getProjection().fromLatLngToPoint(latLng);
+    var canvasOffset = new google.maps.Point(
+      Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+      Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
+    );
+    return canvasOffset;
+  }
+
+  function setMenuXY(menu, latLng) {
+
+    var mapWidth = $(_map.getDiv()).width();
+    var mapHeight = $(_map.getDiv()).height();
+    var menuWidth = $(menu).width();
+    var menuHeight = $(menu).height();
+    var clickedPosition = getCanvasXY(latLng);
+    var x = clickedPosition.x;
+    var y = clickedPosition.y;
+
+    if((mapWidth - x ) < menuWidth) {
+      x = x - menuWidth;
+    }
+    if((mapHeight - y ) < menuHeight) {
+      y = y - menuHeight;
+    }
+
+    menu.css('left', x);
+    menu.css('top', y);
+  }
+}
+</script>
+
+<% end %>
+
+<div style="display:none;">
+  <ul id="mapContextMenu" class="info-window-menu">
+    <li><a tabindex="-1" href="#" data-cmd="new"><%= bootstrap_glyphicon('plus')%> New Stand Here</a></li>
+  </ul>
+</div>
+
+<div style="display:none;">
+  <ul id="huntingLocationContextMenu" class="info-window-menu">
+    <li class="info-window-header">Stand Name</li>
+    <li><a tabindex="-1" href="#" data-cmd="edit-properties"><%= bootstrap_glyphicon('edit')%> Edit Properties</a></li>
+    <li><a tabindex="-1" href="#" data-cmd="edit-location"><%= bootstrap_glyphicon('map-marker')%> Change Location</a></li>
+    <li><a tabindex="-1" href="#" data-cmd="delete"><%= bootstrap_glyphicon('remove')%> Delete</a></li>
+  </ul>
+</div>
+
+<div id="hunting_locations_map" style="width:100%;height:600px;">Hunting locations map</div>

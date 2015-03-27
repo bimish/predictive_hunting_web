@@ -1,2 +1,2 @@
-$('#form-placeholder').html('<%= j render :partial => 'form', :layout => '/layouts/modal_form_dialog', :locals => { title:'Hunting Location', is_modal: true } %>');
+$('#form-placeholder').html('<%= j render :partial => 'modal_form', :layout => '/layouts/modal_form_dialog', :locals => { title:'Hunting Location', is_modal: true, hunting_location: @hunting_location, return_format: params[:return_format] } %>');
 showAjaxModalForm('modal-form-dialog', null, initModalForm);

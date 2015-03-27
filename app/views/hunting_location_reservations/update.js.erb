@@ -1,0 +1,4 @@
+HuntingLocationReservationsTableHelper.update(<%= @reservation.id%>, '<%= j render(:partial => 'index_item', :locals => { :reservation => @reservation })%>');
+if (typeof g_huntingLocationReservationAjaxNotifications != 'undefined') {
+  g_huntingLocationReservationAjaxNotifications.notify('update', <%== @reservation.to_json%>);
+}

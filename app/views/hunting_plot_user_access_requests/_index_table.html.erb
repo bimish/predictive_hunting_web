@@ -5,7 +5,7 @@ var HuntingPlotUserAccessRequestTableHelper = new TableHelper('table[data-compon
 <% end %>
 <%
 # initialize any undefined local variables
-attribute_list ||= nil
+attribute_list ||= HuntingPlotUserAccessesHelper.index_default_attribute_list
 unless defined?(editable)
   editable = true
 end
@@ -13,25 +13,28 @@ end
 <table class="table" data-component="HuntingPlotUserAccessRequest">
   <thead>
     <tr>
-      <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+      <% if attribute_list.include?(:user_id) %>
         <th>User</th>
       <% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:user_invitation_id)) %>
+      <% if attribute_list.include?(:user_invitation_id) %>
         <th>User invitation</th>
       <% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+      <% if attribute_list.include?(:user_email) %>
+        <th>User Email</th>
+      <% end %>
+      <% if attribute_list.include?(:hunting_plot_id) %>
         <th>Hunting plot</th>
       <% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:message)) %>
+      <% if attribute_list.include?(:message) %>
         <th>Message</th>
       <% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:alias)) %>
+      <% if attribute_list.include?(:alias) %>
         <th>Alias</th>
       <% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:initial_permissions)) %>
+      <% if attribute_list.include?(:initial_permissions) %>
         <th>Initial permissions</th>
       <% end %>
-      <% if (attribute_list.nil? || attribute_list.include?(:created_by_user_id)) %>
+      <% if attribute_list.include?(:created_by_user_id) %>
         <th>Created by user</th>
       <% end %>
       <th></th>

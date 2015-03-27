@@ -1,9 +1,8 @@
+<p id="reservation-date-display"><%= date_to_s(Date.today, :day_and_date)%></p>
 <% if last_checkin.nil? || last_checkin.expired? %>
-<p>Not checked in<p>
-<p></p>
-<p>To check-in, select a stand on the map</p>
+<p>Not checked in</p>
+<p>&nbsp;</p>
 <% else %>
-<p>Checked in</p>
-<p><%= date_time_to_s(last_checkin.updated_at, :short) %></p>
+<p><%= last_checkin.expires_at.nil? ? "Checked in at #{time_to_s(last_checkin.updated_at, :short)}" : "Checked in until #{time_to_s(last_checkin.expires_at, :short)}" %></p>
 <p><%= (last_checkin.hunting_location_id.nil? ? nil : last_checkin.hunting_location.name ) %></p>
 <% end %>

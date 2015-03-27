@@ -1,6 +1,6 @@
 <%
 # initialize any undefined local variables
-attribute_list ||= nil
+attribute_list ||= HuntingLocationSchedulesHelper.index_default_attribute_list(@view_data.vantage_point)
 command_list ||= nil
 unless defined?(editable)
   editable = true
@@ -26,10 +26,10 @@ end
     <td><%= EnumsHelper::HuntingLocationScheduleEnums::get_time_period_description(hunting_location_schedule.time_period) %></td>
   <% end %>
   <% if editable %>
-    <td>
-      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_location_schedule_path(hunting_location_schedule)) : nil %>
-      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_hunting_location_schedule_path(hunting_location_schedule), { remote: true }) : nil %>
-      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_location_schedule_path(hunting_location_schedule), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
-    </td>
+    <%= item_command_cell do %>
+      <%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(hunting_location_schedule_path(hunting_location_schedule, vantage_point: @view_data.vantage_point)) : nil %>
+      <%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_hunting_location_schedule_path(hunting_location_schedule, vantage_point: @view_data.vantage_point), { remote: true }) : nil %>
+      <%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(hunting_location_schedule_path(hunting_location_schedule, vantage_point: @view_data.vantage_point), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
+    <% end %>
   <% end %>
 </tr>

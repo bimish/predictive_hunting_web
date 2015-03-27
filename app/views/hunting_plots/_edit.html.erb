@@ -1,0 +1,190 @@
+<% provide(:title, "Manage Hunting Plot (#{@hunting_plot.name})") %>
+
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<% content_for :head do %>
+<script type="text/javascript">
+var DIALOG_MODE_LOCATION = 1;
+var DIALOG_MODE_BOUNDARY = 2;
+
+var g_plotLocationMapHelper = null;
+var g_dialogInitialized = false;
+var g_dialogMode = DIALOG_MODE_LOCATION;
+var g_mapDialogCallback = null;
+
+function showLocationPopup(resultsHandler) {
+  try {
+    initializeSetLocationDialog(resultsHandler);
+    $('#setLocationDialog').dialog('option', 'title', 'Set Plot Location');
+    $('#setLocationDialog').dialog('open');
+    g_dialogMode = DIALOG_MODE_LOCATION;
+    initializeMapHelper();
+    g_plotLocationMapHelper.setMode(MapsHelper.Mode.SetLocation);
+    $('#addressSearch').show();
+  }
+  catch (e) {
+    alert('The following error occurred: ' + e);
+  }
+  return false;
+}
+
+function showBoundaryPopup(resultsHandler) {
+  try {
+    initializeSetLocationDialog(resultsHandler);
+    $('#addressSearch').hide();
+    $('#setLocationDialog').dialog('option', 'title', 'Set Plot Boundary');
+    $('#setLocationDialog').dialog('open');
+    g_dialogMode = DIALOG_MODE_BOUNDARY;
+    initializeMapHelper();
+    g_plotLocationMapHelper.hideMarker();
+    g_plotLocationMapHelper.setMode(MapsHelper.Mode.SetBoundary);
+    g_plotLocationMapHelper.editBoundary();
+  }
+  catch (e) {
+    alert('The following error occurred: ' + e);
+  }
+  return false;
+}
+
+function mapDialogSaveHandler() {
+  if (g_plotLocationMapHelper.getMode() == MapsHelper.Mode.SetLocation) {
+    var markerLocation = g_plotLocationMapHelper.getMarkerLocation();
+    if (isDefinedAndNonNull(g_mapDialogCallback)) g_mapDialogCallback(markerLocation);
+
+    $('#plot_location').val(formatWKTPoint( { lng: markerLocation.lng(), lat: markerLocation.lat() } ));
+    $('#locationAddress').text('updating...');
+    MapsHelper.getLocationAddress(
+      markerLocation.lat(),
+      markerLocation.lng(),
+      function(resultAddress) {
+        $('#plot_address').val(resultAddress);
+        submitEditLocationForm();
+      }
+    );
+  }
+  else {
+    var boundaryVertices = g_plotLocationMapHelper.getBoundaryVertices();
+    if (isDefinedAndNonNull(g_mapDialogCallback)) g_mapDialogCallback(boundaryVertices);
+  }
+}
+
+function submitEditLocationForm() {
+  $('#edit-location-form > form').submit();
+}
+
+function initializeSetLocationDialog(resultsHandler) {
+  if (!g_dialogInitialized) {
+    $('#setLocationDialog').dialog(
+      {
+        bgiframe    : true,
+        position    : 'center',
+        draggable   : false,
+        autoOpen    : false,
+        modal       : true,
+        //autoResize  : true,
+        width       : $(window).width(),
+        height      : $(window).height(),
+        stack       : true,
+        zIndex      : 99999,
+        resizable   : false,
+        dialogClass : "no-close",
+        //close       : function(event, ui) { closeAjaxForm(); },
+        open        : function(event, ui) { setLocationMapSize(); },
+        //resize      : function(event, ui) { setLocationDialogResize(event, ui); },
+        buttons     : [
+                      { text: "Ok", class:'btn btn-primary btn-sm dialog-btn', click: function() { mapDialogSaveHandler(); $(this).dialog("close"); } },
+                      { text: "Cancel", class:'btn btn-default btn-sm dialog-btn', click: function() { $(this).dialog("close"); closeAjaxForm(); } }
+                    ]
+      }
+    );
+    $(window).resize(
+      function() {
+        $('#setLocationDialog').dialog('option', 'width', $(window).width());
+        $('#setLocationDialog').dialog('option', 'height', $(window).height());
+        setLocationMapSize();
+      }
+    );
+    g_dialogInitialized = true;
+  }
+  g_mapDialogCallback = resultsHandler;
+  //setLocationMapSize();
+}
+
+function setLocationMapSize() {
+  $('#setLocationDialogMapCanvas').height($('#setLocationDialog').height() - $('#setLocationDialogAddressSearch').outerHeight());
+  $('#setLocationDialogMapCanvas').width($('#setLocationDialog').width());
+}
+
+function initializeMapHelper() {
+
+  if (g_plotLocationMapHelper != null) return;
+  try {
+    var mapOptions = {
+      <%
+      if !@hunting_plot.boundary.nil?
+        view_window = rgeo_get_bounds(@hunting_plot.boundary)
+      %>
+      view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+      <% else %>
+      zoom: 12,
+      <% end %>
+      showCenterMarker: true,
+      markerTitle: '<%=@hunting_plot.name%>'
+    };
+
+    var currentLocationCoordinates = $('#plot_location').val();
+    if (!isNullOrEmpty(currentLocationCoordinates)) {
+      mapOptions.center = parseWKTPoint(currentLocationCoordinates);
+    }
+    else if (!isDefinedAndNonNull(mapOptions.view_window)) {
+      mapOptions.zoom = 5;
+    }
+
+    var currentBoundary = $('#plot_boundary').val();
+    if (!isNullOrEmpty(currentBoundary)) {
+      mapOptions.boundary = parseWKTPolygon(currentBoundary);
+    }
+
+    g_plotLocationMapHelper = new MapsHelper(document.getElementById("setLocationDialogMapCanvas"), mapOptions);
+
+    // if this is a new plot by virtue of the fact we don't have coordinates, attempt to center the map on the user's current location
+    if ((currentLocationCoordinates == null) && (navigator.geolocation))
+    {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          g_plotLocationMapHelper.setCenter(position.coords.latitude, position.coords.longitude);
+        }
+      );
+    }
+  }
+  catch (e) {
+    alert('The following error occurred: ' + e);
+  }
+}
+
+function showAddress(address) {
+  g_plotLocationMapHelper.setLocationByAddress(address);
+}
+</script>
+<% end %>
+
+<div id="setLocationDialog" title="Set Plot Location" style="background-color:white;display:none;">
+  <div id="setLocationDialogAddressSearch" style="padding:5px;">
+    <form action="#" onsubmit="showAddress($('#searchValue').val()); return false;" role="form" class="form-inline">
+      <div class="form-group">
+        <label class="sr-only" for="searchValue">Search Address</label>
+        <div class="input-group-sm">
+          <input type="text" size="50" class="form-control" id="searchValue" placeholder="Address, zip code, etc...">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-default btn-sm">Search</button>
+    </form>
+  </div>
+  <div id="setLocationDialogMapCanvas" style="text-align:center;">
+    Initializing map...
+  </div>
+</div>
+
+<%= render partial:'hunting_plots/manage_name_location' %>

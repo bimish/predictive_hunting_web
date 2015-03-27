@@ -25,10 +25,10 @@ end
   <%% end %>
 <%- end -%>
   <%% if editable %>
-    <td>
+    <%%= item_command_cell do %>
       <%%= (!command_list.nil? && command_list.include?(:show)) ? item_show_command(<%= singular_table_name %>_path(<%= singular_table_name %>)) : nil %>
       <%%= (command_list.nil? || command_list.include?(:edit)) ? item_edit_command(edit_<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true }) : nil %>
       <%%= (command_list.nil? || command_list.include?(:delete)) ? item_delete_command(<%= singular_table_name %>_path(<%= singular_table_name %>), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) : nil %>
-    </td>
+    <%% end %>
   <%% end %>
 </tr>

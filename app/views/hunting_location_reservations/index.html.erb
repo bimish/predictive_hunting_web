@@ -1,0 +1,21 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<%= content_for :head do %>
+<script type="text/javascript">
+var HuntingLocationReservationsTableHelper = new TableHelper('table[data-component="HuntingLocationReservation"]');
+</script>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing Hunting Location Reservations</h3>
+
+    <%= render :partial => 'index_table', locals: { reservations: @reservations, :additional_paging_parameters => @additional_paging_parameters } %>
+
+    <div id="inline-form"></div>
+
+    <%= link_to 'New Hunting Location Schedule', hunting_plot_reservations_new_path(@view_data.hunting_plot), { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

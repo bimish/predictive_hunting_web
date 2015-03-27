@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-md-12">
+    <p>
+      <strong>Created by:</strong>
+      <%= (@reservation.created_by_id.nil?) ? nil : @reservation.created_by.get_display_name %>
+    </p>
+    <p>
+      <strong>Hunting location:</strong>
+      <%= (@reservation.hunting_location_id.nil?) ? nil : @reservation.hunting_location.get_display_name %>
+    </p>
+    <p>
+      <strong>Reservation date:</strong>
+      <%= date_to_s(@reservation.start_date_time) %>
+    </p>
+    <p>
+      <strong>Time period:</strong>
+      <%= EnumsHelper::HuntingLocationScheduleEnums::get_time_period_description(@reservation.time_period) %>
+    </p>
+    <% if @reservation.time_period_custom? %>
+    <p>
+      <strong>Start time:</strong>
+      <%= time_to_s(@reservation.start_date_time) %>
+    </p>
+    <p>
+      <strong>End time:</strong>
+      <%= time_to_s(@reservation.end_date_time) %>
+    </p>
+    <% end %>
+
+    <%= link_to 'Edit', edit_hunting_location_reservation_path(@reservation) %> |
+
+  </div>
+</div>

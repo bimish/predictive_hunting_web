@@ -1,0 +1,13 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Hunting Location Reservation Search Results</h3>
+
+    <%= render :partial => 'index_table', locals: { reservations: @reservations, :additional_paging_parameters => @additional_paging_parameters } %>
+
+    <%= link_to 'New Hunting Location Schedule', new_hunting_location_schedule_path(@view_data.hunting_location, vantage_point: @view_data.vantage_point), { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

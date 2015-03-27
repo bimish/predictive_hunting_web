@@ -45,7 +45,7 @@ private
       when :create
         run_callbacks :initialize_new_instance do
           if (action_name == 'new')
-            @component = new_component
+            @component = new_component()
           else
             @component = new_component(create_params)
           end

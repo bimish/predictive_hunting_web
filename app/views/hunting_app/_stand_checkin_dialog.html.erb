@@ -1,55 +1,39 @@
-<a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
-<h1>Hunting Stand</h1>
-<div role="main">
 <%
-  status = 'Available'
-  status_user = nil
   warning_msg = nil
   checkin_available = true
   if @checked_in_user.nil?
-    unless @next_reservation.nil?
-      status = 'Reserved'
-      if @next_reservation.created_by_id == current_user.id
-        status_user = 'You'
-      else
-        status_user = @next_reservation.created_by.get_display_name
-        warning_msg = 'This stand is reserved'
-      end
+    conflicting_reservation = @existing_reservations.detect { |reservation| reservation.created_by_id != current_user.id }
+    unless conflicting_reservation.nil?
+      warning_msg = "#{conflicting_reservation.created_by.get_display_name} has reserved this stand"
     end
   else
-    status = 'Occupied'
     if @checked_in_user.user_id == current_user.id
-      status_user = 'You'
       checkin_available = false
     else
-      warning_msg = 'This stand is marked as occupied'
-      status_user = @checked_in_user.user.get_display_name
+      warning_msg = "#{@checked_in_user.user.get_display_name} has already checked into this stand"
     end
   end
 %>
-  <p>Stand: <%= @hunting_location.get_display_name %></p>
-  <p>Status: <%= status %></p>
-<% unless status_user.nil? %>
-  <p>By: <%= status_user %></p>
-<% end %>
+
 <% unless warning_msg.nil? %>
-  <div id="checkin-warning">
-    <input id="checkin-submit-warn" type="button" value="Check-in" data-icon="check" style="background-color:green;" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" />
-  </div>
+<div id="checkin-warning">
+  <p class="warning-message"><%= warning_msg %></p>
+  <a id="warning-dismiss" class="ui-btn ui-btn-inline ui-corner-all" href="#">Continue</a>
+  <a id="warning-cancel" class="ui-btn ui-btn-inline ui-corner-all" href="#">Cancel</a>
+</div>
 <% end %>
 
-  <div id="checkin-form">
-<% unless warning_msg.nil? %>
-    <p class="warning-message"><%= warning_msg %></p>
-<% end %>
+<div id="checkin-form">
+  <p>Stand: <%= @hunting_location.get_display_name %></p>
 <% if checkin_available %>
     <%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true do %>
+      <%= hidden_field_tag("form_id", "dialog") %>
       <%= hidden_field_tag("is_at_plot", "true") %>
       <%= hidden_field_tag("position_longitude", "") %>
       <%= hidden_field_tag("position_latitude", "") %>
       <%= hidden_field_tag("hunting_location_id", @hunting_location.id) %>
-      <input id="checkin-submit" type="submit" value="Check-in" data-icon="check" style="background-color:green;" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" />
+      <%= select_tag :expires_at, options_for_select(hour_of_day_select_options), prompt:'[Until?]' %>
+      <input id="checkin-submit" type="submit" value="Check-in" data-icon="check" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" />
     <% end %>
 <% end %>
-  </div>
 </div>

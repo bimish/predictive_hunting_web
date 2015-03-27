@@ -1,0 +1,15 @@
+<% content_for :modal_content do %>
+<div id="form-placeholder"></div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <h3>Listing User Group Members</h3>
+
+    <%= render :partial => 'index_table', locals: { user_group_members: @user_group_members } %>
+
+    <div id="inline-form"></div>
+
+    <%#= link_to 'New User Group Member', new_user_group_member_path(@user_group), { remote: true, class: 'btn btn-default', id:'add-item-button' } %>
+  </div>
+</div>

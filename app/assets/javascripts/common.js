@@ -55,4 +55,82 @@ function escapeHtml(str) {
   var div = document.createElement('div');
   div.appendChild(document.createTextNode(str));
   return div.innerHTML;
+}
+function escapeRegex(regex) {
+  return String(regex).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').replace(/\x08/g, '\\x08');
+}
+// this function will parse the supplied date string as a date in the local time zone
+function parseDateLocal(dateString) {
+  var utcDate = new Date(dateString);
+  if (utcDate.getHours() == 0) {
+    return utcDate;
+  }
+  else {
+    return new Date(utcDate.getTime() + utcDate.getTimezoneOffset() * 60 * 1000);
+  }
+}
+function initializeStyledCheckboxes(parentElement) {
+  if (!isDefinedAndNonNull(parentElement)) {
+    parentElement = $(document);
+  }
+  parentElement.find('label.styled-checkbox input[type="checkbox"]').click(
+    function(e) {
+      var isChecked = $(this).is(':checked');
+      var glyphiconSpan = $(this).parent().find('span.glyphicon');
+      if (isChecked) {
+        glyphiconSpan.removeClass('glyphicon-unchecked');
+        glyphiconSpan.addClass('glyphicon-check');
+      }
+      else {
+        glyphiconSpan.removeClass('glyphicon-check');
+        glyphiconSpan.addClass('glyphicon-unchecked');
+      }
+    }
+  );
+}
+
+function fitModalHeight(modal) {
+  var body, bodypaddings, header, headerheight, height, modalheight, dialog, dialogVerticalPadding;
+  header = $(".modal-header", modal);
+  footer = $(".modal-footer", modal);
+  body = $(".modal-body", modal);
+  dialog = $(".modal-dialog", modal);
+  modalheight = parseInt(modal.css("height"));
+  headerheight = parseInt(header.css("height")) + parseInt(header.css("padding-top")) + parseInt(header.css("padding-bottom"));
+  footerheight = parseInt(footer.css("height")) + parseInt(footer.css("padding-top")) + parseInt(footer.css("padding-bottom"));
+  bodypaddings = parseInt(body.css("padding-top")) + parseInt(body.css("padding-bottom"));
+  dialogVerticalPadding = parseInt(dialog.css("margin-top")) + parseInt(dialog.css("margin-bottom"));
+  height = $(window).height() - headerheight - footerheight - bodypaddings - dialogVerticalPadding;
+  return body.css({"max-height": "" + height + "px", 'height':'auto'});
 };
+
+function fitContentHeight(element) {
+  var height = $(window).height() - $(element).offset().top;
+  $(element).css( {"height": "" + height + "px" } );
+};
+
+function enableField(field) {
+  var jqField = $(field);
+  if (!isDefined(jqField.attr('disabled'))) return;
+  var restoreValue = jqField.data('restore-value');
+  if (isDefined(restoreValue)) {
+    jqField.val(restoreValue);
+  }
+  jqField.removeAttr('disabled');
+}
+
+function disableField(field) {
+  var jqField = $(field);
+  jqField.data('restore-value', jqField.val());
+  jqField.val(null);
+  jqField.attr('disabled','disabled');
+}
+
+function getIsoDate(dateVal) {
+  return dateVal.toISOString().substr(0,10);
+}
+
+// from https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
+function isMobileBrowser() {
+  return (navigator.userAgent.match(/Mobi/));
+}

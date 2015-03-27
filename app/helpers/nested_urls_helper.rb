@@ -14,7 +14,13 @@ module NestedUrlsHelper
   def hunting_plot_hunting_location_path(*args)
     hunting_location_path(args[1])
   end
+  def user_groups_path(*args)
+    hunting_plot_user_groups_path(args[0])
+  end
 =begin
+  def user_groups_path(*args)
+    user_group_path(args[0], args[1])
+  end
   def hunting_plot_hunting_locations_path(*args)
     hunting_locations_path(args[0], args[1])
   end

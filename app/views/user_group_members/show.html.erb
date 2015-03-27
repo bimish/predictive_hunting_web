@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <p>
+      <strong>User group:</strong>
+      <%= (@user_group_member.user_group_id.nil?) ? nil : @user_group_member.user_group.get_display_name %>
+    </p>
+    <p>
+      <strong>User:</strong>
+      <%= (@user_group_member.user_id.nil?) ? nil : @user_group_member.user.get_display_name %>
+    </p>
+
+    <%= link_to 'Edit', edit_user_group_member_path(@user_group_member) %> |
+    <%= link_to 'Back', user_group_members_path %>
+
+  </div>
+</div>

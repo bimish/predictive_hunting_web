@@ -136,25 +136,121 @@ Scripts.Common = function () {
     );
   }
 
-  this.initializeTabbedNavBar = function(navbar) {
+  this.initializeTabbedNavBar = function(navbar, options) {
+    if (isDefined(options)) {
+      navbar.data('navbar-options', options);
+    }
     $(navbar).find('ul > li > a').click(
       function (eventObject) {
         var targetPanelId = $(this).data('target');
-        var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
-        $('div[data-role="content"] > div', activePage).each(
-          function (index, item) {
-            if ($(item).attr('id') == targetPanelId)
-              $(item).addClass('content-panel-active');
-            else
-              $(item).removeClass('content-panel-active');
-          }
-        );
+        showNavBarTabImpl(navbar, targetPanelId)
       }
     );
   }
 
+  this.showNavBarTab = showNavBarTabImpl;
+
+  function showNavBarTabImpl(navbar, tabId) {
+    var activePage = this.getActivePage();
+    $('div[data-role="content"] > div', activePage).each(
+      function (index, item) {
+        if ($(item).attr('id') == tabId)
+          $(item).addClass('content-panel-active');
+        else
+          $(item).removeClass('content-panel-active');
+      }
+    );
+    var options = navbar.data('navbar-options');
+    if (isDefinedAndNonNull(options)) {
+      if (isDefined(options.includeFooter) && options.includeFooter) {
+        var footer = $('#footer', activePage);
+        footer.children().each(
+          function(index, item) {
+            var childItem = $(item);
+            if (childItem.data('tab-id') == tabId) {
+              childItem.show();
+            }
+            else {
+              childItem.hide();
+            }
+          }
+        );
+        footer.toolbar("updatePagePadding");
+        Scripts.Common.setContentFullHeight();
+      }
+      if (isDefined(options.onChange)) {
+        options.onChange(tabId);
+      }
+    }
+  }
+
   this.getActivePage = function() {
     return $("body").pagecontainer("getActivePage");
+  }
+
+  function DialogsImpl() {
+    var DATA_DISMISS_HANDLER = 'dismiss-handler';
+    var _popup = null;
+    this.alert = function(message, dismissHandler) {
+      initPopup();
+      _popup.find('#message').text(escapeHtml(message));
+      _popup.find('#global-popup-cancel').hide();
+      _popup.data(DATA_DISMISS_HANDLER, isDefinedAndNonNull(dismissHandler) ? dismissHandler : null);
+      _popup.popup('open');
+    };
+    this.confirm = function(message, dismissHandler) {
+      initPopup();
+      _popup.find('#message').text(escapeHtml(message));
+      _popup.find('#global-popup-cancel').show();
+      _popup.data(DATA_DISMISS_HANDLER, isDefinedAndNonNull(dismissHandler) ? dismissHandler : null);
+      _popup.popup('open');
+    }
+    function initPopup() {
+      if (_popup == null) {
+        _popup = $('#global-popup');
+        _popup.enhanceWithin().popup(
+          {
+            tolerance: "0,0",
+            positionTo: "window",
+            beforeposition: function () {
+              $(this).css(
+                {
+                  maxWidth: $(window).innerWidth() - 40,
+                  minWidth: 240
+                }
+              );
+            }
+          }
+        );
+        _popup.find('#global-popup-ok').click(
+          function(eventObject) {
+            _popup.popup('close');
+            var dismissHandler = _popup.data(DATA_DISMISS_HANDLER);
+            if (dismissHandler != null) {
+              dismissHandler(true);
+            }
+          }
+        );
+        _popup.find('#global-popup-cancel').click(
+          function(eventObject) {
+            _popup.popup('close');
+            var dismissHandler = _popup.data(DATA_DISMISS_HANDLER);
+            if (dismissHandler != null) {
+              dismissHandler(false);
+            }
+          }
+        );
+      }
+    }
+  }
+  this.Dialogs = new DialogsImpl();
+
+  this.hideJQMButton = function (button) {
+    button.parents('.ui-btn').hide();
+  }
+
+  this.showJQMButton = function(button) {
+    button.parents('.ui-btn').show();
   }
 
   return this;

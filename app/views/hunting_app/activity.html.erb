@@ -1,5 +1,5 @@
 <% provide(:page_id, 'animal_activity') %>
-
+<% provide(:page_title, 'Deer Activity') %>
 
 <div data-role="content" id="activity_record" class="content-panel content-panel-active">
   <%= render partial:'activity_record', :locals => { :new_observation => @new_observation } %>
@@ -8,7 +8,7 @@
   <%= render partial:'activity_history', locals: { animal_activity_observations: @animal_activity_observations } %>
 </div>
 
-<%= content_for :footer do %>
+<%= content_for :header do %>
 <div data-role="navbar" data-mini="true" data-iconpos="left">
   <ul>
     <li><a href="#" data-target="activity_record" data-icon="edit" class="ui-btn-active">Record</a></li>

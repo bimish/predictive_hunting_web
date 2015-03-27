@@ -67,4 +67,12 @@ module EnumsHelper
       status_type.sub("status_type_", "").humanize
     end
   end
+  module UserGroupEnums
+    def self.group_types
+      @@group_types ||= UserGroup.group_types.collect { |item| [get_group_type_description(item[0]), item[0]] }
+    end
+    def self.get_group_type_description(group_type)
+      group_type.sub("group_type_", "").humanize
+    end
+  end
 end

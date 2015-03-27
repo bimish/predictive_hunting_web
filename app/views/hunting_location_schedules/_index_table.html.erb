@@ -5,7 +5,7 @@ var HuntingLocationScheduleTableHelper = new TableHelper('table[data-component="
 <% end %>
 <%
 # initialize any undefined local variables
-attribute_list ||= nil
+attribute_list ||= HuntingLocationSchedulesHelper.index_default_attribute_list(@view_data.vantage_point)
 unless defined?(editable)
   editable = true
 end

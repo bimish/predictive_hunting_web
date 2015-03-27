@@ -62,6 +62,41 @@ module ApplicationHelper
     end
   end
 
+  def popup_dialog(title, options = {}, &block)
+
+    raise ArgumentError, "Missing block" unless block_given?
+
+    if options[:class].blank?
+      options[:class] = 'popup-dialog'
+    else
+      options[:class] << ' popup-dialog'
+    end
+    data_options = { role: 'popup', dismissible:'false'}
+    if (options[:data].blank?)
+      options[:data] = data_options
+    else
+      options[:data] = options[:data].merge(data_options)
+    end
+
+    content_tag(:div, options) do
+      content_tag(:div, class: 'popup-header') do
+        content_tag(:h1, title) +
+        link_to('Close', '#', { class: 'ui-btn ui-corner-all ui-icon-delete ui-btn-icon-notext', data: { rel:'back'} })
+      end +
+      content_tag(:div, class: 'popup-content') do
+        yield
+      end
+    end
+  end
+
+  def hour_of_day_select_options
+    @@hour_of_day_select_options ||= (1..24).collect do |hour|
+      time = Date.current + hour.hours
+      [ time_to_s(time, :short), time_to_s(time, :rfc3339)]
+    end
+    @@hour_of_day_select_options
+  end
+
   class AppFormBuilder < ActionView::Helpers::FormBuilder
 
     def coordinates_field(method, options = {})

@@ -1,0 +1,7 @@
+<%= bootstrap_form_for(@user_group_member) do |f| %>
+  <% if @user_group_member.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user_group_member } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+  <%= _submit_button(f, @user_group_member) %>
+<% end %>

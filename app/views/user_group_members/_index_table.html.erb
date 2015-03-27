@@ -1,0 +1,29 @@
+<%= content_for :head do %>
+<script type="text/javascript">
+var UserGroupMemberTableHelper = new TableHelper('table[data-component="UserGroupMember"]');
+</script>
+<% end %>
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<table class="table" data-component="UserGroupMember">
+  <thead>
+    <tr>
+      <% if (attribute_list.nil? || attribute_list.include?(:user_group_id)) %>
+        <th>User group</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:user_id)) %>
+        <th>User</th>
+      <% end %>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'user_group_members/index_item', :collection => user_group_members, :as => :user_group_member, locals: { attribute_list: attribute_list, editable: editable } %>
+  </tbody>
+</table>

@@ -148,8 +148,8 @@
         function() {
           var dialog = $('#huntingLocationPopupDialog', activePage);
           $('#checkin-warning', activePage).show();
-          hideJQMButton(dialog.find('#checkin-submit-warn'));
-          showJQMButton(dialog.find('#checkin-submit'));
+          Scripts.Common.hideJQMButton(dialog.find('#checkin-submit-warn'));
+          Scripts.Common.showJQMButton(dialog.find('#checkin-submit'));
           dialog.popup("reposition", { positionTo: 'window' });
         }
       );
@@ -181,13 +181,6 @@
 
     function showLocationPopup(hunting_location) {
       $.getScript("/hunting_app/" + g_huntingPlotId + "/stand_checkin_dialog/" + hunting_location.id + ".js") ;
-    }
-
-    function hideJQMButton(button) {
-      button.parents('.ui-btn').hide();
-    }
-    function showJQMButton(button) {
-      button.parents('.ui-btn').show();
     }
 
     function getLocationIcon(hunting_location) {

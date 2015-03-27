@@ -18,6 +18,10 @@ module HuntingPlotUserAccessRequestsControllerExtensions
     @hunting_plot_user_access_request.decline
   end
 
+  def notify
+    @hunting_plot_user_access_request.notify
+  end
+
   def get_crud_action
     case action_name
     when 'confirm'
@@ -33,7 +37,7 @@ module HuntingPlotUserAccessRequestsControllerExtensions
 
   included do
     #before_action :set_view_data
-    before_action :get_component, only: [:confirm, :accept, :decline]
+    before_action :get_component, only: [:confirm, :accept, :decline, :notify]
     after_initialize_new_instance :initialize_new_instance
   end
 

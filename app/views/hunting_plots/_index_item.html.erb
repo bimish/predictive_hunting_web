@@ -19,7 +19,7 @@ end
     <td><%= hunting_plot.boundary %></td>
   <% end %>
   <% if editable %>
-    <td>
+    <td class="index-item-commands">
       <%= item_show_command(hunting_plot_path(hunting_plot)) %>
       <%= item_command 'Manage', manage_hunting_plot_path(hunting_plot) %>
       <%= item_command 'Check-in', hunting_app_path(hunting_plot), :target => '_blank' %>

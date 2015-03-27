@@ -1,44 +1,44 @@
 <% content_for :head do %>
-	<script type="text/javascript">
-	var g_map = null;
-	var g_marker = null;
+  <script type="text/javascript">
+  var g_map = null;
+  var g_marker = null;
 
-	function initialize() {
-		var location = { lat: <%=hunting_plot.location_coordinates.y()%>, lng: <%=hunting_plot.location_coordinates.x()%> };
-		var mapOptions = {
-			center: location,
-			showCenterMarker: true,
+  function initialize() {
+    var location = { lat: <%=hunting_plot.location_coordinates.y()%>, lng: <%=hunting_plot.location_coordinates.x()%> };
+    var mapOptions = {
+      center: location,
+      showCenterMarker: true,
 <%
 if !hunting_plot.boundary.nil?
-	view_window = rgeo_get_bounds(hunting_plot.boundary)
+  view_window = rgeo_get_bounds(hunting_plot.boundary)
 %>
-			view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
-			boundary: parseWKTPolygon('<%=hunting_plot.boundary.to_s%>'),
+      view_window: { sw: { lat: <%= view_window[:sw][:lat] %>, lng: <%= view_window[:sw][:lng] %> }, ne: { lat: <%= view_window[:ne][:lat] %>, lng: <%= view_window[:ne][:lng] %> } },
+      boundary: parseWKTPolygon('<%=hunting_plot.boundary.to_s%>'),
 <%
 end
 if hunting_plot.locations.size > 0
 %>
-			/* additional_markers: [
+      /* additional_markers: [
 <%
-	hunting_plot.locations.each_with_index  do |hunting_location, index|
-		if index > 0 %>,<% end %>{ title: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>}, icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)) }
+  hunting_plot.locations.each_with_index  do |hunting_location, index|
+    if index > 0 %>,<% end %>{ title: '<%== j hunting_location.name%>', coordinates: { lat: <%=hunting_location.coordinates.y()%>, lng: <%=hunting_location.coordinates.x()%>}, icon: new google.maps.MarkerImage('<%= asset_url('hunting_plot_location.png') %>', null, null, null, new google.maps.Size(16,16)) }
 <%
-	end
+  end
 %>
-			], */
+      ], */
 <%
 end
 %>
-			zoom: 12
-		};
-		try {
-			g_map = new MapsHelper("map-canvas", mapOptions);
-		}
-		catch (e) {
-			alert("The following error occurred: " + e);
-		}
-	}
-	$(document).ready(function() { initialize(); });
-	</script>
+      zoom: 12
+    };
+    try {
+      g_map = new MapsHelper("map-canvas", mapOptions);
+    }
+    catch (e) {
+      alert("The following error occurred: " + e);
+    }
+  }
+  $(document).ready(function() { initialize(); });
+  </script>
 <% end %>
 <div id="map-canvas" style="width:100%;height:100%;"></div>

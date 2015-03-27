@@ -1,0 +1,40 @@
+<%
+  if include_header_footer.nil?
+    include_header_footer = true
+  end
+%>
+<div class="checkbox-list">
+  <%= form_tag(set_user_group_members_path(user_group), { remote: true } ) do %>
+    <% if include_header_footer %>
+  <div class="checkbox-list-heading">
+    <span class="h4">Select members for group <strong><%= user_group.get_display_name %></strong></span>
+  </div>
+    <% end %>
+  <div class="checkbox-list-body">
+    <div class="container-fluid">
+      <% users.in_groups_of 3 do |users| %>
+      <div class="row">
+        <% users.each do |user| %>
+        <div class="col-md-4">
+          <%
+          unless user.nil?
+          %>
+          <label class="styled-checkbox">
+            <%= check_box_tag "user_id[]", user[:id], user[:is_member], { id: "user_#{user[:id]}" } %>
+            <%= bootstrap_glyphicon(user[:is_member] ? 'check' : 'unchecked') %>
+            <%= user[:name] %>
+          </label>
+          <% end %>
+        </div>
+        <% end %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+    <% if include_header_footer %>
+  <div class="checkbox-list-footer">
+    <%= submit_tag "Save Changes", { class: 'btn btn-default btn-primary btn-sm', disable_with: 'Please wait...' } %>
+  </div>
+    <% end %>
+  <% end %>
+</div>

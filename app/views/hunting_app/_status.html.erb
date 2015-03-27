@@ -1,0 +1,58 @@
+<% current_checkin = (@last_checkin.nil? || @last_checkin.updated_at < 1.days.ago) ? nil : @last_checkin %>
+
+<%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkin-form' do %>
+  <%= hidden_field_tag("form_id", "status_tab") %>
+  <%= hidden_field_tag("position_longitude", "") %>
+  <%= hidden_field_tag("position_latitude", "") %>
+  <%= hidden_field_tag("is_at_plot", "true") %>
+  <%
+    location_options = [ [ 'My current location (temporary stand)', '0'] ]
+    @hunting_plot.locations.where(location_type: HuntingLocation.location_types[:location_type_stand]).order(name: :asc).each do |location|
+      location_options << [location.name, location.id ]
+    end
+    if current_checkin.nil?
+      current_location_id = nil
+    elsif current_checkin.hunting_location_id.nil?
+      current_location_id = '0'
+    else
+      current_location_id = current_checkin.hunting_location_id
+    end
+  %>
+  <div class="toolbar-field">
+    <div class="toolbar-field-toolbar">
+      <a href="#" class="ui-shadow ui-btn ui-corner-all ui-icon-gps ui-btn-icon-notext" id="detect-location">Detect</a>
+    </div>
+    <div class="toolbar-field-field">
+      <%= select_tag(
+          :hunting_location_id,
+          options_for_select(location_options, current_location_id),
+          {
+            prompt: '[Location]',
+            data: { mini: 'true' }
+          }
+        )
+      %>
+    </div>
+  </div>
+  <%
+    if current_checkin.nil?
+      expires_at_time = nil
+    else
+      expires_at_time = time_to_s(current_checkin.expires_at, :rfc3339)
+    end
+  %>
+  <%= select_tag(
+      :expires_at,
+      options_for_select(hour_of_day_select_options, expires_at_time),
+      {
+        prompt:'[Until?]',
+        data: { mini: 'true' }
+      }
+    )
+  %>
+  <hr/>
+  <input id="checkin-submit" type="submit" value="<%= current_checkin.nil? ? 'Check-in' : 'Update'%>" data-icon="check" />
+  <input id="check-out-submit" type="button" value="Check-out" data-icon="action" />
+  <p class='check-in-warning-msg'>Last check-in at <%= (@last_checkin.nil?) ? '' : date_time_to_s(@last_checkin.updated_at, :short) %></p>
+  <p class='check-in-msg'>Last check-in at <%= (@last_checkin.nil?) ? '' : date_time_to_s(@last_checkin.updated_at, :short) %></p>
+<% end %>

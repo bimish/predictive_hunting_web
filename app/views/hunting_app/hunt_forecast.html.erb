@@ -1,4 +1,5 @@
 <% provide(:page_id, 'hunt_forecast') %>
+<% provide(:page_title, 'Hunt Forecast') %>
 
 <div data-role="content" id="hunt_forecast_today" class="content-panel content-panel-active">
   <%= render partial:'hunt_forecast_today', :locals => { :forecast => @day_forecast } %>
@@ -7,7 +8,7 @@
   <%= render partial:'hunt_forecast_month', :locals => { :forecast => @month_forecast, forecast_date: @forecast_date } %>
 </div>
 
-<%= content_for :footer do %>
+<%= content_for :header do %>
 <div data-role="navbar" data-mini="true" data-iconpos="left">
   <ul>
     <li><a href="#" data-target="hunt_forecast_today" data-icon="clock" class="ui-btn-active">Today</a></li>

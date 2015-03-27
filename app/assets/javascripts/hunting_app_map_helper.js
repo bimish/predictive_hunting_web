@@ -10,43 +10,54 @@ function PlotMapHelper(map) {
     $.each(
       memberLocations,
       function(index, memberLocation) {
-        var marker =
-          _map.addMarker(
-            {
-              title: memberLocation.user_name,
-              coordinates: memberLocation.location_coordinates,
-              icon: options.icon,
-              zIndex: 3,
-              visible: (isDefined(options.showMarker) ? options.showMarker : true),
-              infoWindowContent: getMemberLocationInfoWindowContent(memberLocation)
-            },
-            plotMembersMarkerTag
-          );
-        _memberLocationMarkers.push( { user_id: memberLocation.user_id, marker: marker} );
+       addMemberImpl(memberLocation, options);
       }
     );
   }
   this.updateMember = function(memberLocation, options) {
-    var memberMarker = null;
-    for (var i = 0 ; i < _memberLocationMarkers.length; i++) {
-      if (_memberLocationMarkers[i].user_id == memberLocation.user_id) {
-        memberMarker = _memberLocationMarkers[i].marker;
-        break;
-      }
-    }
-    if (memberMarker != null) {
+    var memberMarkerIndex = getMemberMarkerIndex(memberLocation.user_id);
+    if (memberMarkerIndex >= 0) {
+      var memberMarker = _memberLocationMarkers[memberMarkerIndex].marker;
       memberMarker.setInfoWindow(getMemberLocationInfoWindowContent(memberLocation));
       memberMarker.setLocation(memberLocation.location_coordinates);
     }
+  }
+  this.removeMember = function(userId) {
+    var memberMarkerIndex = getMemberMarkerIndex(userId);
+    if (memberMarkerIndex >= 0) {
+      _memberLocationMarkers[memberMarkerIndex].marker.remove();
+      _memberLocationMarkers.splice(memberMarkerIndex, 1);
+    }
+  }
+  this.addMember = addMemberImpl;
+  function addMemberImpl(memberLocation, options) {
+    var marker =
+      _map.addMarker(
+        {
+          title: memberLocation.user_name,
+          coordinates: memberLocation.location_coordinates,
+          icon: options.icon,
+          zIndex: 3,
+          visible: (isDefined(options.showMarker) ? options.showMarker : true),
+          infoWindowContent: getMemberLocationInfoWindowContent(memberLocation)
+        },
+        plotMembersMarkerTag
+      );
+    _memberLocationMarkers.push( { user_id: memberLocation.user_id, marker: marker} );
+  }
+  function getMemberMarkerIndex(userId) {
+    for (var i = 0 ; i < _memberLocationMarkers.length; i++) {
+      if (_memberLocationMarkers[i].user_id == userId) {
+        return i;
+      }
+    }
+    return -1;
   }
   this.showMembers = function() {
     $.each(_memberLocationMarkers, function(index, item) { item.marker.show(); });
   }
   this.hideMembers = function() {
     $.each(_memberLocationMarkers, function(index, item) { item.marker.hide(); });
-  }
-  this.hideMembers = function() {
-    _map.clearMarkers(plotMembersMarkerTag);
   }
   this.createLocationMarkers = function(standLocations, options) {
     if (_plotLocationMarkers != null) {
@@ -105,7 +116,7 @@ function PlotMapHelper(map) {
     if (isDefinedAndNonNull(options.clickHandler)) {
       var clickHandler = options.clickHandler;
       marker.click(
-        function(event) {
+        function() {
           clickHandler(standLocation);
         }
       );

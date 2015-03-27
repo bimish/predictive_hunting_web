@@ -1,0 +1,7 @@
+(function() {
+  var newTable = '<%= j render :partial => "hunting_location_reservations/index_table", :locals => { :reservations => @reservations, :additional_paging_parameters => @additional_paging_parameters, :use_ajax => true } %>';
+  HuntingLocationReservationsTableHelper.replace(newTable);
+  if (isDefined(updateSearchDescription)) {
+    updateSearchDescription(<%== @additional_paging_parameters.to_json %>);
+  }
+})();

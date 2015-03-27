@@ -50,7 +50,7 @@ function initModalForm() {
   );
   <% end %>
 }
-<%== MapHelper.create_map_helper_script(@hunting_plot, 'editHuntingLocationCoordinatesMap', { :function_name => 'createEditHuntingLocationCoordinatesMap', :mode => MapHelper::Modes['SetLocation'] } ) %>
+<%== MapHelper.create_map_helper_script(hunting_location.hunting_plot, 'editHuntingLocationCoordinatesMap', { :function_name => 'createEditHuntingLocationCoordinatesMap', :mode => MapHelper::Modes['SetLocation'] } ) %>
 </script>
 
 <div class="panel-group" id="huntingLocationFormAccordion">
@@ -62,9 +62,16 @@ function initModalForm() {
     </div>
     <div id="huntingLocationProperties" class="panel-collapse collapse<%= (active_field_group == :properties) ? " in" : nil %>">
       <div class="panel-body">
-        <%= bootstrap_form_for [@hunting_plot, @hunting_location], remote: true do |f| %>
+        <%
+          unless defined?(return_format)
+            return_format = nil
+          end
+          form_url = hunting_location.persisted? ? hunting_location_path(hunting_location, format: return_format) : hunting_plot_locations_path(hunting_location.hunting_plot, format: return_format)
+        %>
+        <%= bootstrap_form_for [hunting_location.hunting_plot, hunting_location], url: form_url, remote: true do |f| %>
+        <%#= bootstrap_form_for [hunting_location.hunting_plot, hunting_location], remote: true do |f| %>
           <% if @hunting_location.errors.any? %>
-            <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @hunting_location } %>
+            <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => hunting_location } %>
           <% end %>
           <%= render :partial => 'form_fields', :locals => { :form => f } %>
         <% end %>

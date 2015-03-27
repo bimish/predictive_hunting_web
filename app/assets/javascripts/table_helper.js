@@ -13,8 +13,9 @@ function TableHelper(table) {
   }
   function notifyInitializers(row) {
     if (rowInitializers != null) {
-      for (var i = 0; i < rowInitializers.length; i++)
+      for (var i = 0; i < rowInitializers.length; i++) {
         rowInitializers[i](row);
+      }
     }
   }
   this.initRow = function(handler) {
@@ -32,4 +33,10 @@ function TableHelper(table) {
   this.delete = function(id) {
     $getRow(id).remove();
   };
+  this.replace = function(html) {
+    var newTable = $(html);
+    var oldTable = $getTable();
+    oldTable.replaceWith(newTable);
+    $table = newTable;
+  }
 }

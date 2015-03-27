@@ -1,0 +1,7 @@
+<% provide(:title, 'User Group Member') %>
+<%= bootstrap_form_for @user_group_member, remote: true do |f| %>
+  <% if @user_group_member.errors.any? %>
+    <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => @user_group_member } %>
+  <% end %>
+  <%= render :partial => 'form_fields', :locals => { :form => f } %>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141111153331) do
+ActiveRecord::Schema.define(version: 20150316135025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,29 +71,55 @@ ActiveRecord::Schema.define(version: 20141111153331) do
   add_index "composite_network_member", ["member_network_id"], :name => "index_composite_network_member_on_member_network_id"
 
   create_table "hunting_location", force: true do |t|
-    t.integer  "hunting_plot_id",                                                          null: false
-    t.string   "name",            limit: 100,                                              null: false
-    t.spatial  "coordinates",     limit: {:srid=>4326, :type=>"point", :geographic=>true}, null: false
-    t.integer  "location_type",                                                            null: false
+    t.integer  "hunting_plot_id",                                                                      null: false
+    t.string   "name",            limit: 100,                                                          null: false
+    t.spatial  "coordinates",     limit: {:srid=>4326, :type=>"point", :geographic=>true},             null: false
+    t.integer  "location_type",                                                                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "access_flags",                                                             default: 1, null: false
   end
 
   add_index "hunting_location", ["hunting_plot_id"], :name => "index_hunting_location_on_hunting_plot_id"
 
   create_table "hunting_location_schedule", force: true do |t|
-    t.integer  "created_by_id",                             null: false
-    t.integer  "hunting_location_id",                       null: false
-    t.datetime "start_date_time",                           null: false
-    t.datetime "end_date_time",                             null: false
-    t.integer  "entry_type",          limit: 2,             null: false
+    t.integer  "created_by_id",                 null: false
+    t.integer  "hunting_location_id",           null: false
+    t.datetime "start_date_time",               null: false
+    t.datetime "end_date_time",                 null: false
+    t.integer  "entry_type",          limit: 2, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "time_period",         limit: 2, default: 1, null: false
+    t.integer  "time_period",         limit: 2, null: false
   end
 
   add_index "hunting_location_schedule", ["created_by_id"], :name => "index_hunting_location_schedule_on_created_by_id"
   add_index "hunting_location_schedule", ["hunting_location_id"], :name => "index_hunting_location_schedule_on_hunting_location_id"
+
+  create_table "hunting_location_user_access", force: true do |t|
+    t.integer  "user_id",                         null: false
+    t.integer  "hunting_location_id",             null: false
+    t.integer  "access_flags",        default: 0, null: false
+    t.datetime "expires_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hunting_location_user_access", ["hunting_location_id", "user_id"], :name => "idx_hunting_location_user_access_location_and_user", :unique => true
+  add_index "hunting_location_user_access", ["hunting_location_id"], :name => "index_hunting_location_user_access_on_hunting_location_id"
+  add_index "hunting_location_user_access", ["user_id"], :name => "index_hunting_location_user_access_on_user_id"
+
+  create_table "hunting_location_user_group_access", force: true do |t|
+    t.integer  "hunting_location_id",             null: false
+    t.integer  "user_group_id",                   null: false
+    t.integer  "access_flags",        default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hunting_location_user_group_access", ["hunting_location_id", "user_group_id"], :name => "idx_hunting_location_user_group_access_location_and_group", :unique => true
+  add_index "hunting_location_user_group_access", ["hunting_location_id"], :name => "index_hunting_location_user_group_access_on_hunting_location_id"
+  add_index "hunting_location_user_group_access", ["user_group_id"], :name => "index_hunting_location_user_group_access_on_user_group_id"
 
   create_table "hunting_mode_user_location", force: true do |t|
     t.integer  "hunting_plot_id",                                                               null: false
@@ -102,6 +128,7 @@ ActiveRecord::Schema.define(version: 20141111153331) do
     t.spatial  "location_coordinates", limit: {:srid=>4326, :type=>"point", :geographic=>true}
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "expires_at"
   end
 
   add_index "hunting_mode_user_location", ["hunting_plot_id"], :name => "index_hunting_mode_user_location_on_hunting_plot_id"
@@ -222,6 +249,23 @@ ActiveRecord::Schema.define(version: 20141111153331) do
     t.string   "password_reset_token"
     t.datetime "password_reset_sent_at"
   end
+
+  create_table "user_group", force: true do |t|
+    t.string   "name",            limit: 100, null: false
+    t.integer  "group_type",      limit: 2,   null: false
+    t.integer  "hunting_plot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_group_member", force: true do |t|
+    t.integer "user_group_id"
+    t.integer "user_id"
+  end
+
+  add_index "user_group_member", ["user_group_id", "user_id"], :name => "idx_user_group_member_group_and_member", :unique => true
+  add_index "user_group_member", ["user_group_id"], :name => "index_user_group_member_on_user_group_id"
+  add_index "user_group_member", ["user_id"], :name => "index_user_group_member_on_user_id"
 
   create_table "user_invitation", force: true do |t|
     t.string   "email",         limit: 254,  null: false

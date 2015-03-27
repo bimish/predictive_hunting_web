@@ -22,6 +22,13 @@
 .dropdown-menu-sm {
   font-size: $font-size-small;
 }
+.dropdown-menu > li.group-header {
+  padding: 3px 10px;
+  font-weight: 400;
+  line-height: 1.4285;
+  white-space: nowrap;
+  background-color: $dropdown-divider-bg;
+}
 
 .tab-pane {
   border-left-style: solid;
@@ -32,12 +39,4 @@
   border-radius: 0 0 $nav-pills-border-radius $nav-pills-border-radius;
   padding-top: 10px;
   padding-bottom: 10px;
-}
-
-.dropdown-menu > li.group-header {
-  padding: 3px 10px;
-  font-weight: 400;
-  line-height: 1.4285;
-  white-space: nowrap;
-  background-color: $dropdown-divider-bg;
 }

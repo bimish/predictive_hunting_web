@@ -19,3 +19,9 @@ MapsHelper.getLocationAddress = function(latitude, longitude, resultHandler) {
     }
   );
 };
+MapsHelper.getDistanceBetween = function(point1, point2) {
+  return google.maps.geometry.spherical.computeDistanceBetween(
+    new google.maps.LatLng(point1.lat, point1.lng),
+    new google.maps.LatLng(point2.lat, point2.lng)
+  );
+}

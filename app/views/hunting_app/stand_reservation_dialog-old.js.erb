@@ -1,0 +1,22 @@
+(function() {
+  var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+  var dialog = $('#huntingLocationPopupDialog', activePage);
+  dialog.html('<%= j render(:partial => 'stand_reservation_dialog')%>').trigger("create");
+  var checkInForm = dialog.find('#checkin-form');
+  /*
+  var checkinWarning = dialog.find('#checkin-submit-warn');
+  if (checkinWarning.length > 0) {
+    dialog.find('#checkin-submit-warn').click(
+      function() {
+        var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
+        var dialog = $('#huntingLocationPopupDialog', activePage);
+        $('#checkin-warning', activePage).hide();
+        $('#checkin-form', activePage).show();
+        dialog.popup("reposition", { positionTo: 'window' });
+      }
+    );
+    $('#checkin-form', activePage).hide();
+  }
+  */
+  dialog.popup("open");
+})();

@@ -35,6 +35,11 @@ function MapsHelper(mapCanvas, options)
   this.clearMarkers = function(tag) { clearMarkersImpl(tag); }
   this.addMarker = function(marker, tag) { return addMarkerImpl(marker, tag); }
   this.setDragEventHandler = function(handler) { setDragEventHandlerImpl(handler); }
+  this.resize = function() { google.maps.event.trigger(_map,'resize'); }
+  this.click = function(handler) { clickImpl(handler); }
+  this.rightClick = function(handler) { rightClickImpl(handler); }
+  this.latLngToDocumentPosition = function(latLng) { return latLngToDocumentPositionImpl(latLng); }
+  this.getMap = function() { return getMapImpl(); }
 
   function initOptions(options) {
     // default to center of US
@@ -179,7 +184,7 @@ function MapsHelper(mapCanvas, options)
   function clearMarkersImpl(tag) {
     if (_additionalMarkers != null) {
       for (var index = _additionalMarkers.length - 1; index >= 0; index--) {
-        if (_additionalMarkers[index].tag == tag) {
+        if (_additionalMarkers[index].getTag() == tag) {
           _additionalMarkers[index].remove();
           _additionalMarkers.splice(index, 1);
         }
@@ -237,6 +242,7 @@ function MapsHelper(mapCanvas, options)
     var boundary = new google.maps.Polygon (
       {
         paths: polygonPaths,
+        clickable: false
       }
     );
     boundary.setMap(_map);
@@ -265,7 +271,7 @@ function MapsHelper(mapCanvas, options)
     }
     else {
       options = {
-        strokeColor: '#000088',
+        strokeColor: '#00bb00',
         strokeOpacity: 0.8,
         strokeWeight: 2,
         fillColor: '#000000',
@@ -368,6 +374,12 @@ function MapsHelper(mapCanvas, options)
     _dragEventHandler = handler;
     initMarkerDragEvent();
   }
+  function clickImpl(handler) {
+    google.maps.event.addListener(_map, 'click', function(event) { handler(event); } );
+  }
+  function rightClickImpl(handler) {
+    google.maps.event.addListener(_map, 'rightclick', function(event) { handler(event); } );
+  }
   function initMarkerDragEvent() {
     if (_markerDragEventListener != null) google.maps.event.removeListener(_markerDragEventListener);
     _markerDragEventListener = null;
@@ -424,21 +436,31 @@ function MapsHelper(mapCanvas, options)
 
     return Math.floor(Math.log(min) / Math.LN2 /* = log2(min) */);
   }
+
+  function getMapImpl() {
+    return _map;
+  }
 }
 function Marker(map, googleMarker, tag) {
   var _map = map;
   var _googleMarker = googleMarker;
   var _infoWindow = null;
+  var _infoWindowInitializer = null;
   var _clickListener = null;
-  this.tag = tag;
+  var _tag = tag;
   this.remove = function() { removeImpl(); }
   this.hide = function() { hideImpl(); }
   this.show = function() { showImpl(); }
   this.setIcon = function(icon) { setIconImpl(icon); }
-  this.setInfoWindow = function(content) { setInfoWindowImpl(content); }
+  this.setInfoWindow = function(content, initializer) { setInfoWindowImpl(content, initializer); }
   this.setLocation = function(coordinates) { setLocationImpl(coordinates); }
   this.click = function(handler) { clickImpl(handler); }
+  this.rightClick = function(handler) { rightClickImpl(handler); }
+  this.getTag = function() { return getTagImpl(); }
 
+  function getTagImpl() {
+    return _tag;
+  }
   function removeImpl() {
     _googleMarker.setMap(null);
   }
@@ -451,7 +473,10 @@ function Marker(map, googleMarker, tag) {
   function setIconImpl(icon) {
     _googleMarker.setIcon(icon);
   }
-  function setInfoWindowImpl(content) {
+  function setInfoWindowImpl(content, initializer) {
+    if (isDefinedAndNonNull(initializer)) {
+      _infoWindowInitializer = initializer;
+    }
     if (content == null) {
       if (_infoWindow != null) {
         google.maps.event.clearListeners(_googleMarker, 'click');
@@ -459,24 +484,39 @@ function Marker(map, googleMarker, tag) {
       _infoWindow = null;
     }
     else {
-      if (_infoWindow == null) {
-        _infoWindow = new google.maps.InfoWindow( { content: content } );
+      var addListener = (_infoWindow == null);
+      if (content instanceof google.maps.InfoWindow) {
+        _infoWindow = content;
+      }
+      else {
+        if (_infoWindow == null) {
+          _infoWindow = new google.maps.InfoWindow( { content: content } );
+        }
+        else {
+          _infoWindow.setContent(content);
+        }
+      }
+      if (addListener) {
         google.maps.event.addListener(
           _googleMarker,
           'click',
           function() {
+            if (_infoWindowInitializer != null) {
+              _infoWindowInitializer(_tag);
+            }
             _infoWindow.open(_map, _googleMarker);
           }
         );
-      }
-      else {
-        _infoWindow.setContent(content);
       }
     }
   }
   function clickImpl(handler) {
     google.maps.event.clearListeners(_googleMarker, 'click');
-    google.maps.event.addListener(_googleMarker, 'click', function() { handler(null); } );
+    google.maps.event.addListener(_googleMarker, 'click', function(event) { handler(_tag, event); } );
+  }
+  function rightClickImpl(handler) {
+    google.maps.event.clearListeners(_googleMarker, 'rightclick');
+    google.maps.event.addListener(_googleMarker, 'rightclick', function(event) { handler(_tag, event); } );
   }
   function setLocationImpl(coordinates) {
     _googleMarker.setPosition(coordinates);
@@ -486,3 +526,29 @@ function Marker(map, googleMarker, tag) {
 MapsHelper.DEFAULT_ZOOM = 10;
 MapsHelper.Mode = { View: 1, SetLocation: 2, SetBoundary: 3 };
 MapsHelper.MapTypes = { Roadmap: google.maps.MapTypeId.ROADMAP, Satellite: google.maps.MapTypeId.SATELLITE };
+
+MapsHelper.LatLngToDocumentPosition = function(map, latLng) {
+
+  var mapWidth = $(map.getDiv()).width();
+  var mapHeight = $(map.getDiv()).height();
+  var clickedPosition = getCanvasXY(latLng);
+  var x = clickedPosition.x ;
+  var y = clickedPosition.y ;
+
+  return { x: x, y: y };
+
+  function getCanvasXY(latLng) {
+    var scale = Math.pow(2, map.getZoom());
+    var nw = new google.maps.LatLng(
+      map.getBounds().getNorthEast().lat(),
+      map.getBounds().getSouthWest().lng()
+    );
+    var worldCoordinateNW = map.getProjection().fromLatLngToPoint(nw);
+    var worldCoordinate = map.getProjection().fromLatLngToPoint(latLng);
+    var canvasOffset = new google.maps.Point(
+      Math.floor((worldCoordinate.x - worldCoordinateNW.x) * scale),
+      Math.floor((worldCoordinate.y - worldCoordinateNW.y) * scale)
+    );
+    return canvasOffset;
+  }
+}

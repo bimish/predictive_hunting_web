@@ -1,4 +1,5 @@
 require "app/exceptions"
+require "app/will_paginate_bootstrap"
 
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
@@ -20,6 +21,7 @@ class ApplicationController < ActionController::Base
   helper :mail
   helper :client_json
   helper ConfigData
+  helper WillPaginateBootstrap
 
   #disable caching
   def set_as_private

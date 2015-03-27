@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
   write_once_attribute :email
 
   def get_display_name
-    if self.alias.nil?
+    if self.alias.blank?
       "#{self.first_name} #{self.last_name}"
     else
       "#{self.first_name} #{self.last_name} (#{self.alias})"

@@ -1,0 +1,32 @@
+<%= content_for :head do %>
+<script type="text/javascript">
+var UserGroupTableHelper = new TableHelper('table[data-component="UserGroup"]');
+</script>
+<% end %>
+<%
+# initialize any undefined local variables
+attribute_list ||= UserGroupsHelper.index_default_attribute_list
+unless defined?(editable)
+  editable = true
+end
+%>
+<table class="table table-condensed" data-component="UserGroup">
+  <thead>
+    <tr>
+      <% if (attribute_list.nil? || attribute_list.include?(:name)) %>
+        <th>Name</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:group_type)) %>
+        <th>Group type</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:hunting_plot_id)) %>
+        <th>Hunting plot</th>
+      <% end %>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'user_groups/index_item', :collection => user_groups, :as => :user_group, locals: { attribute_list: attribute_list, editable: editable } %>
+  </tbody>
+</table>

@@ -1,0 +1,20 @@
+<tr data-id="<%=reservation.id%>">
+  <td><%= reservation.hunting_location.name %></td>
+  <td><%= reservation.created_by.get_display_name %></td>
+  <td><%= date_to_s(reservation.start_date_time) %></td>
+  <td><%=
+    if (reservation.time_period_am?)
+      "AM"
+    elsif (reservation.time_period_pm?)
+      "PM"
+    elsif (reservation.time_period_all_day?)
+      "All day"
+    elsif (reservation.time_period_custom?)
+      "#{time_to_s(reservation.start_date_time)} - #{time_to_s(reservation.end_date_time)}"
+    end
+  %></td>
+  <%= item_command_cell do %>
+    <%= item_edit_command(edit_hunting_location_reservation_path(reservation), { remote: true }) %>
+    <%= item_delete_command(hunting_location_reservation_path(reservation), { remote: true, method: :delete, data: { confirm: 'Are you sure?' } }) %>
+  <% end %>
+</tr>
