@@ -17,14 +17,6 @@
   </div>
   <div class="ui-block-b">
     <div class="navigation-panel">
-      <%= link_to(hunting_app_map_path(@hunting_plot)) do %>
-        <h1>Plot Map<br/>Reservations</h1>
-        <%= image_tag('plot_map_icon.png') %>
-      <% end %>
-    </div>
-  </div>
-  <div class="ui-block-a">
-    <div class="navigation-panel">
 <%
 today_simple_forecast = @forecast[:forecast]['simpleforecast']['forecastday'][0]
 today_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].detect { |day_txt_forecast| day_txt_forecast['period'] == 0 }
@@ -48,7 +40,7 @@ tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].dete
       <% end %>
     </div>
   </div>
-  <div class="ui-block-b">
+  <div class="ui-block-a">
     <div class="navigation-panel">
       <%= link_to(hunting_app_hunt_forecast_path(@hunting_plot)) do %>
         <h1>Hunting Forecast</h1>
@@ -56,7 +48,7 @@ tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].dete
       <% end %>
     </div>
   </div>
-  <div class="ui-block-a">
+  <div class="ui-block-b">
     <div class="navigation-panel">
       <%= link_to(hunting_app_activity_path(@hunting_plot) ) do %>
         <h1>Deer Activity</h1>
@@ -64,12 +56,14 @@ tonight_text_forecast = @forecast[:forecast]['txt_forecast']['forecastday'].dete
       <% end %>
     </div>
   </div>
-  <div class="ui-block-b">
+  <div class="ui-block-a">
     <div class="navigation-panel">
       <%= link_to(hunting_app_chat_path(@hunting_plot)) do %>
         <h1>Chat</h1>
         <%= image_tag('chat.png') %>
       <% end %>
     </div>
+  </div>
+  <div class="ui-block-b">
   </div>
 </div>
