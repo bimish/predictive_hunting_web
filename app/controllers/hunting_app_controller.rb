@@ -58,6 +58,7 @@ class HuntingAppController < ApplicationController
     set_location_schedules_for_week
     set_member_locations
     set_last_checkin
+    @is_checked_in = !(@last_checkin.nil? || @last_checkin.expired?)
     @reservations = HuntingLocationSchedule.schedules_for_plot(@hunting_plot, Time.now.beginning_of_day, 1.weeks.from_now.end_of_day)
 
     @wind_forecast = []
@@ -119,11 +120,9 @@ class HuntingAppController < ApplicationController
   end
 
   def activity
-
     set_activity_history
     @new_observation = AnimalActivityObservation.new
     @view_data = ViewData.new(@hunting_plot)
-
   end
 
   def activity_record
@@ -268,23 +267,6 @@ class HuntingAppController < ApplicationController
     end
 
     @reservation.time_period = params[:time_period]
-=begin
-    reserve_am = !params[:reserve_am].blank?
-    reserve_pm = !params[:reserve_pm].blank?
-    if (reserve_am && reserve_pm)
-      @reservation.time_period_all_day!
-    elsif reserve_am
-      @reservation.time_period_am!
-    elsif reserve_pm
-      @reservation.time_period_pm!
-    else
-      if (@reservation.persisted?)
-        @action_taken[:action] = :delete
-        @reservation.destroy
-      end
-      @reservation = nil
-    end
-=end
     unless @reservation.nil?
       @reservation.save
     end
@@ -316,7 +298,6 @@ private
   end
 
   def set_member_locations
-    #@member_locations ||= HuntingModeUserLocation.where(hunting_plot_id: params[:hunting_plot_id]).where('updated_at > ?', 1.days.ago).preload(:user).preload(:hunting_location)
     @member_locations ||= HuntingModeUserLocation.non_expired_for_plot(params[:hunting_plot_id]).preload(:user).preload(:hunting_location)
   end
 
@@ -338,44 +319,6 @@ private
 
   def set_activity_history
     @animal_activity_observations = AnimalActivityObservation.search(@hunting_plot.id, params).preload(:hunting_location).preload(:named_animal)
-=begin
-    @filters = Array.new
-
-    unless params[:animal_category_id].blank?
-      animal_category_ids = params[:animal_category_id]
-      animal_category_names = animal_category_ids.collect { |category_id| ConfigData.animal_categories[category_id.to_i][:name] }
-      @filters << { item_name: "Deer type(s)", item_values: animal_category_names }
-    end
-
-    unless params[:animal_activity_type_id].blank?
-      animal_activity_type_ids = params[:animal_activity_type_id]
-      animal_activity_names = animal_activity_type_ids.collect { |animal_activity_type_id| ConfigData.animal_activity_types[animal_activity_type_id.to_i][:name] }
-      @filters << { item_name: "Behavior(s)", item_values: animal_activity_names }
-    end
-
-    unless params[:hunting_plot_named_animal_id].blank?
-      named_animal_ids = params[:hunting_plot_named_animal_id]
-      named_animals = named_animal_ids.collect { |named_animal_id| HuntingPlotNamedAnimal.find(named_animal_id.to_i).name }
-      @filters << { item_name: "Named Animal(s)", item_values: named_animals }
-    end
-
-    unless params[:hunting_location_id].blank?
-      location_ids = params[:hunting_location_id]
-      locations = named_animal_ids.collect { |named_animal_id| HuntingPlotNamedAnimal.find(named_animal_id.to_i).name }
-      @filters << { item_name: "Named Animal(s)", item_values: named_animals }
-    end
-
-    unless (params[:after_date].blank? && params[:before_date].blank?)
-      if params[:after_date].blank?
-        date_range = "before #{params[:before_date]}"
-      elsif params[:before_date].blank?
-        date_range = "after #{params[:after_date]}"
-      else
-        date_range = "#{params[:after_date]} - #{params[:before_date]}"
-      end
-      @filters << { item_name: "Date Range", item_values: [ date_range ] }
-    end
-=end
   end
 
   class ViewData

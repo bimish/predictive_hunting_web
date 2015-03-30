@@ -70,7 +70,6 @@
             Scripts.Common.Dialogs.alert('Location detection is not available');
           }
           else {
-            //google.maps.geometry.poly.containsLocation(e.latLng, g_huntingPlotLocation.boundary)
             var successHandler = function(position) {
               var nearestLocation = findNearestStandLocation( { lat: position.coords.latitude, lng: position.coords.longitude} );
               // distance is in meters, if more than 5 away ask the user to confirm
@@ -117,25 +116,38 @@
           }
         }
       );
-      $('#check-in-with-detect', page).click(
+      $('#check-in-from-map', page).click(
         function(eventObject) {
           // initialize the check-in form and switch to that tab
-          //var checkinForm = $('#checkin-form')
-          //checkinForm.find('input[name="is_at_plot"]').prop('checked', true).checkboxradio('refresh').trigger('change');
           $('#header div.ui-navbar a[data-target="checkin_status"]').trigger('click');
         }
       );
-      // any button with this id should do a check-out
-      $('#check-out-submit', page).click(
+      // these buttons do a check-out
+      $('#check-out-submit, #check-out-submit2', page).click(
         function() {
           doCheckOut()
         }
       );
-
     }
 
-    function updateCheckinButton() {
+    this.enableCheckOut = enableCheckOut;
+    function enableCheckOut() {
+      $('#check-out-submit, #check-out-from-map', Scripts.Common.getActivePage()).button('enable');
+    }
 
+    this.disableCheckOut = disableCheckOut;
+    function disableCheckOut() {
+      $('#check-out-submit, #check-out-from-map', Scripts.Common.getActivePage()).button('disable');
+    }
+
+    this.enableCheckIn = enableCheckIn;
+    function enableCheckIn() {
+      $('#check-in-submit, #check-in-from-map', Scripts.Common.getActivePage()).button('enable');
+    }
+
+    this.disableCheckIn = disableCheckIn;
+    function disableCheckIn() {
+      $('#check-in-submit, #check-in-from-map', Scripts.Common.getActivePage()).button('disable');
     }
 
     this.showPage = function() {
@@ -183,36 +195,31 @@
 
     function initStatusUpdateForm(page) {
       var checkinForm = $('#checkin-form', page);
-      /*
-      enableForm(checkinForm.find('#is-at-plot').is(':checked'));
-      checkinForm.find('#is-at-plot').change(
-        function() {
-          enableForm($(this).is(':checked'));
-          checkinForm.find('#checkin-submit').button('enable');
-        }
-      );
-      checkinForm.find('#hunting_location_id').change(
-        function() {
-          checkinForm.find('#checkin-submit').button('enable');
-        }
-      );
-      checkinForm.find('#expires_at').change(
-        function() {
-          checkinForm.find('#checkin-submit').button('enable');
-        }
-      );
-      */
       checkinForm.submit(
-        function() {
-          $.mobile.loading(
-            "show",
-            {
-              text: "Updating...",
-              textVisible: true,
-              theme: "z",
-              html: ""
-            }
-          );
+        function(event) {
+          var warningMessage = null;
+          if ($('#hunting_location_id', page).val() == '') {
+            warningMessage = 'You must select a location to check-in';
+          }
+          else if ($('#expires_at', page).val() == '') {
+            warningMessage = 'You must specify how long you will be checked-in';
+          }
+          var isValid = (warningMessage == null);
+          if (!isValid) {
+            flashWarningMessage(warningMessage);
+          }
+          else {
+            $.mobile.loading(
+              "show",
+              {
+                text: "Updating...",
+                textVisible: true,
+                theme: "z",
+                html: ""
+              }
+            );
+          }
+          return isValid;
         }
       );
       function enableForm(enabled) {
@@ -306,8 +313,6 @@
       _standCheckinDialog.find('div.popup-content').html(html);
       _standCheckinDialog.trigger("create");
       var checkInForm = _standCheckinDialog.find('#checkin-form');
-      //checkInForm.find('input[name="position_longitude"]').val(hunting_location.id);
-      //checkInForm.find('input[name="position_latitude"]').val(hunting_location.id);
       var checkinWarning = _standCheckinDialog.find('#checkin-warning');
       if (checkinWarning.length > 0) {
         checkinWarning.find('#warning-dismiss').click(
@@ -386,22 +391,6 @@
           timePeriodSelect.selectmenu('refresh', true);
         }
       );
-      /*
-      var checkInForm = dialog.find('#checkin-form');
-      var checkinWarning = dialog.find('#checkin-submit-warn');
-      if (checkinWarning.length > 0) {
-        dialog.find('#checkin-submit-warn').click(
-          function() {
-            var activePage = $.mobile.pageContainer.pagecontainer("getActivePage");
-            var dialog = $('#huntingLocationPopupDialog', activePage);
-            $('#checkin-warning', activePage).hide();
-            $('#checkin-form', activePage).show();
-            dialog.popup("reposition", { positionTo: 'window' });
-          }
-        );
-        $('#checkin-form', activePage).hide();
-      }
-      */
       _standReservationDialog.popup("open");
     }
     this.closeReservationDialog = function() {
@@ -414,7 +403,8 @@
       _flashMessageDialog.popup('open');
       //window.setTimeout(function() { _flashMessageDialog.fadeOut(1000); }, 2000);
     }
-    this.flashWarningMessage = function(message) {
+    this.flashWarningMessage = flashWarningMessage;
+    function flashWarningMessage(message) {
       _flashMessageDialog.find('p.warning-message').text(message);
       _flashMessageDialog.find('p.warning-message').show();
       _flashMessageDialog.find('p.success-message').hide();
@@ -492,7 +482,6 @@
       var checkinForm = $('#checkin-form', activePage);
       if (from_dialog) {
         this.closeCheckinDialog();
-        checkinForm.find('input[name="is_at_plot"]').attr('checked', ( (new_status.checked_in) ? 'true' : 'false') ).checkboxradio("refresh");
         var locationIdVal = '';
         if (new_status.checked_in) {
           locationIdVal = (location_record.location_id == '') ? '0' : location_record.location_id;
@@ -505,7 +494,6 @@
         $.mobile.loading("hide");
       }
 
-      //checkinForm.find("#checkin-submit").button("disable");
       $("p.check-in-msg", activePage).text("Successfully updated at " + updated_at);
 
       var existing_location_record_index = -1;
@@ -516,6 +504,8 @@
         }
       }
       if (new_status.checked_in) {
+        enableCheckOut();
+        disableCheckIn();
         if (existing_location_record_index < 0) {
           _memberLocations.push(location_record);
           _mapHelper.addMember(location_record, _memberLocationMarkerOptions);
@@ -526,6 +516,10 @@
         }
       }
       else {
+        disableCheckOut();
+        enableCheckIn();
+        checkinForm.find('select[name="hunting_location_id"]').val(null).selectmenu("refresh");
+        checkinForm.find('select[name="expires_at"]').val(null).selectmenu("refresh");
         if (existing_location_record_index >= 0) {
           _memberLocations.splice(existing_location_record_index, 1);
           _mapHelper.removeMember(new_status.user_id);

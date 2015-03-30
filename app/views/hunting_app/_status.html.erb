@@ -1,4 +1,4 @@
-<% current_checkin = (@last_checkin.nil? || @last_checkin.updated_at < 1.days.ago) ? nil : @last_checkin %>
+<% current_checkin = (@last_checkin.nil? || @last_checkin.expired?) ? nil : @last_checkin %>
 
 <%= form_tag hunting_app_checkin_path(@hunting_plot.id), remote: true, id:'checkin-form' do %>
   <%= hidden_field_tag("form_id", "status_tab") %>
@@ -51,8 +51,8 @@
     )
   %>
   <hr/>
-  <input id="checkin-submit" type="submit" value="<%= current_checkin.nil? ? 'Check-in' : 'Update'%>" data-icon="check" />
+  <input id="check-in-submit" type="submit" value="Check-in" data-icon="check" />
   <input id="check-out-submit" type="button" value="Check-out" data-icon="action" />
-  <p class='check-in-warning-msg'>Last check-in at <%= (@last_checkin.nil?) ? '' : date_time_to_s(@last_checkin.updated_at, :short) %></p>
+  <p class='check-in-warning-msg'></p>
   <p class='check-in-msg'>Last check-in at <%= (@last_checkin.nil?) ? '' : date_time_to_s(@last_checkin.updated_at, :short) %></p>
 <% end %>

@@ -24,5 +24,10 @@ Scripts.Page.StandCheckin.setMemberLocations(
     end.to_json
 %>
 );
+<% if @is_checked_in %>
+Scripts.Page.StandCheckin.disableCheckIn();
+<% else %>
+Scripts.Page.StandCheckin.disableCheckOut();
+<% end %>
 Scripts.Page.StandCheckin.setWindForecast(<%== @wind_forecast.to_json %>);
 Scripts.Page.StandCheckin.initalizeMap();
