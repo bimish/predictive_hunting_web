@@ -1,6 +1,6 @@
 module SysAdmin
 
-  class UsersController < SysAdminController
+  class UsersController < AdminController
 
   end
 
