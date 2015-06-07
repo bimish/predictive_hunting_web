@@ -22,7 +22,7 @@ class HuntingPlotUserAccess < ActiveRecord::Base
 
   def self.can_manage_members?(hunting_plot_id, user_id)
     user_access = HuntingPlotUserAccess.find_by(hunting_plot_id: hunting_plot_id, user_id: user_id)
-    !user_access.nil? && (user_access.permissions_can_administrate? || user_access.permissions_can_manage_users?)
+    !user_access.nil? && (user_access.permissions_can_administrate? || user_access.permissions_can_manage_members?)
   end
 
   def self.can_manage_locations?(hunting_plot_id, user_id)
