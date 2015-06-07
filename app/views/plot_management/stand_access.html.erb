@@ -1,0 +1,9 @@
+<% provide(:page_id, :stands_access) %>
+<% provide(:page_label, 'Stand Access') %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="panel-title">Hunting Stand Access</span>
+  </div>
+  <%= render partial:'plot_management/stand_access/index', :locals => { :hunting_plot => @hunting_plot, :stand_accesses => @stand_accesses } %>
+</div>

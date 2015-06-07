@@ -8,8 +8,6 @@
     reserved_pm = @existing_reservations.any? do |reservation|
       reservation.time_period_pm? || ((reservation.start_date_time >= @reservation_date.middle_of_day) && (reservation.start_date_time < @reservation_date.end_of_day)) || ((reservation.end_date_time >= @reservation_date.middle_of_day) && (reservation.end_date_time < @reservation_date.end_of_day))
     end
-  else
-    puts "current reservation found -> #{current_user_reservation.id}: #{current_user_reservation.time_period_am?}/#{current_user_reservation.time_period_pm?}"
   end
 %>
 <div id="stand-reservation-form">

@@ -133,14 +133,14 @@ module FormsHelper
   end
   def _static_control(form, instance_method, label, content = nil, options = {})
     if (instance_method.nil?)
-      form.static_control(label: label) do
+      form.static_control(nil, label: label) do
         content
       end
     else
       if (!label.nil?)
         options[:label] = label
       end
-      form.static_control instance_method, options
+      form.static_control instance_method, content, options
     end
   end
   def _telephone_field(form, instance_method, label, options = {})

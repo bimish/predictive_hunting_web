@@ -27,7 +27,11 @@ class HuntingLocationSchedule < ActiveRecord::Base
     case action
     when :create
       # can't authorize create until a location is selected
-      self.hunting_location_id.nil? ||  HuntingPlotUserAccess.can_access?(self.hunting_location.hunting_plot_id, user.id)
+      if self.hunting_location_id.nil?
+        false
+      else
+        self.hunting_location.can_checkin?(user, self.start_date_time, self.end_date_time) || HuntingPlotUserAccess.can_manage_schedules?(self.hunting_location.hunting_plot_id, user.id)
+      end
     when :read
       HuntingPlotUserAccess.can_access?(self.hunting_location.hunting_plot_id, user.id)
     when :update, :delete

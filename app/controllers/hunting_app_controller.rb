@@ -203,7 +203,7 @@ class HuntingAppController < ApplicationController
   end
 
   def check_in
-    @status = { user_id: current_user.id }
+    @status = { user_id: current_user.id, success: true }
     is_at_plot = (params[:is_at_plot] == 'true')
     @location_record = HuntingModeUserLocation.find_by(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id])
     if (is_at_plot)
@@ -214,7 +214,16 @@ class HuntingAppController < ApplicationController
         location_id = nil
       end
       if @location_record.nil?
-        @location_record = HuntingModeUserLocation.create(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: location_id, location_coordinates: location_coordinates, expires_at: expires_at)
+        unless location_id.nil?
+          hunting_location = HuntingLocation.find(location_id)
+          unless hunting_location.can_checkin?(current_user)
+            @status[:success] = false
+            @status[:error_message] = I18n.t(:stand_checkin_access_denied)
+          end
+        end
+        if @status[:success]
+          @location_record = HuntingModeUserLocation.create(user_id: current_user.id, hunting_plot_id: params[:hunting_plot_id], hunting_location_id: location_id, location_coordinates: location_coordinates, expires_at: expires_at)
+        end
       else
         @location_record.touch # ensure updated_at gets changed
         @location_record.update(location_coordinates: location_coordinates, hunting_location_id: location_id, expires_at: expires_at)
@@ -223,13 +232,19 @@ class HuntingAppController < ApplicationController
       @location_record.destroy
       @location_record = nil
     end
-    if @location_record.nil? || @location_record.destroyed?
-      @status[:checked_in] = false
-      @status[:updated_at] = Time.now
+
+    if @status[:success]
+      if @location_record.nil? || @location_record.destroyed?
+        @status[:checked_in] = false
+        @status[:updated_at] = Time.now
+      else
+        @status[:checked_in] = true
+        @status[:updated_at] = @location_record.updated_at
+      end
     else
-      @status[:checked_in] = true
-      @status[:updated_at] = @location_record.updated_at
+      @status[:checked_in] = false
     end
+
   end
 
   def stand_checkin_dialog
@@ -268,7 +283,17 @@ class HuntingAppController < ApplicationController
 
     @reservation.time_period = params[:time_period]
     unless @reservation.nil?
-      @reservation.save
+      if (@reservation.authorize_action?(current_user, @reservation.new_record? ? :create : :update))
+        if @reservation.save
+          @action_taken[:success] = true
+        else
+          @action_taken[:success] = false
+          @action_taken[:error_message] = @reservation.errors.full_messages.join('|')
+        end
+      else
+        @action_taken[:success] = false
+        @action_taken[:error_message] = 'User does not have permission to reserve the stand'
+      end
     end
 
   end

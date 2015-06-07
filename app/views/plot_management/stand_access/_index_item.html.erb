@@ -1,0 +1,27 @@
+<li class="list-group-item" data-stand-id="<%= stand_access.id %>">
+  <strong><%= stand_access.name %></strong>
+  (<%= stand_access.access_flags_public? ? "Public" : "Non-Public" %>)
+  <%= link_to plot_management_edit_stand_access_path(stand_access.hunting_plot_id, stand_access.id), { class: 'btn btn-default btn-sm pull-right', remote: true } do %>
+    <%= bootstrap_glyphicon('edit') %>
+    Edit
+  <% end %>
+  <div class="clearfix"></div>
+  <% if stand_access.user_accesses.size > 0 || stand_access.user_group_accesses.size() > 0 %>
+  <div class="row">
+    <div class="col-md-6">
+      <em><u>User Access:</u></em>
+      <p>
+        <% user_list = stand_access.user_accesses.each.collect { |user_access| user_access.user.get_display_name }.sort! %>
+        <% user_list.each { |user| %><%= user %><br/><% } %>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <em><u>User Group Access:</u></em>
+      <p>
+        <% group_list = stand_access.user_group_accesses.each.collect { |user_group_access| user_group_access.user_group.name }.sort! %>
+        <% group_list.each { |group| %><%= group %><br/><% } %>
+      </p>
+    </div>
+  </div>
+  <% end %>
+</li>

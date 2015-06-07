@@ -1,0 +1,30 @@
+<%
+# initialize any undefined local variables
+attribute_list ||= nil
+unless defined?(editable)
+  editable = true
+end
+%>
+<table class="table">
+  <thead>
+    <tr>
+      <% if (attribute_list.nil? || attribute_list.include?(:name)) %>
+        <th>Name</th>
+      <% end %>
+      <% if (attribute_list.nil? || attribute_list.include?(:location_address)) %>
+        <th>Location address</th>
+      <% end %>
+      <% if (!attribute_list.nil? && attribute_list.include?(:location_coordinates)) %>
+        <th>Location coordinates</th>
+      <% end %>
+      <% if (!attribute_list.nil? && attribute_list.include?(:boundary)) %>
+        <th>Boundary</th>
+      <% end %>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody id='items-tbody'>
+    <%= render :partial => 'index_item', :collection => hunting_plots, :as => :hunting_plot, locals: { attribute_list: attribute_list, editable: editable } %>
+  </tbody>
+</table>

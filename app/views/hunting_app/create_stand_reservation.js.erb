@@ -1,8 +1,9 @@
 Scripts.Page.StandCheckin.closeReservationDialog();
 <% action_taken = (@action_taken[:action] = :create) ? 'created' : 'updated' %>
-<% if @reservation.errors.count > 0 %>
-Scripts.Page.StandCheckin.flashWarningMessage('The reservation was not <%= action_taken%> due to an error: <%== j @reservation.errors.full_messages[0]%>');
-<% else %>
+<% if @action_taken[:success] %>
 Scripts.Page.StandCheckin.updateStandReservation(<%== @action_taken.to_json%>, <%== (@reservation.nil? ? 'null' : stand_reservation_from_hunting_location_schedule(@reservation).to_json) %>);
 Scripts.Page.StandCheckin.flashSuccessMessage('Reservation successfully <%= action_taken%>');
+<% else %>
+// <%= @action_taken.inspect %>
+Scripts.Page.StandCheckin.flashWarningMessage('The reservation was not <%= action_taken%> due to an error: <%== j @action_taken[:error_message] %>');
 <% end %>

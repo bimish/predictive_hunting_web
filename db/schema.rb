@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150316135025) do
+ActiveRecord::Schema.define(version: 20150429124221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,20 @@ ActiveRecord::Schema.define(version: 20150316135025) do
 
   add_index "hunting_location_schedule", ["created_by_id"], :name => "index_hunting_location_schedule_on_created_by_id"
   add_index "hunting_location_schedule", ["hunting_location_id"], :name => "index_hunting_location_schedule_on_hunting_location_id"
+
+  create_table "hunting_location_temporary_access", force: true do |t|
+    t.integer  "hunting_location_id",                       null: false
+    t.integer  "user_id",                                   null: false
+    t.integer  "granted_by_id"
+    t.datetime "starts_at",                                 null: false
+    t.datetime "ends_at",                                   null: false
+    t.integer  "status",              limit: 2, default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hunting_location_temporary_access", ["hunting_location_id"], :name => "index_hunting_location_temporary_access_on_hunting_location_id"
+  add_index "hunting_location_temporary_access", ["user_id"], :name => "index_hunting_location_temporary_access_on_user_id"
 
   create_table "hunting_location_user_access", force: true do |t|
     t.integer  "user_id",                         null: false
@@ -233,6 +247,7 @@ ActiveRecord::Schema.define(version: 20150316135025) do
     t.spatial  "location_coordinates", limit: {:srid=>4326, :type=>"point", :geographic=>true}, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "time_zone"
   end
 
   create_table "user", force: true do |t|

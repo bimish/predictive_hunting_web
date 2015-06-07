@@ -1,3 +1,5 @@
+<% present @day_forecast, HuntingApp::HuntingForecastPresenter do |day_forecast_presenter| %>
+
 <div class="hunt-forecast-day">
 
   <div class="ui-grid-a">
@@ -15,46 +17,26 @@
     </div>
   </div>
 
-  <%
-  if @day_forecast.major_am.nil?
-    major_am_span = '-'
-  else
-    major_am_span = time_to_s(@day_forecast.major_am.to_time - 1.hours, :hours_minutes) + ' - ' + time_to_s(@day_forecast.major_am.to_time + 1.hours, :hours_minutes)
-  end
-  if @day_forecast.major_pm.nil?
-    major_pm_span = '-'
-  else
-    major_pm_span = time_to_s(@day_forecast.major_pm.to_time - 1.hours, :hours_minutes) + ' - ' + time_to_s(@day_forecast.major_pm.to_time + 1.hours, :hours_minutes)
-  end
-  if @day_forecast.minor_am.nil?
-    minor_am_span = '-'
-  else
-    minor_am_span = time_to_s(@day_forecast.minor_am.to_time - 30.minutes, :hours_minutes) + ' - ' + time_to_s(@day_forecast.minor_am.to_time + 30.minutes, :hours_minutes)
-  end
-  if @day_forecast.minor_pm.nil?
-    minor_pm_span = '-'
-  else
-    minor_pm_span = time_to_s(@day_forecast.minor_pm.to_time - 30.minutes, :hours_minutes) + ' - ' + time_to_s(@day_forecast.minor_pm.to_time + 30.minutes, :hours_minutes)
-  end
-  %>
-
   <p class="ui-bar ui-bar-inherit ui-corner-all">Major/Minor Times</p>
   <table class="major-minor-times">
     <tr>
-      <td></td>
-      <th>AM</th>
-      <th>PM</th>
-    </tr>
-    <tr>
       <th>Major</th>
-      <td><%= major_am_span%></td>
-      <td><%= major_pm_span%></td>
+      <th>Minor</th>
     </tr>
     <tr>
-      <th>Minor</th>
-      <td><%= minor_am_span%></td>
-      <td><%= minor_pm_span%></td>
+      <td><%= day_forecast_presenter.major_am_time_span %></td>
+      <td><%= day_forecast_presenter.minor_am_time_span %></td>
+    </tr>
+    <tr>
+      <td><%= day_forecast_presenter.major_pm_time_span %></td>
+      <td><%= day_forecast_presenter.minor_pm_time_span %></td>
     </tr>
   </table>
 
+  <% if day_forecast_presenter.has_day_overlap? %>
+  <p>* time occurs on previous or next day</p>
+  <% end %>
+
 </div>
+
+<% end %>

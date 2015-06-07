@@ -1,8 +1,13 @@
 (function() {
+<% if @status[:success] %>
   Scripts.Page.StandCheckin.updateCheckinStatus(
     <%== @status.to_json %>,
     <%== (@location_record.nil? ? 'null' : member_location_from_hunting_mode_location(@location_record).to_json) %>,
     <%= (params[:form_id] == 'dialog')%>,
     '<%= j date_time_to_s(DateTime.current, :short) %>'
   );
+<% else %>
+  $.mobile.loading("hide");
+  Scripts.Common.Dialogs.alert('<%= j @status[:error_message] %>');
+<% end %>
 })();

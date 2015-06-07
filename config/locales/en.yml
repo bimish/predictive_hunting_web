@@ -41,3 +41,6 @@ en:
       dayofmonth: "%B %-d"
       month_year: "%B %Y"
       rfc3339: '%Y-%m-%d'
+
+  stand_checkin_access_denied: "This stand has restricted access, you do not have the required access to check-in."
+  stand_reservation_access_denied: "This stand has restricted access, you do not have the required access to create a reservation for it."

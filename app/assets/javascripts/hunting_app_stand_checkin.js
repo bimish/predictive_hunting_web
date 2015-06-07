@@ -123,7 +123,7 @@
         }
       );
       // these buttons do a check-out
-      $('#check-out-submit, #check-out-submit2', page).click(
+      $('#check-out-submit, #check-out-from-map', page).click(
         function() {
           doCheckOut()
         }

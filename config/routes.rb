@@ -116,11 +116,15 @@ Web::Application.routes.draw do
 
   resources :password_resets
 
+  # non-admin plot management
   scope "/plot_management/:hunting_plot_id", as:'plot_management', controller: 'plot_management' do
     root to:'plot_management#home'
     get 'members'
     get 'member_invitations'
     get 'user_groups'
+    get 'stand_access'
+    get 'stand_access/:hunting_location_id/edit', to: :edit_stand_access, as: :edit_stand_access
+    patch 'stand_access/:hunting_location_id/update', to: :update_stand_access, as: :update_stand_access
     get 'stands_list'
     get 'stands_map'
     get 'stand_reservations'
@@ -128,6 +132,13 @@ Web::Application.routes.draw do
     get 'activity_log'
   end
 
+  # system admin stuff
+  namespace :sys_admin do
+    resources :plots
+    resources :users
+  end
+
+  # hunting app routes
   get '/hunting_app/:hunting_plot_id', to: 'hunting_app#landing_page', as: :hunting_app
   get '/hunting_app/:hunting_plot_id/home', to: 'hunting_app#home', as: :hunting_app_home
   get '/hunting_app/:hunting_plot_id/stands', to: 'hunting_app#stands', as: :hunting_app_stands
@@ -149,10 +160,13 @@ Web::Application.routes.draw do
   get '/hunting_app/:hunting_plot_id/stand_checkin', to: 'hunting_app#stand_checkin', as: :hunting_app_stand_checkin
   get '/hunting_app/:hunting_plot_id/stand_dialog/:hunting_location_id', to: 'hunting_app#stand_dialog', as: :hunting_app_stand_dialog
 
+  # user sign in, sign up, sign out stuff
   get '/signup', to: 'users#new'
   get '/signin', to: 'sessions#new'
   delete '/signout', to: 'sessions#destroy'
   get '/signout', to: 'sessions#destroy'
+
+  # static stuff
   get '/help', to: 'static_pages#help'
   get '/home' => 'static_pages#home', as: :home
 
@@ -160,6 +174,7 @@ Web::Application.routes.draw do
   get '/network_panel/:network_id' => 'static_pages#network_panel', as: :network_panel
   get '/test' => 'static_pages#test', as: :test
 
+  # base route
   root to: 'static_pages#router'
 
 

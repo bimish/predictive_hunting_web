@@ -107,6 +107,14 @@ module ApplicationHelper
 
   end
 
+  # method to create a presenter class from the view
+  def present(model, klass = nil)
+    klass ||= "#{model.class}Presenter".constantize
+    presenter = klass.new(model, self)
+    yield(presenter) if block_given?
+    presenter
+  end
+
   module ModelHelpers
 
   end

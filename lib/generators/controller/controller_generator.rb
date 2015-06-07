@@ -42,7 +42,11 @@ module Rails
       end
 
       def model_attributes
-        return self.model.attributes
+        if self.model.empty?
+          nil
+        else
+          self.model.attributes
+        end
       end
 
       private

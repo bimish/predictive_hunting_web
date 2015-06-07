@@ -1,0 +1,5 @@
+(function() {
+  var form = $('#form-placeholder').html('<%= j render :partial => "plot_management/stand_access/edit", :layout => "/layouts/modal_form_dialog", locals: { include_header_footer: false, title: "Edit Stand Access (" + @stand.name + ")", hunting_plot: @hunting_plot, stand: @stand, users: @users, user_groups: @user_groups } %>');
+  initializeStyledCheckboxes(form);
+  showAjaxModalForm('modal-form-dialog', null, initModalForm);
+})();

@@ -1,1 +1,6 @@
+<% if @hunting_location.can_checkin?(current_user) %>
 Scripts.Page.StandCheckin.showCheckinDialog('<%= j render(:partial => 'stand_checkin_dialog')%>');
+<% else %>
+Scripts.Common.Dialogs.alert('<%= j t :stand_checkin_access_denied %>');
+<% end %>
+

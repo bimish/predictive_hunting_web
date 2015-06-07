@@ -1,0 +1,3 @@
+(function() {
+  $('li[data-stand-id="<%=@stand.id%>"]').replaceWith('<%= j render :partial => "plot_management/stand_access/index_item", locals: { stand_access: @stand } %>');
+})();

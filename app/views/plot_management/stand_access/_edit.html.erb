@@ -1,0 +1,112 @@
+<script type="text/javascript">
+function initModalForm() {
+  $('#standAccessFormAccordian > .panel').on(
+    'shown.bs.collapse',
+    function() {
+      $(this).find('div.panel-heading > .panel-title > a > span').toggleClass('glyphicon-chevron-up glyphicon-chevron-down');
+    }
+  );
+
+  $('#standAccessFormAccordian > .panel').on(
+    'hidden.bs.collapse',
+    function() {
+      $(this).find('div.panel-heading > .panel-title > a > span').toggleClass('glyphicon-chevron-up glyphicon-chevron-down');
+    }
+  );
+}
+</script>
+
+<%
+  unless defined?(return_format)
+    return_format = nil
+  end
+  unless defined?(active_field_group)
+    active_field_group = :properties
+  end
+  form_url = plot_management_update_stand_access_path(stand.hunting_plot_id, stand.id, format: return_format)
+%>
+<%= bootstrap_form_for stand, url: form_url, remote: true do |f| %>
+
+<div class="panel-group" id="standAccessFormAccordian">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#standAccessFormAccordian" href="#standAccessFlags">Access Flags <%= bootstrap_glyphicon((active_field_group == :properties) ? 'chevron-up' : 'chevron-down') %></a>
+      </h4>
+    </div>
+    <div id="standAccessFlags" class="panel-collapse collapse<%= (active_field_group == :properties) ? " in" : nil %>">
+      <div class="panel-body">
+        <% if stand.errors.any? %>
+          <%= render :partial => '/shared/activerecord_errors', :locals => { :active_record => stand } %>
+        <% end %>
+        <%= _check_box(f, :access_flags_public, 'Is Public') %>
+        <%= _check_box(f, :access_flags_accepts_requests, 'Accepts Requests') %>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#standAccessFormAccordian" href="#standUserAccess">User Access <%= bootstrap_glyphicon((active_field_group == :user_access) ? 'chevron-up' : 'chevron-down') %></a>
+      </h4>
+    </div>
+    <div id="standUserAccess" class="panel-collapse collapse<%= (active_field_group == :user_access) ? " in" : nil %>">
+      <div class="panel-body">
+        <div class="checkbox-list-body">
+          <div class="container-fluid grid-small-spacing">
+            <% users.in_groups_of 3 do |users| %>
+            <div class="row">
+              <% users.each do |user| %>
+              <div class="col-md-4">
+                <%
+                unless user.nil?
+                %>
+                <label class="styled-checkbox">
+                  <%= check_box_tag "access_user_id[]", user[:id], user[:has_access], { id: "user_#{user[:id]}" } %>
+                  <%= bootstrap_glyphicon(user[:has_access] ? 'check' : 'unchecked') %>
+                  <%= user[:name] %>
+                </label>
+                <% end %>
+              </div>
+              <% end %>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#standAccessFormAccordian" href="#standUserGroupAccess">User Group Access <%= bootstrap_glyphicon((active_field_group == :user_group_access) ? 'chevron-up' : 'chevron-down') %></a>
+      </h4>
+    </div>
+    <div id="standUserGroupAccess" class="panel-collapse collapse<%= (active_field_group == :user_group_access) ? " in" : nil %>">
+      <div class="panel-body">
+        <div class="checkbox-list-body">
+          <div class="container-fluid grid-small-spacing">
+            <% user_groups.in_groups_of 3 do |user_groups| %>
+            <div class="row">
+              <% user_groups.each do |user_group| %>
+              <div class="col-md-4">
+                <%
+                unless user_group.nil?
+                %>
+                <label class="styled-checkbox">
+                  <%= check_box_tag "access_user_group_id[]", user_group[:id], user_group[:has_access], { id: "user_group_#{user_group[:id]}" } %>
+                  <%= bootstrap_glyphicon(user_group[:has_access] ? 'check' : 'unchecked') %>
+                  <%= user_group[:name] %>
+                </label>
+                <% end %>
+              </div>
+              <% end %>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>

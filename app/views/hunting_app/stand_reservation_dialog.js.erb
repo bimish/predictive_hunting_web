@@ -1,4 +1,8 @@
+<% if @hunting_location.can_checkin?(current_user) %>
 Scripts.Page.StandCheckin.showReservationDialog(
   '<%= j render(:partial => 'stand_reservation_dialog')%>',
   <%== @existing_reservations.collect { |reservation| stand_reservation_from_hunting_location_schedule(reservation) }.to_json %>
 );
+<% else %>
+Scripts.Common.Dialogs.alert('<%= j t :stand_reservation_access_denied %>');
+<% end %>

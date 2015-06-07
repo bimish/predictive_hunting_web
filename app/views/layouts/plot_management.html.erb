@@ -58,6 +58,7 @@
                   <ul class="dropdown-menu dropdown-menu-sm">
                     <%= content_tag(:li, link_to('List', plot_management_stands_list_path(@hunting_plot)), class: (page_id == 'stands_list' ? 'active' : nil) ) %>
                     <%= content_tag(:li, link_to('Map', plot_management_stands_map_path(@hunting_plot)), class: (page_id == 'stands_map' ? 'active' : nil) ) %>
+                    <%= content_tag(:li, link_to('Stand Access', plot_management_stand_access_path(@hunting_plot)), class: (page_id == 'stand_acesses' ? 'active' : nil) ) %>
                     <%= content_tag(:li, link_to('Reservations', plot_management_stand_reservations_path(@hunting_plot)), class: (page_id == 'stand_reservations' ? 'active' : nil) ) %>
                   </ul>
                 </li>

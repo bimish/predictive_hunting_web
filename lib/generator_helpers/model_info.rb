@@ -15,6 +15,10 @@ module GeneratorHelpers
       @name = model.to_s unless model.nil?
     end
 
+    def empty?
+      @model.nil?
+    end
+
     def valid?
       error.nil?
     end
