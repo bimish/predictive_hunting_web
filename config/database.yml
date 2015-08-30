@@ -62,10 +62,10 @@ test:
 production:
   adapter: postgis #postgresql
   encoding: unicode
-  database: dellchnbe76d6a
-  host: ec2-54-83-38-13.compute-1.amazonaws.com
-  port: 5582
+  database: app
+  host: predictive-hunting-appdb.cfigj27twwj3.us-west-2.rds.amazonaws.com:5432
+  port: 5432
   pool: 5
-  username: ubvgb7srdbtkj
-  password: p8cdj4sf931oumeh6kd9ev8krlp
+  username: dbadmin
+  password: t8!x(=RD
   schema_search_path: public,postgis
