@@ -1,7 +1,5 @@
 class AnimalActivityObservation < ActiveRecord::Base
 
-  set_rgeo_factory_for_column(:location_coordinates, RGeo::Geographic.spherical_factory(:srid => 4326))
-
   validates :hunting_plot_id, :presence => true
   validates :hunting_location_id, :presence => false
   validates :animal_category_id, :presence => false

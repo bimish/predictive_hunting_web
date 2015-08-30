@@ -1,7 +1,5 @@
 class HuntingLocation < ActiveRecord::Base
 
-  set_rgeo_factory_for_column(:coordinates, RGeo::Geographic.spherical_factory(:srid => 4326))
-
   validates :name, presence:true, length: { maximum: 100 }
   validates :location_type, presence: true
   validates :coordinates, presence: true

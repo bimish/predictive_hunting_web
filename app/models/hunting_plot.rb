@@ -1,8 +1,5 @@
 class HuntingPlot < ActiveRecord::Base
 
-  set_rgeo_factory_for_column(:location_coordinates, RGeo::Geographic.spherical_factory(:srid => 4326))
-  set_rgeo_factory_for_column(:boundary, RGeo::Geos.factory(:srid => 4326))
-
   validates :name, presence: true, length: { maximum: 100 }
 
   has_many :locations, :class_name => 'HuntingLocation'

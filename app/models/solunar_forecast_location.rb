@@ -1,7 +1,5 @@
 class SolunarForecastLocation < ActiveRecord::Base
 
-  set_rgeo_factory_for_column(:location_coordinates, RGeo::Geographic.spherical_factory(:srid => 4326))
-
   validates :name, presence:true, length: { maximum: 100 }
 
   def self.nearest_to_plot(hunting_plot)

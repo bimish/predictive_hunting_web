@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 #gem 'rails', '4.0.3'
-gem 'rails', '~> 4.1.1'
+gem 'rails', '~> 4.2.4'
 
 # Use postgresql as the database for Active Record
 gem 'pg'
@@ -26,7 +26,7 @@ gem "jquery-ui-rails", "~> 4.2.0"
 gem 'jquery_mobile_rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks'
+gem 'turbolinks', '~> 2.5.3'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
@@ -38,8 +38,9 @@ gem 'will_paginate-bootstrap'
 gem "faker", "~> 1.3.0"
 
 # PostGIS support gems
-gem "rgeo", "~> 0.3.20"
-gem "activerecord-postgis-adapter", "~> 1.0.0"
+gem "rgeo", "~> 0.4.0"
+gem "rgeo-activerecord", "~> 4.0.0"
+gem "activerecord-postgis-adapter", "~> 3.0.0"
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -50,6 +51,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.14.1'
   gem 'guard-rspec', '~> 4.2.8'
   gem 'annotate', '~> 2.6.2'
+  #gem 'web-console', '~> 2.0'
 end
 
 group :test do
@@ -71,7 +73,7 @@ end
 gem 'bcrypt', '~> 3.1.7'
 
 source "https://rubygems.org"
-ruby "2.1.2"
+ruby "2.2.2"
 
 # Use unicorn as the app server
 gem 'unicorn'
