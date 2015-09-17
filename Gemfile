@@ -84,4 +84,4 @@ gem 'unicorn'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-# gem 'newrelic_rpm'
+gem 'newrelic_rpm'
