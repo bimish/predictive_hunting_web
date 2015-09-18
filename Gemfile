@@ -65,7 +65,7 @@ group :test do
 end
 
 group :production do
-  gem 'rails_12factor'
+  #gem 'rails_12factor'
 end
 
 # Use ActiveModel has_secure_password
@@ -76,7 +76,8 @@ source "https://rubygems.org"
 ruby "2.2.2"
 
 # Use unicorn as the app server
-gem 'unicorn'
+#gem 'unicorn'
+gem 'puma'
 
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
