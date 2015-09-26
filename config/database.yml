@@ -62,7 +62,7 @@ test:
 production:
   adapter: postgis #postgresql
   encoding: unicode
-  database: app
+  database: predictive_hunting_app
   host: predictive-hunting-app.cfigj27twwj3.us-west-2.rds.amazonaws.com
   port: 5432
   pool: 5
