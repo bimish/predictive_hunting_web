@@ -6,7 +6,7 @@ class HuntingLocationTemporaryAccess < ActiveRecord::Base
 
   belongs_to :hunting_location
   belongs_to :user
-  belongs_to :granted_by, class:'User'
+  belongs_to :granted_by, class_name:'User'
   enum status: { status_pending: 0, status_accepted: 1, status_declined: 2 }
 
   def init_new(signed_in_user)
