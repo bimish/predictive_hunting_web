@@ -63,9 +63,9 @@ production:
   adapter: postgis #postgresql
   encoding: unicode
   database: app
-  host: predictive-hunting-appdb.cfigj27twwj3.us-west-2.rds.amazonaws.com
+  host: predictive-hunting-app.cfigj27twwj3.us-west-2.rds.amazonaws.com
   port: 5432
   pool: 5
   username: dbadmin
-  password: t8!x(=RD
+  password: pQ36dNU4EH
   schema_search_path: public,postgis
