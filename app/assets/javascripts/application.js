@@ -12,9 +12,9 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.all
+//= require jquery-ui
 //= require turbolinks
-//= require bootstrap
+//= require bootstrap-sprockets
 //= require ajax_form_helper
 //= require common
 //= require google_maps_api
