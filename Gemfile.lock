@@ -304,7 +304,7 @@ DEPENDENCIES
   puma
   rails (~> 4.2.4)
   rb-inotify (~> 0.9.3)
-  rgeo (~> 0.4.0)
+  rgeo
   rgeo-activerecord (~> 4.0.0)
   rspec-rails (~> 2.14.1)
   sass-rails
