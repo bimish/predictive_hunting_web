@@ -63,15 +63,14 @@ Rails.application.configure do
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { host: 'predictive-hunting.herokuapp.com' }
+  config.action_mailer.default_url_options = { host: 'predictivehunting.elasticbeanstalk.com' }
   config.action_mailer.default_options = { from: '"Predictive Hunting" <notifications@predictivehunting.com>' }
   ActionMailer::Base.smtp_settings = {
-    :address              => 'smtp.sendgrid.net',
+    :address              => 'email-smtp.us-west-2.amazonaws.com',
     :port                 => '587',
-    :authentication       => :plain,
-    :user_name            => ENV['SENDGRID_USERNAME'],
-    :password             => ENV['SENDGRID_PASSWORD'],
-    :domain               => 'heroku.com',
+    :authentication       => :login,
+    :user_name            => 'AKIAJAVKPNS7II22MN3Q',
+    :password             => 'AsszoD/pmyi+JcEg4bQM8yxjawPLrYjYD1vb0ST8a9Si',
     :enable_starttls_auto => true
   }
 
